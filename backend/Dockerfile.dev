@@ -1,0 +1,17 @@
+FROM maven:3.9.6-eclipse-temurin-17-alpine
+
+ARG DB_URL
+ARG DB_USERNAME
+ARG DB_PASSWORD
+
+WORKDIR /opt/app
+
+COPY pom.xml .
+COPY src ./src
+
+RUN ls -al
+RUN mvn dependency:go-offline -DskipTests=true
+
+EXPOSE 8080
+
+ENTRYPOINT ["mvn", "spring-boot:run", "-Dspring.datasource.url=${DB_URL}", "-Dspring.datasource.username=${DB_USERNAME}", "-Dspring.datasource.password=${DB_PASSWORD}"]

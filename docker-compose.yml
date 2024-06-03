@@ -1,0 +1,40 @@
+services:
+  database:
+    image: mysql:8.0
+    container_name: mysql-passplz
+    restart: on-failure
+    ports:
+      - "3306:3306"
+    networks:
+      - passplz-net
+    environment:
+      MYSQL_DATABASE: passplz
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ${DB_DATA_PATH}:/var/lib/mysql
+      - ./database:/docker-entrypoint-initdb.d
+
+  backend:
+    image: backend-passplz:latest
+    container_name: backend-passplz
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    networks:
+      - passplz-net
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        - DB_URL=${DB_URL}
+        - DB_USERNAME=${DB_USERNAME}
+        - DB_PASSWORD=${DB_PASSWORD}
+    environment:
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - database
+
+networks:
+  passplz-net:
