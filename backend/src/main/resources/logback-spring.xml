@@ -1,0 +1,27 @@
+<configuration>
+    <appender name="logFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- <file>${LOGS_PATH}/app.log</file> -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS_PATH}/log_%d{dd-MM-yyyy_HH-mm, America/New_York}.%i.log</fileNamePattern>
+            <maxHistory>${LOGS_NUM_KEEP}</maxHistory>
+            <maxFileSize>${LOGS_FILE_SIZE_LIMIT}</maxFileSize>
+            <totalSizeCap>${LOGS_ALL_SIZE_LIMIT}</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{dd-MM-yyyy HH:mm:ss, America/New_York} [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{HH:mm:ss.SSS, America/New_York} [%thread] %highlight(%-5level) %cyan(%logger{35}) - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="logFileAppender" />
+        <appender-ref ref="consoleAppender" />
+    </root>
+</configuration>

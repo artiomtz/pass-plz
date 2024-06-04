@@ -33,6 +33,10 @@ services:
       DB_URL: ${DB_URL}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
+      LOGS_PATH: ${LOGS_PATH}
+      LOGS_NUM_KEEP: ${LOGS_NUM_KEEP}
+      LOGS_FILE_SIZE_LIMIT: ${LOGS_FILE_SIZE_LIMIT}
+      LOGS_ALL_SIZE_LIMIT: ${LOGS_ALL_SIZE_LIMIT}
     depends_on:
       - database
 
