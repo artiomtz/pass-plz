@@ -13,5 +13,5 @@ public interface PasswordEntryService {
 
     PasswordEntry updateEntry(Long id, PasswordEntry entry);
 
-    void deleteEntry(Long id);
+    boolean deleteEntry(Long id);
 }

@@ -1,9 +1,9 @@
 package com.passplz.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Data;
@@ -21,8 +21,7 @@ public class PasswordEntry {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 
-    // optionals:
-    private String group;
+    private String category;
     private String link;
     private String note;
     private List<String> tags;

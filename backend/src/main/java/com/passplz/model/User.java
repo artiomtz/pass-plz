@@ -5,7 +5,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Data;
 
 @Data
@@ -17,7 +16,7 @@ public class User {
     private Long id;
 
     private String email;
-    private String master_password;
-    private LocalDateTime created_at;
-    private LocalDateTime last_visited;
+    private String masterPassword;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastVisited;
 }

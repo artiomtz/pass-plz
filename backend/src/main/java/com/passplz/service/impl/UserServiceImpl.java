@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     public User updateUser(Long id, User userDetails) {
         return userRepository.findById(id).map(user -> {
             user.setEmail(userDetails.getEmail());
-            user.setMaster_password(userDetails.getMaster_password());
+            user.setMasterPassword(userDetails.getMasterPassword());
             return userRepository.save(user);
         }).orElse(null);
     }
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateLogin(Long id) {
         return userRepository.findById(id).map(user -> {
-            user.setLast_visited(LocalDateTime.now());
+            user.setLastVisited(LocalDateTime.now());
             return userRepository.save(user);
         }).orElse(null);
     }
