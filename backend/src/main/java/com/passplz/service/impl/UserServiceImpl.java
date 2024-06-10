@@ -27,6 +27,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
+        user.setCreatedAt(LocalDateTime.now());
+        user.setLastVisited(LocalDateTime.now());
         return userRepository.save(user);
     }
 
