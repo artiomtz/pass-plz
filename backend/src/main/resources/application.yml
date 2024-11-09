@@ -15,10 +15,16 @@ spring:
       maxLifetime: 1800000
       minimumIdle: 10
   jpa:
+    open-in-view: false
     generate-ddl: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         show_sql: false
         format_sql: true
+security:
+  jwt:
+    encryptionKey: ${JWT_ENCRYPTION_KEY}
+    expirationMinutes: ${JWT_ENCRYPTION_KEY_EXPIRY_TIME_MN}
+    refreshExpirationMinutes: ${JWT_ENCRYPTION_KEY_REFRESH_TIME_MN}

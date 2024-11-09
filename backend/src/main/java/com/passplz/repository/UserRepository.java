@@ -1,10 +1,15 @@
 package com.passplz.repository;
 
-import com.passplz.model.User;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.passplz.entity.User;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    // custom query methods if needed
+
+    Optional<User> findByEmail(String email);
+
 }

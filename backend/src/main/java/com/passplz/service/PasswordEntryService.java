@@ -1,10 +1,11 @@
 package com.passplz.service;
 
-import com.passplz.model.PasswordEntry;
-
 import java.util.List;
 
+import com.passplz.entity.PasswordEntry;
+
 public interface PasswordEntryService {
+
     List<PasswordEntry> getAllEntries();
 
     PasswordEntry getEntryById(Long id);
@@ -14,4 +15,5 @@ public interface PasswordEntryService {
     PasswordEntry updateEntry(Long id, PasswordEntry entry);
 
     boolean deleteEntry(Long id);
+
 }
