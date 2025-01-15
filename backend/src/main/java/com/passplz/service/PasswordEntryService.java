@@ -10,6 +10,8 @@ public interface PasswordEntryService {
 
     PasswordEntry getEntryById(Long id);
 
+    List<PasswordEntry> getAllEntriesByUserId(Long userId);
+
     PasswordEntry createEntry(PasswordEntry entry);
 
     PasswordEntry updateEntry(Long id, PasswordEntry entry);

@@ -3,22 +3,22 @@ package com.passplz.service;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.springframework.security.core.userdetails.UserDetails;
+import com.passplz.entity.User;
 
 import io.jsonwebtoken.Claims;
 
 public interface JwtService {
 
-    public String extractUsername(String token);
+    String extractUsername(String token);
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
+    <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
 
-    public String generateToken(UserDetails userDetails);
+    String generateToken(User user);
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails);
+    String generateToken(Map<String, Object> extraClaims, User user);
 
-    public String generateRefreshToken(UserDetails userDetails);
+    String generateRefreshToken(User user);
 
-    public boolean isTokenValid(String token, UserDetails userDetails);
+    boolean isTokenValid(String token, User user);
 
 }

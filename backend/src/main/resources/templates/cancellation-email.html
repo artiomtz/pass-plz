@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title th:text="${head_title}">Email From Pass Plz</title>
+        <style>
+            .email-container {
+                max-width: 600px;
+                margin: 0 auto;
+                background-color: #e6e6e6;
+                padding: 20px;
+                border: 20px solid #d4d4d4;
+            }
+
+            .email-banner {
+                width: 100%;
+                max-width: 600px;
+                height: auto;
+                display: block;
+                padding-bottom: 3%;
+                border-radius: 10px;
+                opacity: 0.8;
+            }
+
+            body {
+                font-family: Ubuntu, Verdana, Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+
+            @font-face {
+                font-family: "Ubuntu";
+                src: url("/Ubuntu-Regular.ttf") format("truetype");
+            }
+
+            .link {
+                text-align: center;
+                margin: 35px auto;
+            }
+
+            a {
+                display: inline-block;
+                background-color: #4caf50;
+                color: white;
+                text-align: center;
+                padding: 10px 20px;
+                border-radius: 5px;
+                text-decoration: none;
+            }
+
+            h2 {
+                color: #333333;
+                font-size: 24px;
+                margin-bottom: 35px;
+            }
+
+            p {
+                color: #555555;
+                font-size: 16px;
+                line-height: 1.4;
+            }
+
+            ul {
+                list-style: none;
+                font-size: 16px;
+                padding: 0;
+            }
+
+            ul li {
+                margin-bottom: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="email-container">
+            <img
+                th:src="${base64Image}"
+                alt="Email Banner"
+                class="email-banner"
+            />
+            <h2>Cancellation Request</h2>
+
+            <p>Hello <span th:text="${username}">User</span>,</p>
+
+            <p>You have requested to delete your account.</p>
+            <p>
+                Please click on the link below to confirm the deletion of your
+                account.
+            </p>
+
+            <div class="link">
+                <a th:href="@{${link}}">Delete Account</a>
+            </div>
+
+            <p>
+                Best regards,<br />
+                Pass Plz
+            </p>
+        </div>
+    </body>
+</html>

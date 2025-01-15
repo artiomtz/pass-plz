@@ -1,15 +1,18 @@
 package com.passplz.service.impl;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import com.passplz.config.TokenType;
 import com.passplz.dto.AuthenticationDto;
 import com.passplz.entity.User;
 import com.passplz.exception.AuthenticationException;
 import com.passplz.service.AuthenticationService;
 import com.passplz.service.JwtService;
+import com.passplz.service.TokenService;
 import com.passplz.service.UserService;
 
 import io.jsonwebtoken.io.Decoders;
@@ -22,13 +25,21 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
+	@Value("${security.jwt.refreshExpirationMinutes}")
+	private String jwtRefreshExpirationMinutes;
+
 	private final JwtService jwtService;
 	private final UserService userService;
+	private final TokenService tokenService;
 	private final AuthenticationManager authenticationManager;
 
+	private static final String BASIC = "basic";
+	private static final String BEARER = "bearer";
+
+	@Override
 	public AuthenticationDto register(HttpServletRequest request) {
 		final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-		validateAuthHeader(authHeader, "basic");
+		validateAuthHeader(authHeader, BASIC);
 
 		final String[] credentials = getCredentialsFromHeader(authHeader);
 		final User user = User.builder()
@@ -40,31 +51,57 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		final String accessToken = jwtService.generateToken(user);
 		final String refreshToken = jwtService.generateRefreshToken(user);
 
+		tokenService.saveToken(user,
+			TokenType.REFRESH,
+			Long.parseLong(jwtRefreshExpirationMinutes),
+			refreshToken);
+
+		log.info("successfully registered user {} with id {}", user.getUsername(), user.getId());
 		return new AuthenticationDto(accessToken, refreshToken);
 	}
 
+	@Override
 	public AuthenticationDto authenticate(HttpServletRequest request) {
 		final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-		validateAuthHeader(authHeader, "basic");
+		validateAuthHeader(authHeader, BASIC);
 
 		final String[] credentials = getCredentialsFromHeader(authHeader);
+		final String email = credentials[0];
+		final String password = credentials[1];
+
+		final User user = userService.getUserByEmail(email);
+		if (user == null) {
+			log.error("user not found with email: {}", email);
+			throw new AuthenticationException("user not found");
+		} else if (!user.getIsVerified()) {
+			log.error("user {} is not verified", email);
+			throw new AuthenticationException("user is not verified");
+		}
+
 		try {
-			authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(credentials[0], credentials[1]));
+			authenticationManager
+				.authenticate(new UsernamePasswordAuthenticationToken(email, password));
 		} catch (Exception exception) {
 			log.error("error in authentication manager: {}", exception.getMessage());
 			throw new AuthenticationException("error authenticating credentials");
 		}
-		final User user = userService.getUserByEmail(credentials[0]);
+
 		final String accessToken = jwtService.generateToken(user);
 		final String refreshToken = jwtService.generateRefreshToken(user);
 
+		tokenService.saveToken(user,
+			TokenType.REFRESH,
+			Long.parseLong(jwtRefreshExpirationMinutes),
+			refreshToken);
+
+		log.info("successfully authenticated user with id {}", user.getId());
 		return new AuthenticationDto(accessToken, refreshToken);
 	}
 
+	@Override
 	public AuthenticationDto refreshToken(HttpServletRequest request) {
 		final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-		validateAuthHeader(authHeader, "bearer");
+		validateAuthHeader(authHeader, BEARER);
 
 		final String refreshToken = authHeader.substring("bearer ".length()).trim();
 		final String userEmail = jwtService.extractUsername(refreshToken);
@@ -72,24 +109,42 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 		if (!jwtService.isTokenValid(refreshToken, user)) {
 			log.error("token is not valid");
+			tokenService.invalidateToken(refreshToken, TokenType.REFRESH);
+			tokenService.deleteExpiredTokens();
 			throw new AuthenticationException("token is not valid");
 		}
+
 		final String accessToken = jwtService.generateToken(user);
+		log.info("successfully refreshed token for user user with id {}", user.getId());
 		return new AuthenticationDto(accessToken, null);
 	}
 
-	public static void validateAuthHeader(String authHeader, String authType) {
+	@Override
+	public void logout(HttpServletRequest request) {
+		final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+		validateAuthHeader(authHeader, BEARER);
+
+		final String refreshToken = authHeader.substring("bearer ".length()).trim();
+		final User user = tokenService.findUser(refreshToken, TokenType.REFRESH);
+
+		tokenService.invalidateAllTokensForUser(user);
+		tokenService.deleteExpiredTokens();
+		log.info("successfully logged out user user with id {}", user.getId());
+	}
+
+	private static void validateAuthHeader(String authHeader, String authType) {
 		if (authHeader == null || !authHeader.toLowerCase().startsWith(authType)) {
 			log.error("error validating authentication {} header", authType);
 			throw new AuthenticationException(
 				String.format("error validating authentication %s header", authHeader));
 		}
+
 		log.info("{} authentication header validated", authType);
 	}
 
-	public static String[] getCredentialsFromHeader(String authHeader) {
+	private static String[] getCredentialsFromHeader(String authHeader) {
 		try {
-			final String base64Credentials = authHeader.substring("basic ".length()).trim();
+			final String base64Credentials = authHeader.substring((BASIC + " ").length()).trim();
 			final byte[] decodedBytes = Decoders.BASE64.decode(base64Credentials);
 
 			log.info("successfully parsed header credentials");

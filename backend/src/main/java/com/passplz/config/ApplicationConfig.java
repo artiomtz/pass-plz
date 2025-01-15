@@ -26,14 +26,15 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> {
-            final User user = userService.getUserByEmail(username);
+        return email -> {
+            final User user = userService.getUserByEmail(email);
             if (user == null) {
-                log.error("error finding user {} in database", username);
+                log.error("error finding user {} in database", email);
                 throw new ApplicationException(
-                    String.format("error finding user %s in database", username));
+                    String.format("error finding user %s in database", email));
             }
-            log.info("found user {} in database", username);
+
+            log.info("found user {} in database", email);
             return user;
         };
     }

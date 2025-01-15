@@ -50,6 +50,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String masterPassword;
 
+    @Column(nullable = false)
+    private Boolean isVerified;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -58,6 +61,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PasswordEntry> passwords;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Token> verificationTokens;
 
     @Override
     public String getUsername() {

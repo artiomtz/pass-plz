@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFound(ApplicationException exception) {
-        log.info("Caught ApplicationException: {}", exception.getMessage());
+        log.info("caught ApplicationException: {}", exception.getMessage());
         final ErrorResponse error = new ErrorResponse(
             HttpStatus.BAD_REQUEST.value(),
             "APPLICATION_ERROR",
@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleJwtAuthenticationException(
         AuthenticationException exception) {
-        log.info("Caught authentication exception: {}", exception.getMessage());
+        log.info("caught authentication exception: {}", exception.getMessage());
         final ErrorResponse error = new ErrorResponse(
             HttpStatus.UNAUTHORIZED.value(),
             "AUTHENTICATION_ERROR",
@@ -50,6 +50,7 @@ public class GlobalExceptionHandler {
                 cause.getMessage());
             return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
         }
+
         return handleGeneralException(exception);
     }
 

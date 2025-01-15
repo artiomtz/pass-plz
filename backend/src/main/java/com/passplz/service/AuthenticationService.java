@@ -6,10 +6,12 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public interface AuthenticationService {
 
-    public AuthenticationDto register(HttpServletRequest request);
+    AuthenticationDto register(HttpServletRequest request);
 
-    public AuthenticationDto authenticate(HttpServletRequest request);
+    AuthenticationDto authenticate(HttpServletRequest request);
 
-    public AuthenticationDto refreshToken(HttpServletRequest request);
+    AuthenticationDto refreshToken(HttpServletRequest request);
+
+    void logout(HttpServletRequest request);
 
 }

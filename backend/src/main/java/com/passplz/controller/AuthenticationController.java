@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.passplz.dto.AuthenticationDto;
-import com.passplz.service.impl.AuthenticationServiceImpl;
+import com.passplz.service.AuthenticationService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -19,24 +19,31 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final AuthenticationServiceImpl service;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationDto> register(HttpServletRequest request) {
         log.info("received registration request");
-        return ResponseEntity.ok(service.register(request));
+        return ResponseEntity.ok(authenticationService.register(request));
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationDto> authenticate(HttpServletRequest request) {
         log.info("received authentication request");
-        return ResponseEntity.ok(service.authenticate(request));
+        return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
     @GetMapping("/refresh-token")
     public ResponseEntity<AuthenticationDto> refreshToken(HttpServletRequest request) {
         log.info("received token refresh request");
-        return ResponseEntity.ok(service.refreshToken(request));
+        return ResponseEntity.ok(authenticationService.refreshToken(request));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        log.info("received logout request");
+        authenticationService.logout(request);
+        return ResponseEntity.ok().build();
     }
 
 }

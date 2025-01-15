@@ -36,8 +36,12 @@ public class PasswordEntryDto {
     @NotEmpty(message = "password is required")
     private String password;
 
+    @JsonProperty("created_date")
     private LocalDateTime createdDate;
+
+    @JsonProperty("updated_date")
     private LocalDateTime updatedDate;
+
     private String category;
     private String link;
     private String note;
