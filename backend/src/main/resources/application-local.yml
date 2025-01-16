@@ -30,6 +30,8 @@ spring:
         format_sql: true
 
 security:
+  aes:
+    encryptionKey: ${AES_ENCRYPTION_KEY}
   jwt:
     encryptionKey: ${JWT_ENCRYPTION_KEY}
     expirationMinutes: ${JWT_EXPIRY_MINUTES}

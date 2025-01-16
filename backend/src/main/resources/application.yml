@@ -29,6 +29,8 @@ spring:
         show_sql: false
 
 security:
+  aes:
+    encryptionKey: ${AES_ENCRYPTION_KEY}
   jwt:
     encryptionKey: ${JWT_ENCRYPTION_KEY}
     expirationMinutes: ${JWT_EXPIRY_MINUTES}

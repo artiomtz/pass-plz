@@ -11,6 +11,7 @@ import com.passplz.exception.ApplicationException;
 import com.passplz.repository.PasswordEntryRepository;
 import com.passplz.service.PasswordEntryService;
 import com.passplz.service.UserService;
+import com.passplz.util.EncryptionUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +22,16 @@ import lombok.extern.slf4j.Slf4j;
 public class PasswordEntryServiceImpl implements PasswordEntryService {
 
     private final UserService userService;
+    private final EncryptionUtil encryptionUtil;
     private final PasswordEntryRepository passwordEntryRepository;
 
     @Override
     public List<PasswordEntry> getAllEntries() {
         try {
-            return passwordEntryRepository.findAll();
+            List<PasswordEntry> entries = passwordEntryRepository.findAll();
+            entries
+                .forEach(entry -> entry.setPassword(encryptionUtil.decrypt(entry.getPassword())));
+            return entries;
         } catch (Exception exception) {
             log.error("error fetching passwords: {}", exception.getMessage());
             throw new ApplicationException("error fetching passwords");
@@ -36,7 +41,10 @@ public class PasswordEntryServiceImpl implements PasswordEntryService {
     @Override
     public PasswordEntry getEntryById(Long id) {
         try {
-            return passwordEntryRepository.findById(id).orElse(null);
+            return passwordEntryRepository.findById(id).map(entry -> {
+                entry.setPassword(encryptionUtil.decrypt(entry.getPassword()));
+                return entry;
+            }).orElse(null);
         } catch (Exception exception) {
             log.error("error fetching password with id {}: {}", id, exception.getMessage());
             throw new ApplicationException(
@@ -54,7 +62,10 @@ public class PasswordEntryServiceImpl implements PasswordEntryService {
                     String.format("couldn't find user with id %s when fetching passwords", userId));
             }
 
-            return passwordEntryRepository.findAllByUser(user);
+            List<PasswordEntry> entries = passwordEntryRepository.findAllByUser(user);
+            entries
+                .forEach(entry -> entry.setPassword(encryptionUtil.decrypt(entry.getPassword())));
+            return entries;
         } catch (Exception exception) {
             log.error("error fetching the passwords for user with id {}: {}",
                 userId,
@@ -78,6 +89,7 @@ public class PasswordEntryServiceImpl implements PasswordEntryService {
             entry.setUser(user);
             entry.setCreatedDate(LocalDateTime.now());
             entry.setUpdatedDate(LocalDateTime.now());
+            entry.setPassword(encryptionUtil.encrypt(entry.getPassword()));
 
             return passwordEntryRepository.save(entry);
         } catch (Exception exception) {
@@ -96,7 +108,7 @@ public class PasswordEntryServiceImpl implements PasswordEntryService {
             return passwordEntryRepository.findById(id).map(existingEntry -> {
                 existingEntry.setName(updatedEntry.getName());
                 existingEntry.setUsername(updatedEntry.getUsername());
-                existingEntry.setPassword(updatedEntry.getPassword());
+                existingEntry.setPassword(encryptionUtil.encrypt(updatedEntry.getPassword()));
                 existingEntry.setCategory(updatedEntry.getCategory());
                 existingEntry.setLink(updatedEntry.getLink());
                 existingEntry.setNote(updatedEntry.getNote());
