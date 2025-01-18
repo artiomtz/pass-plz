@@ -1,8 +1,5 @@
 package com.passplz.service.impl;
 
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,6 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class EmailService {
 
+    @Value("${email.banner}")
+    private String emailBanner;
+
     @Value("${email.api.host}")
     private String emailHost;
 
@@ -41,21 +41,14 @@ public class EmailService {
 
     private final TokenService tokenService;
     private final TemplateEngine templateEngine;
-    private static final String BANNER_PATH = "static/email-banner-base64.txt";
 
     public void sendEmail(User user, EmailType emailType) {
         log.info("sending {} email to user with id {}",
             emailType.toString().toLowerCase(),
             user.getId());
 
-        String base64Image = getEmailBanner();
-        if (base64Image == null || base64Image.isBlank()) {
-            log.warn("using alternative email banner");
-            base64Image = "🔑 PASS PLZ 🔑";
-        }
-
         Context context = new Context();
-        context.setVariable("base64Image", base64Image);
+        context.setVariable("banner", emailBanner);
         context.setVariable("username", StringUtils.substringBefore(user.getUsername(), "@"));
         context.setVariable("link", getEmailLink(user, emailType));
 
@@ -97,17 +90,6 @@ public class EmailService {
                 String.format("failed to send %s email for %s",
                     emailType.toString().toLowerCase(),
                     user.getUsername()));
-        }
-    }
-
-    private String getEmailBanner() {
-        try {
-            final InputStream inputStream = getClass().getClassLoader()
-                .getResourceAsStream(BANNER_PATH);
-            return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-        } catch (Exception exception) {
-            log.warn("failed to load email banner");
-            return null;
         }
     }
 

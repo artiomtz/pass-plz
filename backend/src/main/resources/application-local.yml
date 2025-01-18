@@ -6,7 +6,7 @@ application:
 spring:
   config:
     activate:
-      on-profile: local
+      profile: local
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -38,6 +38,7 @@ security:
     refreshExpirationMinutes: ${JWT_REFRESH_EXPIRY_MINUTES}
 
 email:
+  banner: ${EMAIL_BANNER}
   api:
     host: ${EMAIL_HOST}
     key: ${EMAIL_KEY}

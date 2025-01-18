@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -75,11 +75,7 @@
     </head>
     <body>
         <div class="email-container">
-            <img
-                th:src="${base64Image}"
-                alt="Email Banner"
-                class="email-banner"
-            />
+            <img th:src="${banner}" alt="Email Banner" class="email-banner" />
             <h2>Password Reset Request</h2>
 
             <p>Hello <span th:text="${username}">User</span>,</p>
