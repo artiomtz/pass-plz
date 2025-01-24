@@ -46,9 +46,9 @@ public class PasswordEntryServiceImpl implements PasswordEntryService {
                 return entry;
             }).orElse(null);
         } catch (Exception exception) {
-            log.error("error fetching password with id {}: {}", id, exception.getMessage());
+            log.error("error fetching password entry with id {}: {}", id, exception.getMessage());
             throw new ApplicationException(
-                String.format("error fetching the password with id %d", id));
+                String.format("error fetching password entry with id %d", id));
         }
     }
 
@@ -81,9 +81,11 @@ public class PasswordEntryServiceImpl implements PasswordEntryService {
             final User user = userService.getUserById(entry.getUser().getId());
 
             if (user == null) {
-                log.error("couldn't find user when creating password for {}", entry.getName());
+                log.error("couldn't find user when creating password entry for {}",
+                    entry.getName());
                 throw new ApplicationException(
-                    String.format("user not found with id %s", entry.getUser().getId()));
+                    String.format("couldn't find user when creating password entry for %s",
+                        entry.getName()));
             }
 
             entry.setUser(user);
@@ -93,11 +95,11 @@ public class PasswordEntryServiceImpl implements PasswordEntryService {
 
             return passwordEntryRepository.save(entry);
         } catch (Exception exception) {
-            log.error("error creating the password for user with id {}: {}",
+            log.error("error creating the password entry for user with id {}: {}",
                 entry.getUser().getId(),
                 exception.getMessage());
             throw new ApplicationException(
-                String.format("error creating the password for user with id %d",
+                String.format("error creating the password entry for user with id %d",
                     entry.getUser().getId()));
         }
     }
@@ -119,9 +121,9 @@ public class PasswordEntryServiceImpl implements PasswordEntryService {
                 return passwordEntryRepository.save(existingEntry);
             }).orElse(null);
         } catch (Exception exception) {
-            log.error("error updating password with id {}: {}", id, exception.getMessage());
+            log.error("error updating password entry with id {}: {}", id, exception.getMessage());
             throw new ApplicationException(
-                String.format("error updating the password for id %d", id));
+                String.format("error updating password entry with id %d", id));
         }
     }
 
@@ -133,9 +135,9 @@ public class PasswordEntryServiceImpl implements PasswordEntryService {
                 return true;
             }).orElse(false);
         } catch (Exception exception) {
-            log.error("error deleting password with id {}: {}", id, exception.getMessage());
+            log.error("error deleting password entry with id {}: {}", id, exception.getMessage());
             throw new ApplicationException(
-                String.format("error deleting the password for id %d", id));
+                String.format("error deleting password entry with id %d", id));
         }
     }
 

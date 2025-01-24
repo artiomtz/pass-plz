@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
             return userRepository.findById(id).orElse(null);
         } catch (Exception exception) {
             log.error("error fetching user with id {}: {}", id, exception.getMessage());
-            throw new ApplicationException(String.format("error fetching the user with id %d", id));
+            throw new ApplicationException(String.format("error fetching user with id %d", id));
         }
     }
 
@@ -60,9 +60,9 @@ public class UserServiceImpl implements UserService {
     public User createUser(User user) {
         try {
             if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-                log.warn("a user with the email {} already exists", user.getEmail());
+                log.warn("user with the email {} already exists", user.getEmail());
                 throw new ApplicationException(
-                    String.format("a user with the email %s already exists", user.getEmail()));
+                    String.format("user with the email %s already exists", user.getEmail()));
             }
 
             user.setRole(Role.ROLE_USER);
@@ -79,7 +79,30 @@ public class UserServiceImpl implements UserService {
         } catch (Exception exception) {
             log.error("error creating user: {}", exception.getMessage());
             throw new ApplicationException(
-                String.format("error creating the user %s", user.getEmail()));
+                String.format("error creating user %s", user.getEmail()));
+        }
+    }
+
+    @Override
+    public User createAdmin(User user) {
+        try {
+            if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+                log.warn("admin user with the email {} already exists", user.getEmail());
+                return null;
+            }
+
+            user.setRole(Role.ROLE_ADMIN);
+            user.setIsVerified(true);
+            user.setCreatedAt(LocalDateTime.now());
+            user.setLastVisited(LocalDateTime.now());
+            user.setMasterPassword(passwordEncoder.encode(user.getMasterPassword()));
+            final User adminUser = userRepository.save(user);
+
+            log.info("created admin user with id {}", adminUser.getId());
+            return adminUser;
+        } catch (Exception exception) {
+            log.error("error creating admin user: {}", exception.getMessage());
+            return null;
         }
     }
 
@@ -97,7 +120,7 @@ public class UserServiceImpl implements UserService {
             }).orElse(null);
         } catch (Exception exception) {
             log.error("error updating user with id {}: {}", id, exception.getMessage());
-            throw new ApplicationException(String.format("error updating the user with id %d", id));
+            throw new ApplicationException(String.format("error updating user with id %d", id));
         }
     }
 
@@ -126,7 +149,8 @@ public class UserServiceImpl implements UserService {
             }).orElse(null);
         } catch (Exception exception) {
             log.error("error updating user with id {} login time: {}", id, exception.getMessage());
-            throw new ApplicationException(String.format("error updating user %d login time", id));
+            throw new ApplicationException(
+                String.format("error updating user with id %d login time", id));
         }
     }
 
@@ -139,7 +163,7 @@ public class UserServiceImpl implements UserService {
             }).orElse(false);
         } catch (Exception exception) {
             log.error("error deleting user with id {}: {}", id, exception.getMessage());
-            throw new ApplicationException(String.format("error deleting the user with id %d", id));
+            throw new ApplicationException(String.format("error deleting user with id %d", id));
         }
     }
 

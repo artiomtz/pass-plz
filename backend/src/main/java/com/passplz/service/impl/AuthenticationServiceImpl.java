@@ -4,14 +4,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.passplz.config.Role;
 import com.passplz.config.TokenType;
 import com.passplz.dto.AuthenticationDto;
+import com.passplz.entity.PasswordEntry;
 import com.passplz.entity.User;
+import com.passplz.exception.ApplicationException;
 import com.passplz.exception.AuthenticationException;
 import com.passplz.service.AuthenticationService;
 import com.passplz.service.JwtService;
+import com.passplz.service.PasswordEntryService;
 import com.passplz.service.TokenService;
 import com.passplz.service.UserService;
 
@@ -31,6 +37,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private final JwtService jwtService;
 	private final UserService userService;
 	private final TokenService tokenService;
+	private final PasswordEntryService passwordEntryService;
 	private final AuthenticationManager authenticationManager;
 
 	private static final String BASIC = "basic";
@@ -132,6 +139,82 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		log.info("successfully logged out user user with id {}", user.getId());
 	}
 
+	public void verifyUser(Long userId) {
+		log.info("verifying user with id {}", userId);
+		final User authenticatedUser = getAuthenticatedUser();
+		if (authenticatedUser.getRole().equals(Role.ROLE_ADMIN)) {
+			log.info("the user is an admin");
+			return;
+		}
+
+		if (!authenticatedUser.getId().equals(userId)) {
+			log.error("user {} is not authorized to act on user's {} behalf",
+				authenticatedUser.getId(),
+				userId);
+			throw new AuthenticationException(
+				String.format("user %s is not authorized to act on user's %s behalf",
+					authenticatedUser.getId(),
+					userId));
+		}
+	}
+
+	public void verifyOwnership(Long userId, Long passwordEntryId) {
+		log.info("verifying user with id {} is owner of password entry with id {}",
+			userId,
+			passwordEntryId);
+		final User authenticatedUser = getAuthenticatedUser();
+		if (authenticatedUser.getRole().equals(Role.ROLE_ADMIN)) {
+			log.info("the user has an admin authorization");
+			return;
+		}
+
+		verifyUser(userId);
+		final PasswordEntry entry = passwordEntryService.getEntryById(passwordEntryId);
+		if (entry == null) {
+			log.warn("couldn't fetch password entry with id {}", passwordEntryId);
+		} else if (!userId.equals(entry.getUser().getId())) {
+			log.error("user {} doesn't own password entry with id {}", userId, passwordEntryId);
+			throw new ApplicationException(
+				String.format("user %s doesn't own password entry with id %s",
+					userId,
+					passwordEntryId));
+		}
+	}
+
+	public void verifyOwnership(Long passwordEntryId) {
+		log.info("verifying ownership of password entry with id {}", passwordEntryId);
+		final User authenticatedUser = getAuthenticatedUser();
+		if (authenticatedUser.getRole().equals(Role.ROLE_ADMIN)) {
+			log.info("the user has an admin authorization");
+			return;
+		}
+
+		final PasswordEntry entry = passwordEntryService.getEntryById(passwordEntryId);
+		if (entry == null) {
+			log.warn("couldn't fetch password entry with id {}", passwordEntryId);
+		} else if (!authenticatedUser.getId().equals(entry.getUser().getId())) {
+			log.error("user {} doesn't own password entry with id {}",
+				authenticatedUser.getId(),
+				passwordEntryId);
+			throw new ApplicationException(
+				String.format("user %s doesn't own password entry with id %s",
+					authenticatedUser.getId(),
+					passwordEntryId));
+		}
+	}
+
+	private User getAuthenticatedUser() {
+		final Authentication authentication = SecurityContextHolder.getContext()
+			.getAuthentication();
+		if (authentication == null || !authentication.isAuthenticated()) {
+			log.warn("user is not authenticated for user confirmation");
+			throw new AuthenticationException("user is not authenticated for user confirmation");
+		}
+
+		final String authenticatedEmail = authentication.getName();
+		return userService.getUserByEmail(authenticatedEmail);
+	}
+
 	private static void validateAuthHeader(String authHeader, String authType) {
 		if (authHeader == null || !authHeader.toLowerCase().startsWith(authType)) {
 			log.error("error validating authentication {} header", authType);
@@ -152,7 +235,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		} catch (Exception exception) {
 			log.error("failed to parse authentication header credentials: {}",
 				exception.getMessage());
-			throw new AuthenticationException("error parsing authentication header credentials");
+			throw new AuthenticationException("failed to parse authentication header credentials");
 		}
 	}
 

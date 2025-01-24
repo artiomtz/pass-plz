@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,7 @@ import com.passplz.config.TokenType;
 import com.passplz.dto.PasswordResetDto;
 import com.passplz.dto.UserDto;
 import com.passplz.entity.User;
+import com.passplz.service.AuthenticationService;
 import com.passplz.service.TokenService;
 import com.passplz.service.UserService;
 import com.passplz.service.impl.EmailService;
@@ -28,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@EnableMethodSecurity
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
 public class UserController {
@@ -35,8 +39,10 @@ public class UserController {
     private final UserService userService;
     private final EmailService emailService;
     private final TokenService tokenService;
+    private final AuthenticationService authenticationService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         log.info("received request to fetch all users");
         final List<UserDto> users = userService.getAllUsers().stream().map(UserDto::toDto).toList();
@@ -46,6 +52,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         log.info("received request to fetch user with id {}", id);
 
@@ -60,10 +67,11 @@ public class UserController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         log.info("received request to create user {}", userDto.getEmail());
 
-        User userEntity = UserDto.toEntity(userDto);
+        final User userEntity = UserDto.toEntity(userDto);
         final User createdUser = userService.createUser(userEntity);
 
         log.info("successfully created user {}", userDto.getEmail());
@@ -71,6 +79,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<UserDto> updateUser(
         @PathVariable Long id,
         @Valid @RequestBody UserDto userDto) {
@@ -88,6 +97,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         log.info("received request to delete user with id {}", id);
         final boolean isDeleted = userService.deleteUser(id);
@@ -99,6 +109,7 @@ public class UserController {
     @PostMapping("/request-reset-password/{id}")
     public ResponseEntity<Void> requestResetPassword(@PathVariable Long id) {
         log.info("received request to trigger password reset for user with id {}", id);
+        authenticationService.verifyUser(id);
 
         final User user = userService.getUserById(id);
         if (user == null) {
@@ -142,6 +153,7 @@ public class UserController {
     @PostMapping("/request-cancellation/{id}")
     public ResponseEntity<Void> requestCancellation(@PathVariable Long id) {
         log.info("received a request to cancel user with id {}", id);
+        authenticationService.verifyUser(id);
 
         final User user = userService.getUserById(id);
         if (user == null) {

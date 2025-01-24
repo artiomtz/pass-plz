@@ -14,6 +14,8 @@ public interface UserService {
 
     User createUser(User user);
 
+    User createAdmin(User user);
+
     User updateUser(Long id, User userUpdated);
 
     void updateIsVerified(Long id, boolean isVerified);

@@ -31,13 +31,14 @@ public class TokenServiceImpl implements TokenService {
         log.info("creating a new token for user with id {}", user.getId());
         final String newToken = UUID.randomUUID().toString();
         saveToken(user, type, tokenExpiryMinutes, newToken);
+        log.warn(newToken);
         return newToken;
     }
 
     @Override
     public void saveToken(User user, TokenType type, Long tokenExpiryMinutes, String tokenValue) {
         try {
-            Token newToken = Token.builder()
+            final Token newToken = Token.builder()
                 .value(passwordEncoder.encode(tokenValue))
                 .type(type)
                 .user(user)
@@ -60,7 +61,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public User findUser(String value, TokenType type) {
         try {
-            List<Token> tokens = tokenRepository.findAllByType(type);
+            final List<Token> tokens = tokenRepository.findAllByType(type);
             return tokens.stream()
                 .filter(Token::getIsValid)
                 .filter(token -> token.getExpiryDate().isAfter(LocalDateTime.now()))
@@ -77,7 +78,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public boolean isTokenValid(String value, TokenType type) {
         try {
-            List<Token> tokens = tokenRepository.findAllByType(type);
+            final List<Token> tokens = tokenRepository.findAllByType(type);
             return tokens.stream()
                 .filter(Token::getIsValid)
                 .filter(token -> token.getExpiryDate().isAfter(LocalDateTime.now()))

@@ -51,7 +51,7 @@ public class EmailController {
         }
 
         log.info("password verification token validated for {}", email);
-        User user = userService.getUserByEmail(email);
+        final User user = userService.getUserByEmail(email);
         if (user == null) {
             log.error("verification token validation couldn't find {}", email);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -104,7 +104,7 @@ public class EmailController {
         }
 
         log.info("account cancellation token validated for {}", email);
-        User user = userService.getUserByEmail(email);
+        final User user = userService.getUserByEmail(email);
         if (user == null) {
             log.error("account cancellation token validation couldn't find {}", email);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

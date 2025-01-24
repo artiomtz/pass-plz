@@ -79,7 +79,7 @@ public class EncryptionUtil {
     private byte[] generateIv() {
         try {
             final SecureRandom secureRandom = new SecureRandom();
-            byte[] iv = new byte[IV_LENGTH];
+            final byte[] iv = new byte[IV_LENGTH];
             secureRandom.nextBytes(iv);
             return iv;
         } catch (Exception exception) {

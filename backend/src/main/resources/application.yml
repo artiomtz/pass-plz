@@ -1,4 +1,7 @@
 application:
+  admin:
+    email: ${ADMIN_EMAIL}
+    password: ${ADMIN_PASSWORD}
   servers:
     frontend: ${FRONTEND_URL}
     backend: ${BACKEND_URL}

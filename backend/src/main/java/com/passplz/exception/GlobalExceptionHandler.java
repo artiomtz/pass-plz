@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,6 +34,17 @@ public class GlobalExceptionHandler {
         final ErrorResponse error = new ErrorResponse(
             HttpStatus.UNAUTHORIZED.value(),
             "AUTHENTICATION_ERROR",
+            exception.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAuthorizationDeniedException(
+        AuthorizationDeniedException exception) {
+        log.info("caught authorization exception: {}", exception.getMessage());
+        final ErrorResponse error = new ErrorResponse(
+            HttpStatus.UNAUTHORIZED.value(),
+            "AUTHORIZATION_ERROR",
             exception.getMessage());
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }

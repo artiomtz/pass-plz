@@ -52,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (userEmail != null
                 && SecurityContextHolder.getContext().getAuthentication() == null) {
-                User user = (User) userDetailsService.loadUserByUsername(userEmail);
+                final User user = (User) userDetailsService.loadUserByUsername(userEmail);
 
                 if (!user.getIsVerified()) {
                     log.warn("user {} is not verified", userEmail);

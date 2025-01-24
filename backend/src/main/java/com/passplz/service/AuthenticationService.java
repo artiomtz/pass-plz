@@ -14,4 +14,10 @@ public interface AuthenticationService {
 
     void logout(HttpServletRequest request);
 
+    void verifyUser(Long userId);
+
+    void verifyOwnership(Long userId, Long passwordEntryId);
+
+    void verifyOwnership(Long passwordEntryId);
+
 }
