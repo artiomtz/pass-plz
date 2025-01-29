@@ -13,7 +13,6 @@ import com.passplz.config.TokenType;
 import com.passplz.dto.AuthenticationDto;
 import com.passplz.entity.PasswordEntry;
 import com.passplz.entity.User;
-import com.passplz.exception.ApplicationException;
 import com.passplz.exception.AuthenticationException;
 import com.passplz.service.AuthenticationService;
 import com.passplz.service.JwtService;
@@ -174,7 +173,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			log.warn("couldn't fetch password entry with id {}", passwordEntryId);
 		} else if (!userId.equals(entry.getUser().getId())) {
 			log.error("user {} doesn't own password entry with id {}", userId, passwordEntryId);
-			throw new ApplicationException(
+			throw new AuthenticationException(
 				String.format("user %s doesn't own password entry with id %s",
 					userId,
 					passwordEntryId));
@@ -196,7 +195,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			log.error("user {} doesn't own password entry with id {}",
 				authenticatedUser.getId(),
 				passwordEntryId);
-			throw new ApplicationException(
+			throw new AuthenticationException(
 				String.format("user %s doesn't own password entry with id %s",
 					authenticatedUser.getId(),
 					passwordEntryId));

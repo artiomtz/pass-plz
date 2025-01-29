@@ -10,7 +10,10 @@ import com.passplz.config.EmailType;
 import com.passplz.config.Role;
 import com.passplz.entity.User;
 import com.passplz.exception.ApplicationException;
+import com.passplz.exception.ValidationException;
 import com.passplz.repository.UserRepository;
+import com.passplz.service.EmailService;
+import com.passplz.service.PasswordValidationService;
 import com.passplz.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PasswordValidationService passwordValidationService;
 
     @Override
     public List<User> getAllUsers() {
@@ -65,17 +69,23 @@ public class UserServiceImpl implements UserService {
                     String.format("user with the email %s already exists", user.getEmail()));
             }
 
+            passwordValidationService.validatePassword(user.getMasterPassword());
             user.setRole(Role.ROLE_USER);
             user.setIsVerified(false);
             user.setCreatedAt(LocalDateTime.now());
             user.setLastVisited(LocalDateTime.now());
             user.setMasterPassword(passwordEncoder.encode(user.getMasterPassword()));
-            final User createdUser = userRepository.save(user);
 
+            final User createdUser = userRepository.save(user);
             log.info("created new user with id {}. sending verification email",
                 createdUser.getId());
+
             emailService.sendEmail(createdUser, EmailType.VERIFICATION);
             return createdUser;
+        } catch (ValidationException exception) {
+            log.error("error validating new password: {}", exception.getMessage());
+            throw new ValidationException(
+                String.format("error validating new password: %s", exception.getMessage()));
         } catch (Exception exception) {
             log.error("error creating user: {}", exception.getMessage());
             throw new ApplicationException(
@@ -91,15 +101,20 @@ public class UserServiceImpl implements UserService {
                 return null;
             }
 
+            passwordValidationService.validatePassword(user.getMasterPassword());
             user.setRole(Role.ROLE_ADMIN);
             user.setIsVerified(true);
             user.setCreatedAt(LocalDateTime.now());
             user.setLastVisited(LocalDateTime.now());
             user.setMasterPassword(passwordEncoder.encode(user.getMasterPassword()));
-            final User adminUser = userRepository.save(user);
 
+            final User adminUser = userRepository.save(user);
             log.info("created admin user with id {}", adminUser.getId());
+
             return adminUser;
+        } catch (ValidationException exception) {
+            log.error("error validating new password: {}", exception.getMessage());
+            return null;
         } catch (Exception exception) {
             log.error("error creating admin user: {}", exception.getMessage());
             return null;
@@ -110,14 +125,21 @@ public class UserServiceImpl implements UserService {
     public User updateUser(Long id, User updatedUser) {
         try {
             return userRepository.findById(id).map(existingUser -> {
+                passwordValidationService.validatePassword(updatedUser.getMasterPassword());
                 existingUser.setEmail(updatedUser.getEmail());
+
                 if (!passwordEncoder.matches(updatedUser.getMasterPassword(),
                     existingUser.getMasterPassword())) {
                     existingUser
                         .setMasterPassword(passwordEncoder.encode(updatedUser.getMasterPassword()));
                 }
+
                 return userRepository.save(existingUser);
             }).orElse(null);
+        } catch (ValidationException exception) {
+            log.error("error validating new password: {}", exception.getMessage());
+            throw new ValidationException(
+                String.format("error validating new password: %s", exception.getMessage()));
         } catch (Exception exception) {
             log.error("error updating user with id {}: {}", id, exception.getMessage());
             throw new ApplicationException(String.format("error updating user with id %d", id));

@@ -33,6 +33,7 @@ spring:
         format_sql: true
 
 security:
+  userPasswordMinLength: ${USER_PASSWORD_MIN_LENGTH}
   aes:
     encryptionKey: ${AES_ENCRYPTION_KEY}
   jwt:

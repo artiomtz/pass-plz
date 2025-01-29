@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFound(ApplicationException exception) {
-        log.info("caught ApplicationException: {}", exception.getMessage());
+        log.info("caught application exception: {}", exception.getMessage());
         final ErrorResponse error = new ErrorResponse(
             HttpStatus.BAD_REQUEST.value(),
             "APPLICATION_ERROR",
@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
         final Throwable cause = exception.getCause();
 
         if (cause instanceof ApplicationException) {
-            log.info("caught ApplicationException wrapped by Security: {}", cause.getMessage());
+            log.info("caught application exception wrapped by security: {}", cause.getMessage());
             final ErrorResponse error = new ErrorResponse(
                 HttpStatus.UNAUTHORIZED.value(),
                 "AUTHENTICATION_ERROR",
@@ -66,10 +66,20 @@ public class GlobalExceptionHandler {
         return handleGeneralException(exception);
     }
 
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(ValidationException exception) {
+        log.info("caught validation exception: {}", exception.getMessage());
+        final ErrorResponse error = new ErrorResponse(
+            HttpStatus.NOT_ACCEPTABLE.value(),
+            "VALIDATION_ERROR",
+            exception.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(
         MethodArgumentNotValidException exception) {
-        log.info("caught validation exception: {}", exception.getMessage());
+        log.info("caught argument validation exception: {}", exception.getMessage());
         final String errorMessage = exception.getBindingResult()
             .getAllErrors()
             .stream()
@@ -77,10 +87,10 @@ public class GlobalExceptionHandler {
             .collect(Collectors.joining(", "));
 
         final ErrorResponse error = new ErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
+            HttpStatus.NOT_ACCEPTABLE.value(),
             "VALIDATION_ERROR",
-            errorMessage);
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+            "validation error: " + errorMessage);
+        return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler(Exception.class)
