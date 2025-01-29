@@ -31,6 +31,7 @@ public class TokenServiceImpl implements TokenService {
         log.info("creating a new token for user with id {}", user.getId());
         final String newToken = UUID.randomUUID().toString();
         saveToken(user, type, tokenExpiryMinutes, newToken);
+
         log.warn(newToken);
         return newToken;
     }
@@ -72,6 +73,26 @@ public class TokenServiceImpl implements TokenService {
         } catch (Exception exception) {
             log.error("error finding user by token: {}", exception.getMessage());
             throw new ApplicationException("error finding user by token");
+        }
+    }
+
+    @Override
+    public boolean doesUserHaveValidToken(User user, TokenType type) {
+        try {
+            List<Token> tokens = tokenRepository.findAllByType(type);
+            return tokens.stream()
+                .filter(Token::getIsValid)
+                .filter(token -> token.getExpiryDate().isAfter(LocalDateTime.now()))
+                .anyMatch(token -> token.getUser().equals(user));
+        } catch (Exception exception) {
+            log.error("error checking valid {} token for user with id {}: {}",
+                type.toString().toLowerCase(),
+                user.getId(),
+                exception.getMessage());
+            throw new ApplicationException(
+                String.format("error checking valid %s token for user with id %s",
+                    type.toString().toLowerCase(),
+                    user.getId()));
         }
     }
 

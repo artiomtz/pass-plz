@@ -87,9 +87,9 @@ public class PasswordEntryController {
         authenticationService.verifyUser(entryDto.getUserId());
         final PasswordEntry entryEntity = PasswordEntryDto.toEntity(entryDto);
 
-        final PasswordEntry createdEntry = passwordEntryService.createEntry(entryEntity);
+        passwordEntryService.createEntry(entryEntity);
         log.info("successfully created password entry for user with id {}", entryDto.getUserId());
-        return ResponseEntity.ok(PasswordEntryDto.toDto(createdEntry));
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
@@ -107,7 +107,7 @@ public class PasswordEntryController {
         }
 
         log.info("successfully updated password entry with id {}", id);
-        return ResponseEntity.ok(PasswordEntryDto.toDto(updatedEntry));
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

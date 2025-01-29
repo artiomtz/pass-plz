@@ -3,6 +3,7 @@ package com.passplz.controller;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -21,9 +22,9 @@ import com.passplz.dto.PasswordResetDto;
 import com.passplz.dto.UserDto;
 import com.passplz.entity.User;
 import com.passplz.service.AuthenticationService;
+import com.passplz.service.EmailService;
 import com.passplz.service.TokenService;
 import com.passplz.service.UserService;
-import com.passplz.service.impl.EmailService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -117,6 +118,11 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
 
+        if (tokenService.doesUserHaveValidToken(user, TokenType.RESET)) {
+            log.warn("user with id {} already has a valid reset token", id);
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
+        }
+
         emailService.sendEmail(user, EmailType.RESET);
         return ResponseEntity.ok().build();
     }
@@ -159,6 +165,11 @@ public class UserController {
         if (user == null) {
             log.error("cancellation request couldn't find user with id {}", id);
             return ResponseEntity.notFound().build();
+        }
+
+        if (tokenService.doesUserHaveValidToken(user, TokenType.CANCELLATION)) {
+            log.warn("user with id {} already has a valid cancellation token", id);
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
         }
 
         emailService.sendEmail(user, EmailType.CANCELLATION);

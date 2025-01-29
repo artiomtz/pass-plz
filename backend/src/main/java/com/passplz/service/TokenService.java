@@ -11,6 +11,8 @@ public interface TokenService {
 
     User findUser(String value, TokenType type);
 
+    boolean doesUserHaveValidToken(User user, TokenType type);
+
     boolean isTokenValid(String token, TokenType type);
 
     void invalidateToken(String tokenValue, TokenType type);

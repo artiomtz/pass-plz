@@ -40,7 +40,7 @@ public class SecurityConfig {
                 CorsConfiguration config = new CorsConfiguration();
                 String origin = request.getHeader("Origin");
                 if (origin == null) {
-                    log.warn("cors received request without Origin header");
+                    log.warn("cors request without Origin header");
                 }
 
                 if (profile.equalsIgnoreCase("local")) {
