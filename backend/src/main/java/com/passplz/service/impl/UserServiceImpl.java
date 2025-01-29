@@ -125,18 +125,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateIsVerified(Long id, boolean isVerified) {
+    public void updateUserIsVerified(Long id, boolean isVerified) {
         try {
             userRepository.findById(id).ifPresent(user -> {
                 user.setIsVerified(isVerified);
                 userRepository.save(user);
             });
         } catch (Exception exception) {
-            log.error("error updating isVerified for user with id {}: {}",
+            log.error("error updating verification status for user with id {}: {}",
                 id,
                 exception.getMessage());
             throw new ApplicationException(
-                String.format("error updating isVerified for user with id %d", id));
+                String.format("error updating verification status for user with id %d", id));
         }
     }
 

@@ -10,6 +10,7 @@ import com.passplz.config.EmailType;
 import com.passplz.config.TokenType;
 import com.passplz.entity.User;
 import com.passplz.exception.ApplicationException;
+import com.passplz.service.EmailService;
 import com.passplz.service.TokenService;
 import com.postmarkapp.postmark.Postmark;
 import com.postmarkapp.postmark.client.ApiClient;
@@ -22,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class EmailService {
+public class EmailServiceImpl implements EmailService {
 
     @Value("${email.banner}")
     private String emailBanner;
@@ -76,7 +77,7 @@ public class EmailService {
         message.setTextBody("The email failed to render. Please get in contact with support.");
 
         try {
-            ApiClient client = Postmark.getApiClient(emailApiKey);
+            final ApiClient client = Postmark.getApiClient(emailApiKey);
             MessageResponse response = client.deliverMessage(message);
             log.info("successfully sent {} email to {}",
                 emailType.toString().toLowerCase(),
@@ -129,6 +130,7 @@ public class EmailService {
             case VERIFICATION -> "🔑 Welcome to Pass Plz!";
             case RESET -> "🔑 Pass Plz Password Reset Request";
             case CANCELLATION -> "🔑 Pass Plz Account Deletion";
+            case ADMIN -> "🔑 Pass Plz Notification";
             default -> "🔑 A Message From Pass Plz";
         };
     }
@@ -138,6 +140,7 @@ public class EmailService {
             case VERIFICATION -> "verification-email.html";
             case RESET -> "reset-email.html";
             case CANCELLATION -> "cancellation-email.html";
+            case ADMIN -> "admin-email.html";
             default -> null;
         };
     }

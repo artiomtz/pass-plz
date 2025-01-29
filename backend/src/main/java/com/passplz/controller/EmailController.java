@@ -59,7 +59,7 @@ public class EmailController {
                 .build();
         }
 
-        userService.updateIsVerified(user.getId(), true);
+        userService.updateUserIsVerified(user.getId(), true);
         log.info("successfully verified user with id {}", user.getId());
 
         return ResponseEntity.status(HttpStatus.FOUND)

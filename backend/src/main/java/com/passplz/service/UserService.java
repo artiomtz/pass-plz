@@ -18,7 +18,7 @@ public interface UserService {
 
     User updateUser(Long id, User userUpdated);
 
-    void updateIsVerified(Long id, boolean isVerified);
+    void updateUserIsVerified(Long id, boolean isVerified);
 
     User updateLogin(Long id);
 
