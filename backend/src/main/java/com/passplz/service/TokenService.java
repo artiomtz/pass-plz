@@ -17,7 +17,7 @@ public interface TokenService {
 
     void invalidateToken(String tokenValue, TokenType type);
 
-    public void invalidateAllTokensForUser(User user);
+    void invalidateAllTokensForUser(User user);
 
     void deleteExpiredTokens();
 

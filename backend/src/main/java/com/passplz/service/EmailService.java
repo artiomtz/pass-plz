@@ -7,4 +7,6 @@ public interface EmailService {
 
     void sendEmail(User user, EmailType emailType);
 
+    void sendAdminEmail(String messageText);
+
 }

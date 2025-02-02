@@ -32,7 +32,6 @@ public class TokenServiceImpl implements TokenService {
         final String newToken = UUID.randomUUID().toString();
         saveToken(user, type, tokenExpiryMinutes, newToken);
 
-        log.warn(newToken);
         return newToken;
     }
 

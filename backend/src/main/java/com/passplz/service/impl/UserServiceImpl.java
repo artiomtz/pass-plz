@@ -81,11 +81,13 @@ public class UserServiceImpl implements UserService {
                 createdUser.getId());
 
             emailService.sendEmail(createdUser, EmailType.VERIFICATION);
+            emailService
+                .sendAdminEmail(String.format("New user %s has been created.", user.getEmail()));
             return createdUser;
         } catch (ValidationException exception) {
-            log.error("error validating new password: {}", exception.getMessage());
+            log.error("error validating new user password: {}", exception.getMessage());
             throw new ValidationException(
-                String.format("error validating new password: %s", exception.getMessage()));
+                String.format("error validating new user password: %s", exception.getMessage()));
         } catch (Exception exception) {
             log.error("error creating user: {}", exception.getMessage());
             throw new ApplicationException(
@@ -113,7 +115,7 @@ public class UserServiceImpl implements UserService {
 
             return adminUser;
         } catch (ValidationException exception) {
-            log.error("error validating new password: {}", exception.getMessage());
+            log.error("error validating new admin password: {}", exception.getMessage());
             return null;
         } catch (Exception exception) {
             log.error("error creating admin user: {}", exception.getMessage());
@@ -173,6 +175,19 @@ public class UserServiceImpl implements UserService {
             log.error("error updating user with id {} login time: {}", id, exception.getMessage());
             throw new ApplicationException(
                 String.format("error updating user with id %d login time", id));
+        }
+    }
+
+    @Override
+    public void deleteUser(User user) {
+        try {
+            userRepository.delete(user);
+            emailService
+                .sendAdminEmail(String.format("User %s has been deleted.", user.getEmail()));
+        } catch (Exception exception) {
+            log.error("error deleting user {}: {}", user.getEmail(), exception.getMessage());
+            throw new ApplicationException(
+                String.format("error deleting user %s", user.getEmail()));
         }
     }
 

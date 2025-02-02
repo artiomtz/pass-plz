@@ -112,8 +112,8 @@ public class EmailController {
                 .build();
         }
 
-        userService.deleteUser(user.getId());
-        log.info("successfully cancelled account {}", user.getUsername());
+        userService.deleteUser(user);
+        log.info("successfully cancelled account {}", user.getEmail());
         return ResponseEntity.status(HttpStatus.FOUND)
             .location(URI.create(frontendUrl + "/" + URL_GOODBYE_PATH))
             .build();

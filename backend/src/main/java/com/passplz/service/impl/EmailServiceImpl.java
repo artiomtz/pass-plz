@@ -9,7 +9,7 @@ import org.thymeleaf.context.Context;
 import com.passplz.config.EmailType;
 import com.passplz.config.TokenType;
 import com.passplz.entity.User;
-import com.passplz.exception.ApplicationException;
+import com.passplz.exception.EmailException;
 import com.passplz.service.EmailService;
 import com.passplz.service.TokenService;
 import com.postmarkapp.postmark.Postmark;
@@ -17,6 +17,7 @@ import com.postmarkapp.postmark.client.ApiClient;
 import com.postmarkapp.postmark.client.data.model.message.Message;
 import com.postmarkapp.postmark.client.data.model.message.MessageResponse;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,6 +41,9 @@ public class EmailServiceImpl implements EmailService {
     @Value("${email.api.tokenExpiryMinutes}")
     private String tokenExpiryMinutes;
 
+    @Value("${application.admin.email}")
+    private String adminEmail;
+
     private final TokenService tokenService;
     private final TemplateEngine templateEngine;
 
@@ -50,21 +54,21 @@ public class EmailServiceImpl implements EmailService {
 
         Context context = new Context();
         context.setVariable("banner", emailBanner);
-        context.setVariable("username", StringUtils.substringBefore(user.getUsername(), "@"));
+        context.setVariable("username", StringUtils.substringBefore(user.getEmail(), "@"));
         context.setVariable("link", getEmailLink(user, emailType));
 
         final String htmlBody;
         try {
             htmlBody = templateEngine.process(getEmailTemplate(emailType), context);
         } catch (Exception exception) {
-            log.error("error processing {} email template for {}: {}",
+            log.error("error processing {} email template to {}: {}",
                 emailType.toString().toLowerCase(),
-                user.getUsername(),
+                user.getEmail(),
                 exception.getMessage());
-            throw new ApplicationException(
-                String.format("error processing %s email template for %s",
+            throw new EmailException(
+                String.format("error processing %s email template to %s",
                     emailType.toString().toLowerCase(),
-                    user.getUsername()));
+                    user.getEmail()));
         }
 
         Message message = new Message(
@@ -78,41 +82,83 @@ public class EmailServiceImpl implements EmailService {
 
         try {
             final ApiClient client = Postmark.getApiClient(emailApiKey);
-            MessageResponse response = client.deliverMessage(message);
+            final MessageResponse response = client.deliverMessage(message);
             log.info("successfully sent {} email to {}",
                 emailType.toString().toLowerCase(),
                 response.getTo());
         } catch (Exception exception) {
-            log.error("failed to send {} email for {}: {}",
+            log.error("failed to send {} email to {}: {}",
                 emailType.toString().toLowerCase(),
-                user.getUsername(),
+                user.getEmail(),
                 exception.getMessage());
-            throw new ApplicationException(
-                String.format("failed to send %s email for %s",
+            throw new EmailException(
+                String.format("failed to send %s email to %s",
                     emailType.toString().toLowerCase(),
-                    user.getUsername()));
+                    user.getEmail()));
         }
+    }
+
+    public void sendAdminEmail(String messageText) {
+        log.info("sending admin email notification to {}", adminEmail);
+
+        Context context = new Context();
+        context.setVariable("banner", emailBanner);
+        context.setVariable("username", StringUtils.substringBefore(adminEmail, "@"));
+        context.setVariable("message", messageText);
+
+        final String htmlBody;
+        try {
+            htmlBody = templateEngine.process(getEmailTemplate(EmailType.ADMIN), context);
+        } catch (Exception exception) {
+            log.error("error processing admin email template: {}", exception.getMessage());
+            return;
+        }
+
+        Message message = new Message(
+            emailHost,
+            adminEmail,
+            getEmailSubject(EmailType.ADMIN),
+            htmlBody);
+        message.setMessageStream("outbound");
+        message.setHtmlBody(htmlBody);
+        message.setTextBody("The admin email failed to render.");
+
+        try {
+            final ApiClient client = Postmark.getApiClient(emailApiKey);
+            final MessageResponse response = client.deliverMessage(message);
+            log.info("successfully sent admin email notification to {}", response.getTo());
+        } catch (Exception exception) {
+            log.error("failed to send admin email notification to {}: {}",
+                adminEmail,
+                exception.getMessage());
+        }
+    }
+
+    @PostConstruct
+    private void notifyAdminOnStartup() {
+        log.info("application has started successfully");
+        sendAdminEmail("The backend server has started.");
     }
 
     private String getEmailLink(User user, EmailType emailType) {
         String link = String.format("%s/api/email/%s?email=%s&token=",
             backendUrl,
             getEmailEndpoint(emailType),
-            user.getUsername());
+            user.getEmail());
         try {
             final String token = tokenService
                 .createToken(user, getTokenType(emailType), Long.parseLong(tokenExpiryMinutes));
             link += token;
             return link;
         } catch (Exception exception) {
-            log.error("error constructing {} email for {}: {}",
+            log.error("error constructing {} email to {}: {}",
                 emailType.toString().toLowerCase(),
-                user.getUsername(),
+                user.getEmail(),
                 exception.getMessage());
-            throw new ApplicationException(
-                String.format("error constructing %s email for %s",
+            throw new EmailException(
+                String.format("error constructing %s email to %s",
                     emailType.toString().toLowerCase(),
-                    user.getUsername()));
+                    user.getEmail()));
         }
     }
 

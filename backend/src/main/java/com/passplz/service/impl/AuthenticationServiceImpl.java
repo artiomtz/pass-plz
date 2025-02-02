@@ -62,7 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			Long.parseLong(jwtRefreshExpirationMinutes),
 			refreshToken);
 
-		log.info("successfully registered user {} with id {}", user.getUsername(), user.getId());
+		log.info("successfully registered user {} with id {}", user.getEmail(), user.getId());
 		return new AuthenticationDto(accessToken, refreshToken);
 	}
 

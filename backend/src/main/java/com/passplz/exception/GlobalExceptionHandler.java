@@ -11,15 +11,25 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.passplz.service.EmailService;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final EmailService emailService;
 
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFound(ApplicationException exception) {
-        log.info("caught application exception: {}", exception.getMessage());
+        log.error("caught application exception: {}", exception.getMessage());
+        emailService.sendAdminEmail(
+            String.format("The backend server has encountered an application exception:%n%s",
+                exception.getMessage()));
+
         final ErrorResponse error = new ErrorResponse(
             HttpStatus.BAD_REQUEST.value(),
             "APPLICATION_ERROR",
@@ -30,7 +40,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleJwtAuthenticationException(
         AuthenticationException exception) {
-        log.info("caught authentication exception: {}", exception.getMessage());
+        log.error("caught authentication exception: {}", exception.getMessage());
+
         final ErrorResponse error = new ErrorResponse(
             HttpStatus.UNAUTHORIZED.value(),
             "AUTHENTICATION_ERROR",
@@ -41,7 +52,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAuthorizationDeniedException(
         AuthorizationDeniedException exception) {
-        log.info("caught authorization exception: {}", exception.getMessage());
+        log.error("caught authorization exception: {}", exception.getMessage());
+
         final ErrorResponse error = new ErrorResponse(
             HttpStatus.UNAUTHORIZED.value(),
             "AUTHORIZATION_ERROR",
@@ -68,7 +80,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(ValidationException exception) {
-        log.info("caught validation exception: {}", exception.getMessage());
+        log.error("caught validation exception: {}", exception.getMessage());
+
         final ErrorResponse error = new ErrorResponse(
             HttpStatus.NOT_ACCEPTABLE.value(),
             "VALIDATION_ERROR",
@@ -79,7 +92,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(
         MethodArgumentNotValidException exception) {
-        log.info("caught argument validation exception: {}", exception.getMessage());
+        log.error("caught argument validation exception: {}", exception.getMessage());
+
         final String errorMessage = exception.getBindingResult()
             .getAllErrors()
             .stream()
@@ -93,9 +107,24 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @ExceptionHandler(EmailException.class)
+    public ResponseEntity<ErrorResponse> handleEmailException(EmailException exception) {
+        log.error("caught email exception: {}", exception.getMessage());
+
+        final ErrorResponse error = new ErrorResponse(
+            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            "EMAIL_ERROR",
+            exception.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception exception) {
-        log.info("caught a general exception: {}", exception.getMessage());
+        log.error("caught a general exception: {}", exception.getMessage());
+        emailService
+            .sendAdminEmail(String.format("The backend server has encountered an exception:%n%s",
+                exception.getMessage()));
+
         final ErrorResponse error = new ErrorResponse(
             HttpStatus.INTERNAL_SERVER_ERROR.value(),
             "INTERNAL_ERROR",
