@@ -131,6 +131,7 @@ public class UserController {
     public ResponseEntity<Void> resetPassword(
         @Valid @RequestBody PasswordResetDto passwordResetDto) {
         log.info("received a request to reset password");
+        passwordResetDto.sanitizeFields();
 
         tokenService.deleteExpiredTokens();
         final boolean isValid = tokenService.isTokenValid(passwordResetDto.getToken(),

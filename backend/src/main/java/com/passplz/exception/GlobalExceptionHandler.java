@@ -1,9 +1,11 @@
 package com.passplz.exception;
 
+import java.time.format.DateTimeParseException;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.ObjectError;
@@ -83,6 +85,30 @@ public class GlobalExceptionHandler {
         log.error("caught validation exception: {}", exception.getMessage());
 
         final ErrorResponse error = new ErrorResponse(
+            HttpStatus.NOT_ACCEPTABLE.value(),
+            "VALIDATION_ERROR",
+            exception.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<ErrorResponse> handleDateTimeParseException(
+        DateTimeParseException exception) {
+        log.error("caught date-time validation exception: {}", exception.getMessage());
+
+        ErrorResponse error = new ErrorResponse(
+            HttpStatus.NOT_ACCEPTABLE.value(),
+            "VALIDATION_ERROR",
+            exception.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(
+        HttpMessageNotReadableException exception) {
+        log.error("caught message format validation exception: {}", exception.getMessage());
+
+        ErrorResponse error = new ErrorResponse(
             HttpStatus.NOT_ACCEPTABLE.value(),
             "VALIDATION_ERROR",
             exception.getMessage());

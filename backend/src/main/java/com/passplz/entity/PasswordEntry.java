@@ -1,7 +1,7 @@
 package com.passplz.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -50,11 +50,16 @@ public class PasswordEntry {
     private LocalDateTime updatedDate;
 
     @ElementCollection
-    private List<String> tags;
+    private Set<String> tags;
+
+    @Column(length = 512)
+    private String link;
+
+    @Column(length = 1024)
+    private String note;
 
     private String category;
-    private String link;
-    private String note;
-    private LocalDateTime expiration;
+
+    private LocalDateTime expirationDate;
 
 }

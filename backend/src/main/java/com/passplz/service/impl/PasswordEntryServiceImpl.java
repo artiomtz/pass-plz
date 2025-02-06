@@ -115,7 +115,7 @@ public class PasswordEntryServiceImpl implements PasswordEntryService {
                 existingEntry.setLink(updatedEntry.getLink());
                 existingEntry.setNote(updatedEntry.getNote());
                 existingEntry.setTags(updatedEntry.getTags());
-                existingEntry.setExpiration(updatedEntry.getExpiration());
+                existingEntry.setExpirationDate(updatedEntry.getExpirationDate());
                 existingEntry.setUpdatedDate(LocalDateTime.now());
 
                 return passwordEntryRepository.save(existingEntry);
