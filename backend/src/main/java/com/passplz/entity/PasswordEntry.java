@@ -49,7 +49,7 @@ public class PasswordEntry {
     @Column(nullable = false)
     private LocalDateTime updatedDate;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> tags;
 
     @Column(length = 512)
