@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -95,6 +96,20 @@ public class UserController {
 
         log.info("successfully updated user with id {}", id);
         return ResponseEntity.ok(UserDto.toDto(updatedUser));
+    }
+
+    @PatchMapping("/{id}/login-time")
+    public ResponseEntity<Void> updateLoginTime(@PathVariable Long id) {
+        log.info("received request to update login time for user with id {}", id);
+
+        final User updatedUser = userService.updateLogin(id);
+        if (updatedUser == null) {
+            log.error("couldn't update login time for user with id {}", id);
+            return ResponseEntity.notFound().build();
+        }
+
+        log.info("successfully updated login time for user with id {}", id);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

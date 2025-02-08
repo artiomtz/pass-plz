@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
         try {
             return userRepository.findById(id).map(existingUser -> {
                 passwordValidationService.validatePassword(updatedUser.getMasterPassword());
-                existingUser.setEmail(updatedUser.getEmail());
+                existingUser.setIsVerified(updatedUser.getIsVerified());
 
                 if (!passwordEncoder.matches(updatedUser.getMasterPassword(),
                     existingUser.getMasterPassword())) {
