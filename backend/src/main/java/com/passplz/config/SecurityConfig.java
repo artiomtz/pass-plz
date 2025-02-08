@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Value("${spring.config.activate.profile}")
+    @Value("${spring.profile}")
     private String profile;
 
     @Value("${application.servers.frontend}")
@@ -46,7 +46,7 @@ public class SecurityConfig {
                 if (profile.equalsIgnoreCase("local")) {
                     config.setAllowedOrigins(
                         List.of(frontendUrl, "http://localhost", "http://127.0.0.1"));
-                    log.info("cors configured hosts for local testing: {}",
+                    log.info("cors configured hosts for local development: {}",
                         config.getAllowedOrigins());
                 } else {
                     config.setAllowedOrigins(List.of(frontendUrl));

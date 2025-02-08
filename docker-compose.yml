@@ -4,7 +4,7 @@ services:
     container_name: mysql-passplz
     restart: on-failure
     ports:
-      - "3306:3306"
+      - '3306:3306'
     networks:
       - passplz-net
     environment:
@@ -18,16 +18,12 @@ services:
     container_name: backend-passplz
     restart: on-failure
     ports:
-      - "8080:8080"
+      - '8080:8080'
     networks:
       - passplz-net
     build:
       context: ./backend
       dockerfile: Dockerfile
-      args:
-        - DB_URL=${DB_URL}
-        - DB_USERNAME=${DB_USERNAME}
-        - DB_PASSWORD=${DB_PASSWORD}
     environment:
       ADMIN_EMAIL: ${ADMIN_EMAIL}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
