@@ -34,7 +34,7 @@ public class Token {
     @Column(nullable = false)
     private TokenType type;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "token_value", nullable = false, unique = true)
     private String value;
 
     @Column(nullable = false)

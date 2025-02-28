@@ -1,0 +1,53 @@
+application:
+  admin:
+    email: artiomtz@gmail.com
+    password: AdminPassword123!
+  servers:
+    frontend: test.com
+    backend: test.com
+
+spring:
+  profile: local
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    hikari:
+      initialization-fail-timeout: -1
+      connectionTimeout: 10000
+      maximumPoolSize: 10
+      idleTimeout: 0
+      maxLifetime: 0
+      minimumIdle: 10
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  sql:
+    init:
+      mode: always
+
+security:
+  userPasswordMinLength: 12
+  aes:
+    encryptionKey: TestSecretTestSecretTestSecretTestSecret
+  jwt:
+    encryptionKey: TestSecretTestSecretTestSecretTestSecret
+    expirationMinutes: 5
+    refreshExpirationMinutes: 5
+
+email:
+  banner: cloud.com/banner
+  api:
+    host: host@email.com
+    key: email-key
+    tokenExpiryMinutes: 5
