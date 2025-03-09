@@ -62,7 +62,7 @@ class TokenServiceImplTest {
             .type(TokenType.RESET)
             .user(mockUser)
             .isValid(true)
-            .createdAt(LocalDateTime.now())
+            .createdAt(LocalDateTime.now().minusDays(10L))
             .expiryDate(LocalDateTime.now().plusMinutes(30L))
             .build();
     }

@@ -7,13 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -97,10 +98,10 @@ class AuthenticationServiceImplTest {
 
     @Test
     void testRegister_Success() {
-        Mockito.when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(BASIC_AUTH_HEADER);
-        Mockito.when(userService.createUser(any(User.class))).thenReturn(mockNewUser);
-        Mockito.when(jwtService.generateToken(mockNewUser)).thenReturn(ACCESS_TOKEN);
-        Mockito.when(jwtService.generateRefreshToken(mockNewUser)).thenReturn(REFRESH_TOKEN);
+        when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(BASIC_AUTH_HEADER);
+        when(userService.createUser(any(User.class))).thenReturn(mockNewUser);
+        when(jwtService.generateToken(mockNewUser)).thenReturn(ACCESS_TOKEN);
+        when(jwtService.generateRefreshToken(mockNewUser)).thenReturn(REFRESH_TOKEN);
 
         final AuthenticationDto result = authenticationService.register(request);
 
@@ -111,16 +112,16 @@ class AuthenticationServiceImplTest {
 
     @Test
     void testRegister_AuthHeaderMissing() {
-        Mockito.when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(null);
+        when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(null);
         assertThrows(AuthenticationException.class, () -> authenticationService.register(request));
     }
 
     @Test
     void testAuthenticate_Success() {
-        Mockito.when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(BASIC_AUTH_HEADER);
-        Mockito.when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(mockUser);
-        Mockito.when(jwtService.generateToken(mockUser)).thenReturn(ACCESS_TOKEN);
-        Mockito.when(jwtService.generateRefreshToken(mockUser)).thenReturn(REFRESH_TOKEN);
+        when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(BASIC_AUTH_HEADER);
+        when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(mockUser);
+        when(jwtService.generateToken(mockUser)).thenReturn(ACCESS_TOKEN);
+        when(jwtService.generateRefreshToken(mockUser)).thenReturn(REFRESH_TOKEN);
 
         final AuthenticationDto result = authenticationService.authenticate(request);
 
@@ -131,8 +132,8 @@ class AuthenticationServiceImplTest {
 
     @Test
     void testAuthenticate_UserNotFound() {
-        Mockito.when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(BASIC_AUTH_HEADER);
-        Mockito.when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(null);
+        when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(BASIC_AUTH_HEADER);
+        when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(null);
 
         assertThrows(AuthenticationException.class,
             () -> authenticationService.authenticate(request));
@@ -140,8 +141,8 @@ class AuthenticationServiceImplTest {
 
     @Test
     void testAuthenticate_UserNotVerified() {
-        Mockito.when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(BASIC_AUTH_HEADER);
-        Mockito.when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(mockUser);
+        when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(BASIC_AUTH_HEADER);
+        when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(mockUser);
         mockUser.setIsVerified(false);
 
         assertThrows(AuthenticationException.class,
@@ -150,11 +151,11 @@ class AuthenticationServiceImplTest {
 
     @Test
     void testRefreshToken_Success() {
-        Mockito.when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(BEARER_AUTH_HEADER);
-        Mockito.when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(mockUser);
-        Mockito.when(jwtService.isTokenValid(REFRESH_TOKEN, mockUser)).thenReturn(true);
-        Mockito.when(jwtService.generateToken(mockUser)).thenReturn(ACCESS_TOKEN);
-        Mockito.when(jwtService.extractUsername(REFRESH_TOKEN)).thenReturn(mockUser.getEmail());
+        when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(BEARER_AUTH_HEADER);
+        when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(mockUser);
+        when(jwtService.isTokenValid(REFRESH_TOKEN, mockUser)).thenReturn(true);
+        when(jwtService.generateToken(mockUser)).thenReturn(ACCESS_TOKEN);
+        when(jwtService.extractUsername(REFRESH_TOKEN)).thenReturn(mockUser.getEmail());
 
         final AuthenticationDto result = authenticationService.refreshToken(request);
 
@@ -165,10 +166,10 @@ class AuthenticationServiceImplTest {
 
     @Test
     void testRefreshToken_InvalidToken() {
-        Mockito.when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(BEARER_AUTH_HEADER);
-        Mockito.when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(mockUser);
-        Mockito.when(jwtService.isTokenValid(anyString(), any(User.class))).thenReturn(false);
-        Mockito.when(jwtService.extractUsername(REFRESH_TOKEN)).thenReturn(mockUser.getEmail());
+        when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(BEARER_AUTH_HEADER);
+        when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(mockUser);
+        when(jwtService.isTokenValid(anyString(), any(User.class))).thenReturn(false);
+        when(jwtService.extractUsername(REFRESH_TOKEN)).thenReturn(mockUser.getEmail());
 
         assertThrows(AuthenticationException.class,
             () -> authenticationService.refreshToken(request));
@@ -176,23 +177,23 @@ class AuthenticationServiceImplTest {
 
     @Test
     void testLogout_Success() {
-        Mockito.when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(BEARER_AUTH_HEADER);
-        Mockito.when(tokenService.findUser(REFRESH_TOKEN, TokenType.REFRESH)).thenReturn(mockUser);
+        when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(BEARER_AUTH_HEADER);
+        when(tokenService.findUser(REFRESH_TOKEN, TokenType.REFRESH)).thenReturn(mockUser);
 
         authenticationService.logout(request);
 
-        Mockito.verify(tokenService).invalidateAllTokensForUser(mockUser);
+        verify(tokenService).invalidateAllTokensForUser(mockUser);
     }
 
     @Test
     void testLogout_AuthHeaderMissing() {
-        Mockito.when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(null);
+        when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(null);
         assertThrows(AuthenticationException.class, () -> authenticationService.logout(request));
     }
 
     @Test
     void testVerifyUser_Success() {
-        Mockito.when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(mockUser);
+        when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(mockUser);
         SecurityContextHolder.getContext()
             .setAuthentication(
                 new UsernamePasswordAuthenticationToken(mockUser, null, mockUser.getAuthorities()));
@@ -202,7 +203,7 @@ class AuthenticationServiceImplTest {
 
     @Test
     void testVerifyUser_AdminSuccess() {
-        Mockito.when(userService.getUserByEmail(mockAdmin.getEmail())).thenReturn(mockAdmin);
+        when(userService.getUserByEmail(mockAdmin.getEmail())).thenReturn(mockAdmin);
         SecurityContextHolder.getContext()
             .setAuthentication(new UsernamePasswordAuthenticationToken(
                 mockAdmin,
@@ -220,8 +221,8 @@ class AuthenticationServiceImplTest {
 
     @Test
     void testVerifyOwnership_Success() {
-        Mockito.when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(mockUser);
-        Mockito.when(passwordEntryService.getEntryById(mockUser.getId())).thenReturn(mockEntry);
+        when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(mockUser);
+        when(passwordEntryService.getEntryById(mockUser.getId())).thenReturn(mockEntry);
         SecurityContextHolder.getContext()
             .setAuthentication(
                 new UsernamePasswordAuthenticationToken(mockUser, null, mockUser.getAuthorities()));
@@ -232,8 +233,8 @@ class AuthenticationServiceImplTest {
 
     @Test
     void testVerifyOwnershipById_Success() {
-        Mockito.when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(mockUser);
-        Mockito.when(passwordEntryService.getEntryById(mockUser.getId())).thenReturn(mockEntry);
+        when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(mockUser);
+        when(passwordEntryService.getEntryById(mockUser.getId())).thenReturn(mockEntry);
         SecurityContextHolder.getContext()
             .setAuthentication(
                 new UsernamePasswordAuthenticationToken(mockUser, null, mockUser.getAuthorities()));
@@ -243,7 +244,7 @@ class AuthenticationServiceImplTest {
 
     @Test
     void testVerifyOwnership_AdminSuccess() {
-        Mockito.when(userService.getUserByEmail(mockAdmin.getEmail())).thenReturn(mockAdmin);
+        when(userService.getUserByEmail(mockAdmin.getEmail())).thenReturn(mockAdmin);
         SecurityContextHolder.getContext()
             .setAuthentication(new UsernamePasswordAuthenticationToken(
                 mockAdmin,
@@ -255,9 +256,8 @@ class AuthenticationServiceImplTest {
 
     @Test
     void testVerifyOwnership_NotOwner() {
-        Mockito.when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(mockUser);
-        Mockito.when(passwordEntryService.getEntryById(mockAdminEntry.getId()))
-            .thenReturn(mockAdminEntry);
+        when(userService.getUserByEmail(mockUser.getEmail())).thenReturn(mockUser);
+        when(passwordEntryService.getEntryById(mockAdminEntry.getId())).thenReturn(mockAdminEntry);
         SecurityContextHolder.getContext()
             .setAuthentication(
                 new UsernamePasswordAuthenticationToken(mockUser, null, mockUser.getAuthorities()));

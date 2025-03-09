@@ -11,17 +11,18 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.passplz.entity.PasswordEntry;
@@ -61,9 +62,9 @@ class PasswordEntryServiceTest {
             .name("GitHub")
             .username("testUser")
             .password("encryptedPass")
-            .createdDate(LocalDateTime.now())
+            .createdDate(LocalDateTime.now().minusDays(10L))
             .updatedDate(LocalDateTime.now())
-            .tags(null)
+            .tags(Set.of("work", "work-stuff"))
             .link("https://github.com")
             .note("this is important")
             .category("Work")
@@ -74,8 +75,8 @@ class PasswordEntryServiceTest {
     @Test
     void testGetAllEntries() {
         final List<PasswordEntry> entries = List.of(mockEntry);
-        Mockito.when(passwordEntryRepository.findAll()).thenReturn(entries);
-        Mockito.when(encryptionUtil.decrypt("encryptedPass")).thenReturn("decryptedPass");
+        when(passwordEntryRepository.findAll()).thenReturn(entries);
+        when(encryptionUtil.decrypt("encryptedPass")).thenReturn("decryptedPass");
 
         final List<PasswordEntry> results = passwordEntryService.getAllEntries();
 
@@ -86,9 +87,9 @@ class PasswordEntryServiceTest {
 
     @Test
     void testGetEntryById_Found() {
-        Mockito.when(passwordEntryRepository.findById(mockEntry.getId()))
+        when(passwordEntryRepository.findById(mockEntry.getId()))
             .thenReturn(Optional.of(mockEntry));
-        Mockito.when(encryptionUtil.decrypt("encryptedPass")).thenReturn("decryptedPass");
+        when(encryptionUtil.decrypt("encryptedPass")).thenReturn("decryptedPass");
 
         final PasswordEntry result = passwordEntryService.getEntryById(mockEntry.getId());
 
@@ -98,8 +99,7 @@ class PasswordEntryServiceTest {
 
     @Test
     void testGetEntryById_NotFound() {
-        Mockito.when(passwordEntryRepository.findById(mockEntry.getId()))
-            .thenReturn(Optional.empty());
+        when(passwordEntryRepository.findById(mockEntry.getId())).thenReturn(Optional.empty());
 
         final PasswordEntry result = passwordEntryService.getEntryById(mockEntry.getId());
 
@@ -109,9 +109,9 @@ class PasswordEntryServiceTest {
     @Test
     void testGetAllEntriesByUserId_Success() {
         final List<PasswordEntry> entries = List.of(mockEntry);
-        Mockito.when(userService.getUserById(mockUser.getId())).thenReturn(mockUser);
-        Mockito.when(passwordEntryRepository.findAllByUser(mockUser)).thenReturn(entries);
-        Mockito.when(encryptionUtil.decrypt("encryptedPass")).thenReturn("decryptedPass");
+        when(userService.getUserById(mockUser.getId())).thenReturn(mockUser);
+        when(passwordEntryRepository.findAllByUser(mockUser)).thenReturn(entries);
+        when(encryptionUtil.decrypt("encryptedPass")).thenReturn("decryptedPass");
 
         final List<PasswordEntry> results = passwordEntryService
             .getAllEntriesByUserId(mockUser.getId());
@@ -123,7 +123,7 @@ class PasswordEntryServiceTest {
 
     @Test
     void testGetAllEntriesByUserId_UserNotFound() {
-        Mockito.when(userService.getUserById(mockUser.getId())).thenReturn(null);
+        when(userService.getUserById(mockUser.getId())).thenReturn(null);
 
         final Exception exception = assertThrows(ApplicationException.class, () -> {
             passwordEntryService.getAllEntriesByUserId(mockUser.getId());
@@ -134,9 +134,9 @@ class PasswordEntryServiceTest {
 
     @Test
     void testCreateEntry_Success() {
-        Mockito.when(userService.getUserById(mockUser.getId())).thenReturn(mockUser);
-        Mockito.when(encryptionUtil.encrypt("plainPass")).thenReturn("encryptedPass");
-        Mockito.when(passwordEntryRepository.save(any(PasswordEntry.class))).thenReturn(mockEntry);
+        when(userService.getUserById(mockUser.getId())).thenReturn(mockUser);
+        when(encryptionUtil.encrypt("plainPass")).thenReturn("encryptedPass");
+        when(passwordEntryRepository.save(any(PasswordEntry.class))).thenReturn(mockEntry);
 
         final PasswordEntry newEntry = PasswordEntry.builder()
             .user(mockUser)
@@ -152,10 +152,10 @@ class PasswordEntryServiceTest {
 
     @Test
     void testUpdateEntry_Success() {
-        Mockito.when(encryptionUtil.encrypt("newPass")).thenReturn("encryptedNewPass");
-        Mockito.when(passwordEntryRepository.findById(mockEntry.getId()))
+        when(encryptionUtil.encrypt("newPass")).thenReturn("encryptedNewPass");
+        when(passwordEntryRepository.findById(mockEntry.getId()))
             .thenReturn(Optional.of(mockEntry));
-        Mockito.when(passwordEntryRepository.save(any(PasswordEntry.class))).thenReturn(mockEntry);
+        when(passwordEntryRepository.save(any(PasswordEntry.class))).thenReturn(mockEntry);
 
         final PasswordEntry updatedEntry = PasswordEntry.builder()
             .name("Updated Name")
@@ -171,8 +171,7 @@ class PasswordEntryServiceTest {
 
     @Test
     void testUpdateEntry_NotFound() {
-        Mockito.when(passwordEntryRepository.findById(mockEntry.getId()))
-            .thenReturn(Optional.empty());
+        when(passwordEntryRepository.findById(mockEntry.getId())).thenReturn(Optional.empty());
 
         final PasswordEntry updatedEntry = PasswordEntry.builder()
             .name("Updated Name")
@@ -186,7 +185,7 @@ class PasswordEntryServiceTest {
 
     @Test
     void testDeleteEntry_Success() {
-        Mockito.when(passwordEntryRepository.findById(mockEntry.getId()))
+        when(passwordEntryRepository.findById(mockEntry.getId()))
             .thenReturn(Optional.of(mockEntry));
         doNothing().when(passwordEntryRepository).delete(mockEntry);
 
@@ -198,8 +197,7 @@ class PasswordEntryServiceTest {
 
     @Test
     void testDeleteEntry_NotFound() {
-        Mockito.when(passwordEntryRepository.findById(mockEntry.getId()))
-            .thenReturn(Optional.empty());
+        when(passwordEntryRepository.findById(mockEntry.getId())).thenReturn(Optional.empty());
 
         final boolean result = passwordEntryService.deleteEntry(mockEntry.getId());
 

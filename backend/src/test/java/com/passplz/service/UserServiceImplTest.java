@@ -63,7 +63,7 @@ class UserServiceImplTest {
         mockAdmin.setEmail("admin@mail.com");
         mockAdmin.setMasterPassword("AdminPassword123!");
         mockAdmin.setIsVerified(true);
-        mockAdmin.setCreatedAt(LocalDateTime.now());
+        mockAdmin.setCreatedAt(LocalDateTime.now().minusDays(10L));
         mockAdmin.setLastVisited(LocalDateTime.now());
 
         mockUser = new User();
@@ -72,7 +72,7 @@ class UserServiceImplTest {
         mockUser.setEmail("user@mail.com");
         mockUser.setMasterPassword("SecurePassword123!");
         mockUser.setIsVerified(false);
-        mockUser.setCreatedAt(LocalDateTime.now().minusDays(30));
+        mockUser.setCreatedAt(LocalDateTime.now().minusDays(10L));
         mockUser.setLastVisited(LocalDateTime.now());
     }
 
