@@ -3,17 +3,14 @@ FROM maven:3.9.6-eclipse-temurin-17-alpine
 WORKDIR /opt/app
 
 COPY pom.xml .
-COPY src ./src
-
-ENV JAVA_TOOL_OPTIONS="-Dspring.profiles.active=local"
-
-RUN mvn dependency:go-offline -DskipTests=true
 
 EXPOSE 8080
 
 ENTRYPOINT [ \
     "mvn", \
     "spring-boot:run", \
+    "-DskipTests=true", \
+    "-Dspring.profiles.active=local", \
     "-Dspring.datasource.url=${DB_URL}", \
     "-Dspring.datasource.username=${DB_USERNAME}", \
     "-Dspring.datasource.password=${DB_PASSWORD}" \

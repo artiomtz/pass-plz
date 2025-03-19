@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "ESNext",
+        "lib": ["DOM", "ESNext"],
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "moduleResolution": "Node",
+        "jsx": "react-jsx"
+    },
+    "include": ["src", "src/**/*.d.ts"],
+    "exclude": ["node_modules"]
+}

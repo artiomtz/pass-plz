@@ -1,0 +1,7 @@
+Dockerfile
+Dockerfile.dev
+node_modules
+dist
+.gitignore
+.eslint*
+*.log

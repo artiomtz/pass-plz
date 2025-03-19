@@ -48,5 +48,21 @@ services:
     depends_on:
       - database
 
+  frontend:
+    image: frontend-passplz:latest
+    container_name: frontend-passplz
+    restart: on-failure
+    ports:
+      - '3000:3000'
+    networks:
+      - passplz-net
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_ADMIN_EMAIL: ${VITE_ADMIN_EMAIL}
+    depends_on:
+      - backend
+
 networks:
   passplz-net:

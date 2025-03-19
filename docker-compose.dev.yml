@@ -4,3 +4,12 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - ./backend:/opt/app
+
+  frontend:
+    build:
+      dockerfile: Dockerfile.dev
+    environment:
+      VITE_ADMIN_EMAIL: ${VITE_ADMIN_EMAIL}
+    volumes:
+      - ./frontend:/opt/app
+      - /opt/app/node_modules
