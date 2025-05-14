@@ -8,7 +8,21 @@
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "moduleResolution": "Node",
-        "jsx": "react-jsx"
+        "jsx": "react-jsx",
+        "baseUrl": "src",
+        "paths": {
+            "@api/*": ["api/*"],
+            "@components/*": ["components/*"],
+            "@contexts/*": ["contexts/*"],
+            "@hooks/*": ["hooks/*"],
+            "@layouts/*": ["layouts/*"],
+            "@models/*": ["models/*"],
+            "@pages/*": ["pages/*"],
+            "@routes/*": ["routes/*"],
+            "@services/*": ["services/*"],
+            "@styles/*": ["styles/*"],
+            "@utils/*": ["utils/*"]
+        }
     },
     "include": ["src", "src/**/*.d.ts"],
     "exclude": ["node_modules"]
