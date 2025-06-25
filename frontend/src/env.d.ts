@@ -5,5 +5,5 @@ interface ImportMeta {
 }
 
 interface ImportMetaEnv {
-    readonly VITE_ADMIN_EMAIL: string;
+    readonly VITE_BACKEND_URL: string;
 }

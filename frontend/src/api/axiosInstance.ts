@@ -1,5 +1,5 @@
-import { refreshAccessToken } from '@api/authApi';
-import { isBasicAuthRoute } from '@routes/constants';
+import { refreshApi } from '@api/authApi';
+import { isBasicAuthRoute, isNoAuthRoute, isUserAuthRoute } from '@api/constants';
 import { getBasicAuthHeader, getBearerHeader } from '@utils/authUtil';
 import { getRefreshToken } from '@utils/storageUtil';
 import axios from 'axios';
@@ -30,8 +30,9 @@ api.interceptors.request.use(
             config.params = decamelizeKeys(config.params, { deep: true });
         }
         // console.log(`converted........ ${config.data}`);
-
-        if (isBasicAuthRoute(config.url) && config.auth) {
+        if (isNoAuthRoute(config.url)) {
+            console.log('using no auth');
+        } else if (isBasicAuthRoute(config.url) && config.auth) {
             const { username, password } = config.auth;
             config.headers.Authorization = getBasicAuthHeader(username, password);
             console.log('Basic auth:', `${config.headers.Authorization}`);
@@ -44,7 +45,9 @@ api.interceptors.request.use(
         }
         return config;
     },
-    (error) => Promise.reject(error)
+    (error) => {
+        Promise.reject(error);
+    }
 );
 
 api.interceptors.response.use(
@@ -65,7 +68,11 @@ api.interceptors.response.use(
 
         const { response } = error;
 
-        if (response?.status === 403 && !original.url.includes('/auth/refresh-token')) {
+        if (
+            response?.status === 403 &&
+            !isNoAuthRoute(original.url) &&
+            !isUserAuthRoute(original.url)
+        ) {
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
                     failedQueue.push({ resolve, reject });
@@ -81,13 +88,13 @@ api.interceptors.response.use(
             // const navigate = useNavigate();
 
             try {
-                const newAccessToken = await refreshAccessToken();
+                const newAccessToken = await refreshApi();
                 if (!newAccessToken) {
                     throw new Error('Refresh failed');
                 }
                 processQueue(null, newAccessToken);
                 original.headers.Authorization = `Bearer ${newAccessToken}`;
-                console.log('refreshing access token:', `Bearer ${newAccessToken}`); // i dont see this
+                console.log('refreshing access token:', `Bearer ${newAccessToken}`);
                 return api(original);
             } catch (err) {
                 processQueue(err, null);

@@ -1,11 +1,19 @@
 // import PasswordList from '@components/PasswordList';
-import { api } from '@api/axiosInstance';
-import { getPasswords } from '@api/passwordApi'; // Your API call here
+import { logoutApi } from '@api/authApi';
+import {
+    createPasswordApi,
+    deletePasswordApi,
+    getPasswordsApi,
+    updatePasswordApi,
+} from '@api/passwordApi'; // Your API call here
+import { requestCancellation } from '@api/userApi';
 // import Spinner from '@components/Spinner'; // Reusable loading spinner component
-import { useAuth } from '@contexts/AuthContext';
+import { useAuth } from '@hooks/useAuth';
 import { PasswordEntry } from '@models/passwordEntry';
+import { ROUTES } from '@routes/constants';
 import { formatDisplayDate, getIsoDate } from '@utils/dateUtil';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const DashboardPage = () => {
     const { user, logout } = useAuth();
@@ -13,17 +21,23 @@ const DashboardPage = () => {
     const [passwords, setPasswords] = useState<PasswordEntry[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchPasswords = async () => {
             if (!user) return;
 
             try {
-                const data = await getPasswords(user.id);
+                const data = await getPasswordsApi(user);
+                if (!data) {
+                    console.error('get failed... toast');
+                }
+                // success toast
                 setPasswords(data);
             } catch (err) {
                 setError('Failed to load passwords');
                 console.error(err);
+                navigate(ROUTES.SIGN_IN, { replace: true });
             } finally {
                 setLoading(false);
             }
@@ -38,7 +52,7 @@ const DashboardPage = () => {
         const password = prompt('Enter password') ?? '';
 
         console.log(`handleAdd ${user?.id}`);
-        const newEntry: Partial<PasswordEntry> = {
+        const newEntry: PasswordEntry = {
             id: 1,
             userId: user?.id ?? 1,
             name,
@@ -54,8 +68,13 @@ const DashboardPage = () => {
         };
 
         try {
-            const response = await api.post('/api/passwords', newEntry);
-            setPasswords((prev) => [...prev, response.data]);
+            const data = await createPasswordApi(newEntry); // if null/error - toast
+            if (!data) {
+                console.error('create failed... toast');
+            }
+            // success toast
+            // const response = await api.post('/api/passwords', newEntry);
+            setPasswords((prev) => [...prev, data]);
         } catch (err) {
             console.error('Add failed:', err);
         }
@@ -71,8 +90,13 @@ const DashboardPage = () => {
         };
 
         try {
-            const response = await api.put(`/api/passwords/${entry.id}`, updatedEntry);
-            setPasswords((prev) => prev.map((e) => (e.id === entry.id ? response.data : e)));
+            const data = await updatePasswordApi(updatedEntry);
+            if (!data) {
+                console.error('update failed... toast');
+            }
+            // success toast
+            // const response = await api.put(`/api/passwords/${entry.id}`, updatedEntry);
+            setPasswords((prev) => prev.map((e) => (e.id === entry.id ? data : e)));
         } catch (err) {
             console.error('Edit failed:', err);
         }
@@ -82,10 +106,53 @@ const DashboardPage = () => {
         if (!confirm(`Delete "${entry.name}"?`)) return;
 
         try {
-            await api.delete(`/api/passwords/${entry.id}`);
+            const response = await deletePasswordApi(entry);
+            if (!response) {
+                console.error('delete failed... toast');
+            }
+            // success toast
+
             setPasswords((prev) => prev.filter((e) => e.id !== entry.id));
         } catch (err) {
             console.error('Delete failed:', err);
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+            console.log(`logging out...`);
+            const response = await logoutApi();
+            // loading
+            if (!response) {
+                console.error('logout failed... toast');
+            }
+        } catch (err) {
+            console.error('logout failed:', err);
+        } finally {
+            logout();
+            // success toast
+            // loading done
+        }
+    };
+
+    const handleRequestCancellation = async () => {
+        try {
+            if (!user) {
+                return;
+            }
+            console.log(`requesting cancellation...`);
+            const response = await requestCancellation(user);
+            // loading
+            if (!response) {
+                console.error('logout failed... toast');
+            }
+        } catch (err) {
+            console.error('logout failed:', err);
+        } finally {
+            logout();
+            // success toast
+            navigate(ROUTES.WELCOME, { replace: true });
+            // loading done
         }
     };
 
@@ -156,8 +223,14 @@ const DashboardPage = () => {
                 </ul>
             )}
 
-            <button onClick={logout} className='mt-6 text-sm underline text-blue-700'>
+            <button onClick={handleLogout} className='mt-6 text-sm underline text-blue-700'>
                 Logout
+            </button>
+
+            <button
+                onClick={handleRequestCancellation}
+                className='mt-6 text-sm underline text-blue-700'>
+                Request Cancellation
             </button>
         </div>
     );

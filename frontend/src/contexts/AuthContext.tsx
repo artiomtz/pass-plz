@@ -1,6 +1,6 @@
-import { refreshAccessToken } from '@api/authApi';
+import { refreshApi } from '@api/authApi';
 import { User } from '@models/user';
-import { ROUTES } from '@routes/constants';
+import { ROUTES, UNPROTECTED_ROUTES } from '@routes/constants';
 import {
     clearStoredUser,
     clearTokens,
@@ -36,8 +36,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         console.log('useAuth.......');
 
         const checkAuth = async () => {
-            const unprotectedRoutes = [ROUTES.SIGN_IN, ROUTES.SIGN_UP, ROUTES.WELCOME]; // separate later
-            if (unprotectedRoutes.includes(location.pathname)) {
+            if (UNPROTECTED_ROUTES.includes(location.pathname)) {
                 console.log('useAuth unprotected route.......');
                 setIsLoading(false);
                 return;
@@ -54,7 +53,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
             if (isTokenExpired(storedToken)) {
                 console.warn('useAuth RE-FRESHING token........');
-                const newAccessToken = await refreshAccessToken();
+                const newAccessToken = await refreshApi();
                 if (!newAccessToken) {
                     // later save user draft + toast
                     console.warn('refresh Token expired. Logging out....');
