@@ -53,7 +53,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             .masterPassword(credentials[1])
             .build();
 
-        userService.createUser(user);
+        final User createdUser = userService.createUser(user);
         final String accessToken = jwtService.generateToken(user);
         final String refreshToken = jwtService.generateRefreshToken(user);
 
@@ -63,7 +63,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             refreshToken);
 
         log.info("successfully registered user {} with id {}", user.getEmail(), user.getId());
-        return new AuthenticationDto(accessToken, refreshToken);
+        return new AuthenticationDto(
+            accessToken,
+            refreshToken,
+            createdUser.getLastVisited(),
+            createdUser.getId());
     }
 
     @Override
@@ -101,7 +105,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             refreshToken);
 
         log.info("successfully authenticated user with id {}", user.getId());
-        return new AuthenticationDto(accessToken, refreshToken);
+        return new AuthenticationDto(
+            accessToken,
+            refreshToken,
+            user.getLastVisited(),
+            user.getId());
     }
 
     @Override
@@ -122,7 +130,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         final String accessToken = jwtService.generateToken(user);
         log.info("successfully refreshed token for user user with id {}", user.getId());
-        return new AuthenticationDto(accessToken, null);
+        return new AuthenticationDto(accessToken, null, user.getLastVisited(), user.getId());
     }
 
     @Override

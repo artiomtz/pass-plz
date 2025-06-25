@@ -67,7 +67,12 @@ public class SecurityConfig {
             })
             .securityMatcher("/api/**")
             .authorizeHttpRequests(request -> {
-                request.requestMatchers("/api/auth/**", "/api/email/**", "/swagger-ui/**")
+                request
+                    .requestMatchers("/api/auth/**",
+                        "/api/email/**",
+                        "/swagger-ui/**",
+                        "/api/users/reset-password",
+                        "/api/users/request-reset-password/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated();

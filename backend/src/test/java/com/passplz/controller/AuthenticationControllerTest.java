@@ -7,6 +7,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +43,11 @@ class AuthenticationControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockAuthenticationDto = new AuthenticationDto(ACCESS_TOKEN, REFRESH_TOKEN);
+        mockAuthenticationDto = new AuthenticationDto(
+            ACCESS_TOKEN,
+            REFRESH_TOKEN,
+            LocalDateTime.now(),
+            1L);
     }
 
     @Test

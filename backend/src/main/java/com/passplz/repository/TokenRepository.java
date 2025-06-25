@@ -27,4 +27,7 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
     @Query("SELECT t FROM Token t WHERE t.type = :type")
     List<Token> findAllByType(@Param("type") TokenType type);
 
+    @Query("SELECT t FROM Token t JOIN FETCH t.user WHERE t.type = :type")
+    List<Token> findAllByTypeFetchUser(@Param("type") TokenType type);
+
 }

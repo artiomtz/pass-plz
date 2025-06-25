@@ -30,10 +30,9 @@ public class EmailController {
     private final UserService userService;
     private final TokenService tokenService;
 
-    private static final String URL_ERROR_PATH = "error";
-    private static final String URL_WELCOME_PATH = "welcome";
-    private static final String URL_GOODBYE_PATH = "goodbye";
-    private static final String URL_RESET_PASSWORD_PATH = "reset-password";
+    private static final String URL_ERROR_PATH = "/error";
+    private static final String URL_GOODBYE_PATH = "/goodbye";
+    private static final String URL_RESET_PASSWORD_PATH = "/password-reset";
 
     @GetMapping("/verify-user")
     public ResponseEntity<Void> verifyUser(
@@ -46,7 +45,7 @@ public class EmailController {
         if (!isValid) {
             log.error("verification token validation failed for {}", email);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .location(URI.create(frontendUrl + "/" + URL_ERROR_PATH))
+                .location(URI.create(frontendUrl + URL_ERROR_PATH))
                 .build();
         }
 
@@ -55,16 +54,14 @@ public class EmailController {
         if (user == null) {
             log.error("verification token validation couldn't find {}", email);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .location(URI.create(frontendUrl + "/" + URL_ERROR_PATH))
+                .location(URI.create(frontendUrl + URL_ERROR_PATH))
                 .build();
         }
 
         userService.updateUserIsVerified(user.getId(), true);
         log.info("successfully verified user with id {}", user.getId());
 
-        return ResponseEntity.status(HttpStatus.FOUND)
-            .location(URI.create(frontendUrl + "/" + URL_WELCOME_PATH))
-            .build();
+        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(frontendUrl)).build();
     }
 
     @GetMapping("/verify-reset-password")
@@ -78,13 +75,13 @@ public class EmailController {
         if (!isValid) {
             log.error("password reset token validation failed for {}", email);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .location(URI.create(frontendUrl + "/" + URL_ERROR_PATH))
+                .location(URI.create(frontendUrl + URL_ERROR_PATH))
                 .build();
         }
 
         log.info("successfully validated password reset token for {}", email);
         return ResponseEntity.status(HttpStatus.FOUND)
-            .location(URI.create(frontendUrl + "/" + URL_RESET_PASSWORD_PATH + "?token=" + token))
+            .location(URI.create(frontendUrl + URL_RESET_PASSWORD_PATH + "?token=" + token))
             .build();
     }
 
@@ -99,7 +96,7 @@ public class EmailController {
         if (!isValid) {
             log.error("cancellation token validation failed for {}", email);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .location(URI.create(frontendUrl + "/" + URL_ERROR_PATH))
+                .location(URI.create(frontendUrl + URL_ERROR_PATH))
                 .build();
         }
 
@@ -108,14 +105,14 @@ public class EmailController {
         if (user == null) {
             log.error("account cancellation token validation couldn't find {}", email);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .location(URI.create(frontendUrl + "/" + URL_ERROR_PATH))
+                .location(URI.create(frontendUrl + URL_ERROR_PATH))
                 .build();
         }
 
         userService.deleteUser(user);
         log.info("successfully cancelled account {}", user.getEmail());
         return ResponseEntity.status(HttpStatus.FOUND)
-            .location(URI.create(frontendUrl + "/" + URL_GOODBYE_PATH))
+            .location(URI.create(frontendUrl + URL_GOODBYE_PATH))
             .build();
     }
 

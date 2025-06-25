@@ -93,7 +93,9 @@ public class PasswordEntryServiceImpl implements PasswordEntryService {
             entry.setUpdatedDate(LocalDateTime.now());
             entry.setPassword(encryptionUtil.encrypt(entry.getPassword()));
 
-            return passwordEntryRepository.save(entry);
+            final PasswordEntry newPasswordEntry = passwordEntryRepository.save(entry);
+            newPasswordEntry.setPassword(encryptionUtil.decrypt(newPasswordEntry.getPassword()));
+            return newPasswordEntry;
         } catch (Exception exception) {
             log.error("error creating the password entry for user with id {}: {}",
                 entry.getUser().getId(),
@@ -118,7 +120,11 @@ public class PasswordEntryServiceImpl implements PasswordEntryService {
                 existingEntry.setExpirationDate(updatedEntry.getExpirationDate());
                 existingEntry.setUpdatedDate(LocalDateTime.now());
 
-                return passwordEntryRepository.save(existingEntry);
+                final PasswordEntry updatedPasswordEntry = passwordEntryRepository
+                    .save(existingEntry);
+                updatedPasswordEntry
+                    .setPassword(encryptionUtil.decrypt(updatedPasswordEntry.getPassword()));
+                return updatedPasswordEntry;
             }).orElse(null);
         } catch (Exception exception) {
             log.error("error updating password entry with id {}: {}", id, exception.getMessage());

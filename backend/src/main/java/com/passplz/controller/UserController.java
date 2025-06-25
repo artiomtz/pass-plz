@@ -101,6 +101,7 @@ public class UserController {
     @PatchMapping("/{id}/login-time")
     public ResponseEntity<Void> updateLoginTime(@PathVariable Long id) {
         log.info("received request to update login time for user with id {}", id);
+        authenticationService.verifyUser(id);
 
         final User updatedUser = userService.updateLogin(id);
         if (updatedUser == null) {
@@ -122,19 +123,23 @@ public class UserController {
         return isDeleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/request-reset-password/{id}")
-    public ResponseEntity<Void> requestResetPassword(@PathVariable Long id) {
-        log.info("received request to trigger password reset for user with id {}", id);
-        authenticationService.verifyUser(id);
+    @PostMapping("/request-reset-password/{email}")
+    public ResponseEntity<Void> requestResetPassword(@PathVariable String email) {
+        log.info("received request to trigger password reset for user with email {}", email);
 
-        final User user = userService.getUserById(id);
+        if (!StringUtils.isNotBlank(email) || !email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            log.warn("received invalid email format: {}", email);
+            return ResponseEntity.notFound().build();
+        }
+
+        final User user = userService.getUserByEmail(email);
         if (user == null) {
-            log.error("password reset request couldn't find user with id {}", id);
+            log.error("password reset request couldn't find user with email {}", email);
             return ResponseEntity.notFound().build();
         }
 
         if (tokenService.doesUserHaveValidToken(user, TokenType.RESET)) {
-            log.warn("user with id {} already has a valid reset token", id);
+            log.warn("user with email {} already has a valid reset token", email);
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
         }
 

@@ -33,6 +33,10 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class PasswordEntryDto {
 
+    @NotNull(message = "id is required")
+    @Positive(message = "id must be positive")
+    private Long id;
+
     @JsonProperty("user_id")
     @NotNull(message = "user id is required")
     @Positive(message = "user id must be positive")
@@ -102,6 +106,7 @@ public class PasswordEntryDto {
     public static PasswordEntryDto toDto(PasswordEntry entity) {
         try {
             return PasswordEntryDto.builder()
+                .id(entity.getId())
                 .userId(entity.getUser().getId())
                 .name(entity.getName())
                 .username(entity.getUsername())

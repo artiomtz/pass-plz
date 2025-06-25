@@ -172,7 +172,7 @@ class UserControllerTest {
         when(userService.getUserById(mockUser.getId())).thenReturn(mockUser);
         when(tokenService.doesUserHaveValidToken(mockUser, TokenType.RESET)).thenReturn(false);
 
-        ResponseEntity<Void> response = userController.requestResetPassword(mockUser.getId());
+        ResponseEntity<Void> response = userController.requestResetPassword(mockUser.getEmail());
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(userService, times(1)).getUserById(mockUser.getId());
@@ -182,7 +182,7 @@ class UserControllerTest {
     void testRequestResetPassword_UserNotFound() {
         when(userService.getUserById(mockUser.getId())).thenReturn(null);
 
-        ResponseEntity<Void> response = userController.requestResetPassword(mockUser.getId());
+        ResponseEntity<Void> response = userController.requestResetPassword(mockUser.getEmail());
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }

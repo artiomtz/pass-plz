@@ -61,7 +61,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public User findUser(String value, TokenType type) {
         try {
-            final List<Token> tokens = tokenRepository.findAllByType(type);
+            final List<Token> tokens = tokenRepository.findAllByTypeFetchUser(type);
             return tokens.stream()
                 .filter(Token::getIsValid)
                 .filter(token -> token.getExpiryDate().isAfter(LocalDateTime.now()))
