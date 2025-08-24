@@ -18,7 +18,10 @@ import {
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
 
-export const signUpApi = async (email: string, password: string): Promise<Authentication> => {
+export const signUpApi = async (
+    email: string,
+    password: string
+): Promise<Authentication | null> => {
     try {
         const { data } = await api.post<Authentication>(
             API_AUTH_REGISTER,
@@ -32,11 +35,14 @@ export const signUpApi = async (email: string, password: string): Promise<Authen
         return data;
     } catch (error) {
         console.error('Sign-up failed:', error);
-        throw error;
+        return null;
     }
 };
 
-export const signInApi = async (email: string, password: string): Promise<Authentication> => {
+export const signInApi = async (
+    email: string,
+    password: string
+): Promise<Authentication | null> => {
     try {
         // const headers = getAuthHeader(AUTH_TYPE.BASIC, { email, password });
         const { data } = await api.post<Authentication>(
@@ -52,19 +58,18 @@ export const signInApi = async (email: string, password: string): Promise<Authen
         return data;
     } catch (error) {
         console.error('Sign-in failed:', error);
-        throw error;
+        return null;
     }
 };
 
 export const refreshApi = async (): Promise<string | null> => {
     console.warn('refreshAccessToken........');
     if (isRefreshing && refreshPromise) {
-        console.warn('Already refreshing. Returning shared promise.');
+        console.debug('Already refreshing. Returning shared promise.');
         return refreshPromise;
     }
 
     isRefreshing = true;
-
     refreshPromise = (async () => {
         try {
             const refreshToken = getRefreshToken();
@@ -92,7 +97,7 @@ export const refreshApi = async (): Promise<string | null> => {
             console.warn('silently REFRESHED access token!');
             return accessToken;
         } catch (err) {
-            console.error('refreshAccessToken CATCH:', err);
+            console.log('refreshAccessToken CATCH:', err);
             clearTokens();
             clearStoredUser();
             return null;
@@ -128,6 +133,6 @@ export const logoutApi = async (): Promise<boolean> => {
         return true;
     } catch (error) {
         console.error('logout failed:', error);
-        throw error;
+        return false;
     }
 };
