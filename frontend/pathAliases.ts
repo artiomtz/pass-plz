@@ -4,6 +4,7 @@ const pathSrc = (dir: string) => resolve(__dirname, 'src', dir);
 
 export const alias = {
     '@api': pathSrc('api'),
+    '@assets': pathSrc('assets'),
     '@components': pathSrc('components'),
     '@contexts': pathSrc('contexts'),
     '@hooks': pathSrc('hooks'),
