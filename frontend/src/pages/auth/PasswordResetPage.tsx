@@ -2,6 +2,7 @@ import { resetPassword } from '@api/userApi';
 import Button from '@components/Button';
 import InputFieldWithLabel from '@components/InputFieldWithLabel';
 import PasswordHint from '@components/PasswordHint';
+import Spinner from '@components/Spinner';
 import PageLayout from '@layouts/GlobalLayout';
 import { PasswordReset } from '@models/passwordReset';
 import { ROUTES } from '@routes/constants';
@@ -10,11 +11,13 @@ import { getResetToken, setResetToken } from '@utils/storageUtil';
 
 import { LockKeyhole } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const ResetPasswordPage = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -38,31 +41,33 @@ const ResetPasswordPage = () => {
         const token = getResetToken();
         if (!token) {
             // console
-            // toast
+            toast.error('Failed to fetch reset token');
             // navigate?
             // setError('Reset token is missing. Please use the reset link again.');
             return;
         }
 
         try {
+            setLoading(true);
             const passwordReset: PasswordReset = {
                 token: token,
                 newPassword: newPassword,
             };
 
             const response = await resetPassword(passwordReset);
-            if (!response) {
-                // toast
+            setLoading(false);
+            if (!response.ok) {
+                toast.error('Failed to reset password');
                 console.error('reset failed');
             }
-            // setSuccess(true);
+
+            toast.success('Successfully reset password');
+            navigate(ROUTES.SIGN_IN, { replace: true });
         } catch (err) {
-            // toast
+            toast.error('Error occurred while resetting password');
             console.error('Reset failed:', err);
             // setError('Reset failed. Please try again or request a new reset link.');
         }
-
-        navigate(ROUTES.SIGN_IN, { replace: true });
     };
 
     useEffect(() => {
@@ -117,8 +122,16 @@ const ResetPasswordPage = () => {
                             <Button
                                 onClick={handlePasswordReset}
                                 disabled={!isPasswordValid || !passwordsMatch}>
-                                <LockKeyhole size={18} />
-                                Set New Password
+                                {loading ? (
+                                    <>
+                                        <Spinner /> Set New Password
+                                    </>
+                                ) : (
+                                    <>
+                                        <LockKeyhole size={18} />
+                                        Set New Password
+                                    </>
+                                )}
                             </Button>
                         </div>
                     </div>

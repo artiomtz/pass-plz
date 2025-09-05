@@ -2,19 +2,27 @@ import { signUpApi } from '@api/authApi';
 import Button from '@components/Button';
 import InputFieldWithLabel from '@components/InputFieldWithLabel';
 import PasswordHint from '@components/PasswordHint';
-import { useAuth } from '@hooks/useAuth';
 import PageLayout from '@layouts/GlobalLayout';
-import { User } from '@models/user';
 import { ROUTES } from '@routes/constants';
 import { sanitizeInput, validateEmail } from '@utils/inputUtil';
 import { sanitizePassword, validatePassword } from '@utils/passwordUtil';
 import { UserPlus } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+// import { ApiError } from '@api/handleApiError';
 
 const SignUpPage = () => {
-    const { login } = useAuth();
     const navigate = useNavigate();
+    // const authContext = useAuth();
+    // if (!authContext) {
+    //     // log
+    //     // toast
+    //     navigate(ROUTES.SIGN_IN, { replace: true });
+    //     return;
+    // }
+    // const { login } = useAuth();
+    // const navigate = useNavigate();
     // const [user, setUser] = useState<User | null>(null);
 
     const [email, setEmail] = useState('');
@@ -49,27 +57,29 @@ const SignUpPage = () => {
                 console.log('passwordsMatch: ' + passwordsMatch);
 
                 // validate input
-
                 const response = await signUpApi(email, password);
-
-                if (!response) {
+                if (!response.ok) {
+                    // if (response instanceof ApiError) {
                     console.error('get failed... toast');
-                    // toast
-                    // navigate(ROUTES.SIGN_IN,{ replace: true }); // 404
+                    toast.error(`Failed to sign up ${email}`);
+                    // navigate(ROUTES.SIGN_IN,{ replace: true }); // 404 or to welcome
                     return null;
                 }
 
-                const user: User = {
-                    email,
-                    id: response.userId,
-                    lastVisited: response.lastVisited,
-                };
-                console.log('Signed up:', user);
+                // no - have to confirm via email first
+                // const user: User = {
+                //     email,
+                //     id: response.userId,
+                //     lastVisited: response.lastVisited,
+                // };
+                // console.log('Signed up:', user);
 
                 // toast about email confirmation
-                login(user);
+                toast.success(`Successfully signed up ${email}`);
+                // login(user); // no, why?
                 navigate(ROUTES.SIGN_IN, { replace: true });
             } catch (error) {
+                toast.error(`Error occurred while signing up ${email}`);
                 console.error('Sign-up failed:', error);
             }
         };

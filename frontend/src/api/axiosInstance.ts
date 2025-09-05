@@ -47,6 +47,7 @@ api.interceptors.request.use(
     },
     (error) => {
         Promise.reject(error);
+        console.log('api.interceptors.request.use error.......');
     }
 );
 
@@ -90,7 +91,7 @@ api.interceptors.response.use(
             try {
                 const newAccessToken = await refreshApi();
                 if (!newAccessToken) {
-                    throw new Error('Refresh failed');
+                    throw new Error('Refresh failed'); // log and return
                 }
                 processQueue(null, newAccessToken);
                 original.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -100,32 +101,32 @@ api.interceptors.response.use(
                 processQueue(err, null);
                 // clearTokens(); // in refreshAccessToken
                 // clearStoredUser(); // in refreshAccessToken
-                // navigate(ROUTES.SIGN_IN); // only components!
+                // navigate(ROUTES.SIGN_IN,{ replace: true }); // only components!
                 return Promise.reject(err);
             } finally {
                 isRefreshing = false;
             }
         }
 
-        switch (
-            response?.status // later make 1 line with toast?
-        ) {
-            case 401:
-                console.error(`401 API Error ${response.status}:`, response.data);
-                break;
-            case 404:
-                console.error(`404 API Error ${response.status}:`, response.data);
-                break;
-            case 406:
-                console.error(`406 API Error ${response.status}:`, response.data);
-                break;
-            case 500:
-                console.error(`500 API Error ${response.status}:`, response.data);
-                break;
-            default:
-                console.log(`API ERROR ${response.status}:`, response.data);
-                break;
-        }
+        // switch (
+        //     response?.status // later make 1 line with toast? ...... try catch
+        // ) {
+        //     case 401:
+        //         console.error(`401 API Error ${response.status}:`, response.data);
+        //         break;
+        //     case 404:
+        //         console.error(`404 API Error ${response.status}:`, response.data);
+        //         break;
+        //     case 406:
+        //         console.error(`406 API Error ${response.status}:`, response.data);
+        //         break;
+        //     case 500:
+        //         console.error(`500 API Error ${response.status}:`, response.data);
+        //         break;
+        //     default:
+        //         console.log(`API ERROR ${response.status}:`, response.data); // backend is down
+        //         break;
+        // }
 
         // if ([401, 404, 406, 500].includes(response?.status)) {
         //     console.error(`API Error ${response.status}:`, response.data);

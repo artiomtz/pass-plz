@@ -1,30 +1,39 @@
 import { requestResetPassword } from '@api/userApi';
 import Button from '@components/Button';
 import InputFieldWithLabel from '@components/InputFieldWithLabel';
-import { useAuth } from '@hooks/useAuth';
 import PageLayout from '@layouts/GlobalLayout';
 import { ROUTES } from '@routes/constants';
 import { sanitizeInput, validateEmail } from '@utils/inputUtil';
 import { Link } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 const RequestResetPage = () => {
-    const { login, logout } = useAuth();
+    const navigate = useNavigate();
+    // const authContext = useAuth();
+    // if (!authContext) {
+    //     // log
+    //     // toast
+    //     navigate(ROUTES.SIGN_IN, { replace: true });
+    //     return;
+    // }
+    // const { login, logout } = authContext;
+    // const { login, logout } = useAuth();
+
     const [email, setEmail] = useState('');
     const [isEmailValid, setIsEmailValid] = useState(false);
-    const navigate = useNavigate();
 
     const handleResetRequest = async () => {
         // try {
         // validate input
         const response = await requestResetPassword(email);
 
-        // toast
-        if (!response) {
-            // toast
+        if (!response.ok) {
+            toast.error('Failed to send password reset request');
             console.error('request failed');
         }
+        toast.success('Password reset request sent via email');
         navigate(ROUTES.SIGN_IN, { replace: true });
         // } catch (error) {
         //     console.error('request failed:', error);

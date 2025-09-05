@@ -2,6 +2,7 @@ import { signInApi } from '@api/authApi';
 import { updateLoginTimeApi } from '@api/userApi';
 import Button from '@components/Button';
 import InputFieldWithLabel from '@components/InputFieldWithLabel';
+import Spinner from '@components/Spinner';
 import { useAuth } from '@hooks/useAuth';
 import PageLayout from '@layouts/GlobalLayout';
 import type { User } from '@models/user';
@@ -10,52 +11,67 @@ import { sanitizeInput, validateEmail } from '@utils/inputUtil';
 import { sanitizePassword } from '@utils/passwordUtil';
 import { LockKeyholeOpen, UserLock } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 const SignInPage = () => {
+    const navigate = useNavigate();
+    // const authContext = useAuth();
+    // if (!authContext) {
+    //     // log
+    //     // toast
+    //     navigate(ROUTES.SIGN_IN, { replace: true });
+    //     return;
+    // }
+    // const { login, logout } = authContext;
     const { login, logout } = useAuth();
+
     const [email, setEmail] = useState('');
     const [isEmailValid, setIsEmailValid] = useState(false);
     const [password, setPassword] = useState('');
-    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     // const [user, setUser] = useState<User | null>(null);
 
     const handleSignIn = async () => {
         try {
+            setLoading(true);
             console.log('Signing in.......');
             // validate input
             const response = await signInApi(email, password);
+            setLoading(false);
 
-            if (!response) {
+            if (!response.ok) {
                 console.error('get failed... toast');
-                // toast
+                toast.error(`Failed to sign in ${email}`);
                 // navigate(ROUTES.SIGN_IN,{ replace: true }); // 404
                 return null;
             }
 
             const user: User = {
                 email,
-                id: response.userId,
-                lastVisited: response.lastVisited,
+                id: response.data.userId,
+                lastVisited: response.data.lastVisited,
             };
-            console.log('Signed in:', user);
 
+            console.log('Signed in:', user);
             login(user);
-            // toast
+
             const responseLoginTime = await updateLoginTimeApi(user);
-            if (!responseLoginTime) {
+            if (!responseLoginTime.ok) {
                 console.error('update failed... toast');
-                // toast
+                toast.error('Failed to update login time');
             }
+
+            toast.success(`${email} signed in`);
             navigate(ROUTES.DASHBOARD, { replace: true });
         } catch (error) {
             console.error('Sign-in failed:', error);
+            toast.error(`Error occurred while signing in ${email}`);
         }
     };
 
     const handleForgotPassword = async () => {
         try {
-            // toast
             console.warn('navigating to reset request');
             navigate(ROUTES.REQUEST_RESET);
         } catch (error) {
@@ -131,9 +147,17 @@ const SignInPage = () => {
                             <Button
                                 disabled={!isEmailValid || password.trim() === ''}
                                 onClick={handleSignIn}>
-                                <LockKeyholeOpen size={18} />
-                                Sign In
-                                {/* {loading ? <Spinner /> : <><LogIn /> Sign In</>} */}
+                                {/* <LockKeyholeOpen size={18} />
+                                Sign In */}
+                                {loading ? (
+                                    <>
+                                        <Spinner /> Sign In
+                                    </>
+                                ) : (
+                                    <>
+                                        <LockKeyholeOpen size={18} /> Sign In
+                                    </>
+                                )}
                             </Button>
                             <Button onClick={handleForgotPassword}>
                                 <UserLock size={18} />

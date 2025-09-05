@@ -5,7 +5,8 @@ import {
     API_AUTH_REFRESH,
     API_AUTH_REGISTER,
 } from '@api/constants';
-import { Authentication } from '@models/auth';
+import { ApiResponse, handleApiError } from '@api/handleApiError';
+import { Authentication } from '@models/authentication';
 import { getBearerHeader } from '@utils/authUtil';
 import {
     clearStoredUser,
@@ -21,7 +22,7 @@ let refreshPromise: Promise<string | null> | null = null;
 export const signUpApi = async (
     email: string,
     password: string
-): Promise<Authentication | null> => {
+): Promise<ApiResponse<Authentication>> => {
     try {
         const { data } = await api.post<Authentication>(
             API_AUTH_REGISTER,
@@ -32,17 +33,20 @@ export const signUpApi = async (
         setAccessToken(data.accessToken);
         setRefreshToken(data.refreshToken);
 
-        return data;
+        return { ok: true, data: data };
     } catch (error) {
         console.error('Sign-up failed:', error);
-        return null;
+        return handleApiError(error);
+        // const apiError = handleApiError(error);
+        // return { apiError: apiError };
+        // return null;
     }
 };
 
 export const signInApi = async (
     email: string,
     password: string
-): Promise<Authentication | null> => {
+): Promise<ApiResponse<Authentication>> => {
     try {
         // const headers = getAuthHeader(AUTH_TYPE.BASIC, { email, password });
         const { data } = await api.post<Authentication>(
@@ -55,10 +59,11 @@ export const signInApi = async (
         setAccessToken(data.accessToken);
         setRefreshToken(data.refreshToken);
 
-        return data;
+        return { ok: true, data: data };
     } catch (error) {
         console.error('Sign-in failed:', error);
-        return null;
+        return handleApiError(error);
+        // return null;
     }
 };
 
@@ -111,13 +116,14 @@ export const refreshApi = async (): Promise<string | null> => {
     return refreshPromise;
 };
 
-export const logoutApi = async (): Promise<boolean> => {
+export const logoutApi = async (): Promise<void> => {
     try {
         const refreshToken = getRefreshToken();
         console.log('refreshToken value:', refreshToken);
         if (!refreshToken) {
-            console.log('NO refresh token');
-            return false;
+            console.warn('NO refresh token');
+            return;
+            // return false;
         }
 
         const response = await api.post(API_AUTH_LOGOUT, null, {
@@ -128,11 +134,11 @@ export const logoutApi = async (): Promise<boolean> => {
 
         if (response.status != 200) {
             console.error('Logout failed');
-            return false;
+            // return false;
         }
-        return true;
+        // return true;
     } catch (error) {
-        console.error('logout failed:', error);
-        return false;
+        console.error('logout failed:', error); // dont log error
+        // return false;
     }
 };

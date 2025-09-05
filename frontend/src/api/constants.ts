@@ -14,6 +14,7 @@ export const API_USERS_RESET_PASSWORD = '/api/users/reset-password';
 export const API_USERS_REQUEST_RESET_PASSWORD = '/api/users/request-reset-password';
 export const API_USERS_REQUEST_CANCELLATION = '/api/users/request-cancellation';
 
+export const API_HEALTH = '/api/health';
 export const LOGIN_TIME = '/login-time';
 
 export enum AUTH_TYPE {
