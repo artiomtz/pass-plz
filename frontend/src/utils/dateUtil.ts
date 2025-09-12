@@ -1,3 +1,9 @@
+export const isExpired = (isoDate: string | null) => {
+    if (!isoDate) return false;
+    return new Date(isoDate).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
+    // return new Date(isoDate) < new Date();
+};
+
 export const getIsoDate = (date: Date = new Date()): string => {
     console.log(`created date ${date} --- ${date.toISOString().slice(0, 19)}`);
     // return date.toISOString().slice(0, 19);

@@ -1,10 +1,15 @@
+import { useSuggestions } from '@hooks/useSuggestions';
+
 type TagsBoxProps = {
-    availableTags: string[];
+    // availableTags: string[];
     selectedTags: string[];
     onChange: (tags: string[]) => void;
 };
 
-export const TagsBox: React.FC<TagsBoxProps> = ({ availableTags, selectedTags, onChange }) => {
+// export const TagsBox: React.FC<TagsBoxProps> = ({ availableTags, selectedTags, onChange }) => {
+export const TagsBox: React.FC<TagsBoxProps> = ({ selectedTags, onChange }) => {
+    const { tags } = useSuggestions();
+
     const toggleTag = (tag: string) => {
         if (selectedTags.includes(tag)) {
             onChange(selectedTags.filter((t) => t !== tag));
@@ -15,16 +20,18 @@ export const TagsBox: React.FC<TagsBoxProps> = ({ availableTags, selectedTags, o
 
     return (
         <div className='flex flex-1 flex-col gap-2 border rounded shadow-lg p-2 max-h-27 overflow-y-auto text-sm scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400 w-full'>
-            {availableTags.map((tag) => (
-                <label key={tag} className='flex items-center gap-2 cursor-pointer'>
-                    <input
-                        type='checkbox'
-                        checked={selectedTags.includes(tag)}
-                        onChange={() => toggleTag(tag)}
-                    />
-                    {tag}
-                </label>
-            ))}
+            {[...tags]
+                .sort((a, b) => a.localeCompare(b))
+                .map((tag) => (
+                    <label key={tag} className='flex items-center gap-2 cursor-pointer'>
+                        <input
+                            type='checkbox'
+                            checked={selectedTags.includes(tag)}
+                            onChange={() => toggleTag(tag)}
+                        />
+                        {tag}
+                    </label>
+                ))}
         </div>
     );
 };
