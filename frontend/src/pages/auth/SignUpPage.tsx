@@ -1,11 +1,12 @@
 import { signUpApi } from '@api/authApi';
 import Button from '@components/Button';
 import InputFieldWithLabel from '@components/InputFieldWithLabel';
+import LabelTermsConditions from '@components/LabelTermsConditions';
 import PasswordHint from '@components/PasswordHint';
 import PageLayout from '@layouts/GlobalLayout';
 import { ROUTES } from '@routes/constants';
 import { sanitizeInput, validateEmail } from '@utils/inputUtil';
-import { sanitizePassword, validatePassword } from '@utils/passwordUtil';
+import { sanitizeBadCharacters, validatePassword } from '@utils/passwordUtil';
 import { UserPlus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -143,8 +144,8 @@ const SignUpPage = () => {
                                 type='password'
                                 placeholder='••••••••••••'
                                 value={password}
-                                // onChange={(e) => setPassword(e.target.value)}
-                                onChange={(e) => sanitizePassword(e, setPassword)}
+                                onChange={(e) => setPassword(sanitizeBadCharacters(e.target.value))}
+                                // onChange={(e) => sanitizePassword(e, setPassword)}
                                 onFocus={() => setShowPasswordHint(true)}
                                 onBlur={() => setShowPasswordHint(false)}
                                 // onFocus={() => setPasswordFocus(true)}
@@ -207,8 +208,10 @@ const SignUpPage = () => {
                             type='password'
                             placeholder='••••••••••••'
                             value={confirmPassword}
-                            onChange={(e) => sanitizePassword(e, setConfirmPassword)}
-                            // onChange={(e) => setConfirmPassword(e.target.value)}
+                            // onChange={(e) => sanitizePassword(e, setConfirmPassword)}
+                            onChange={(e) =>
+                                setConfirmPassword(sanitizeBadCharacters(e.target.value))
+                            }
                             required
                         />
                         <p className='text-sm text-gray-500 mb-4' aria-live='polite'>
@@ -267,24 +270,7 @@ const SignUpPage = () => {
                                         type='checkbox'></input>
                                 </div> */}
                             <div className='ml-3 text-sm'>
-                                <label htmlFor='terms' className='text-gray-500 text-gray-300'>
-                                    By using the Pass Plz
-                                    <br />
-                                    you agree to the the{' '}
-                                    <a
-                                        // href='#'    ////////////////////////////// separate component
-                                        id='terms'
-                                        className='font-semibold group relative text-zinc-400'
-                                        // className='relative font-medium hover:underline text-blue-600 group'
-                                    >
-                                        Terms and Conditions
-                                        <span className='font-medium absolute z-10 hidden group-hover:block top-full mt-1 w-64 p-2 text-xs rounded bg-gray-800 text-white shadow-lg'>
-                                            By using this service, you agree that Pass Plz is not
-                                            liable for any damages, losses, or data breaches. Use at
-                                            your own risk. No warranties are implied.
-                                        </span>
-                                    </a>
-                                </label>
+                                <LabelTermsConditions />
                             </div>
                         </div>
 

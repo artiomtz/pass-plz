@@ -8,7 +8,7 @@ import PageLayout from '@layouts/GlobalLayout';
 import type { User } from '@models/user';
 import { ROUTES } from '@routes/constants';
 import { sanitizeInput, validateEmail } from '@utils/inputUtil';
-import { sanitizePassword } from '@utils/passwordUtil';
+import { sanitizeBadCharacters } from '@utils/passwordUtil';
 import { LockKeyholeOpen, UserLock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -128,8 +128,8 @@ const SignInPage = () => {
                             type='password'
                             placeholder='••••••••••••'
                             value={password}
-                            // onChange={(e) => setPassword(e.target.value)}
-                            onChange={(e) => sanitizePassword(e, setPassword)}
+                            onChange={(e) => setPassword(sanitizeBadCharacters(e.target.value))}
+                            // onChange={(e) => sanitizePassword(e, setPassword)}
                             required
                         />
                         {/* <div>

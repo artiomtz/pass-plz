@@ -1,11 +1,17 @@
 const DISALLOWED_CHARS = /[ \t]/g;
+const MIN_PASSWORD_LENGTH = 12;
 
-export function sanitizePassword(
-    e: React.ChangeEvent<HTMLInputElement>,
-    setter: (value: string) => void
-) {
-    const cleaned = e.target.value.replace(DISALLOWED_CHARS, '');
-    setter(cleaned);
+// export function sanitizePassword(
+//     e: React.ChangeEvent<HTMLInputElement>,
+//     setter: (value: string) => void
+// ) {
+//     const cleaned = e.target.value.replace(DISALLOWED_CHARS, '');
+//     setter(cleaned);
+// }
+
+export function sanitizeBadCharacters(input: string) {
+    // return input.replace(DISALLOWED_CHARS, '');
+    return input.trim().replace(DISALLOWED_CHARS, '');
 }
 
 export function validatePassword(password: string): {
@@ -21,7 +27,7 @@ export function validatePassword(password: string): {
 } {
     const trimmed = password.trim();
     const checks = {
-        length: trimmed.length >= 12, /// const
+        length: trimmed.length >= MIN_PASSWORD_LENGTH,
         upper: /[A-Z]/.test(trimmed),
         lower: /[a-z]/.test(trimmed),
         number: /\d/.test(trimmed),

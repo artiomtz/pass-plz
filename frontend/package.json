@@ -23,10 +23,12 @@
         "decamelize-keys": "^2.0.1",
         "dotenv": "^16.4.7",
         "express": "^4.21.2",
+        "framer-motion": "^12.23.12",
         "jwt-decode": "^4.0.0",
         "lucide-react": "^0.539.0",
         "react": "*",
         "react-dom": "*",
+        "react-hot-toast": "^2.6.0",
         "react-router-dom": "^7.4.0"
     },
     "devDependencies": {

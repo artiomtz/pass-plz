@@ -6,7 +6,7 @@ import Spinner from '@components/Spinner';
 import PageLayout from '@layouts/GlobalLayout';
 import { PasswordReset } from '@models/passwordReset';
 import { ROUTES } from '@routes/constants';
-import { sanitizePassword, validatePassword } from '@utils/passwordUtil';
+import { sanitizeBadCharacters, validatePassword } from '@utils/passwordUtil';
 import { getResetToken, setResetToken } from '@utils/storageUtil';
 
 import { LockKeyhole } from 'lucide-react';
@@ -98,11 +98,13 @@ const ResetPasswordPage = () => {
                                 type='password'
                                 placeholder='••••••••••••'
                                 value={newPassword}
-                                // onChange={(e) => setNewPassword(e.target.value)}
-                                onChange={(e) => sanitizePassword(e, setNewPassword)}
+                                required
                                 onFocus={() => setShowPasswordHint(true)}
                                 onBlur={() => setShowPasswordHint(false)}
-                                required
+                                onChange={(e) =>
+                                    setNewPassword(sanitizeBadCharacters(e.target.value))
+                                }
+                                // onChange={(e) => sanitizePassword(e, setNewPassword)}
                             />
                             {showPasswordHint && <PasswordHint password={newPassword} />}
                         </div>
@@ -113,9 +115,11 @@ const ResetPasswordPage = () => {
                             type='password'
                             placeholder='••••••••••••'
                             value={confirmNewPassword}
-                            onChange={(e) => sanitizePassword(e, setConfirmNewPassword)}
-                            // onChange={(e) => setConfirmNewPassword(e.target.value)}
                             required
+                            // onChange={(e) => sanitizePassword(e, setConfirmNewPassword)}
+                            onChange={(e) =>
+                                setConfirmNewPassword(sanitizeBadCharacters(e.target.value))
+                            }
                         />
 
                         <div className='flex justify-center px-6 py-6 mx-auto'>
