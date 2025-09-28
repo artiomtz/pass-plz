@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
 interface AuthFormProps {
-    onSubmit: (email: string, password: string) => void;
     buttonText: string;
+    onSubmit: (_email: string, _password: string) => void;
 }
 
-const AuthForm: React.FC<AuthFormProps> = ({ onSubmit, buttonText }) => {
+const AuthForm: React.FC<AuthFormProps> = ({ buttonText, onSubmit }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -16,18 +16,22 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSubmit, buttonText }) => {
                 onSubmit(email, password);
             }}>
             <input
-                type='email'
+                onChange={(e) => {
+                    return setEmail(e.target.value);
+                }}
                 placeholder='Email'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 required
+                type='email'
+                value={email}
             />
             <input
-                type='password'
+                onChange={(e) => {
+                    return setPassword(e.target.value);
+                }}
                 placeholder='Password'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 required
+                type='password'
+                value={password}
             />
             <button type='submit'>{buttonText}</button>
         </form>

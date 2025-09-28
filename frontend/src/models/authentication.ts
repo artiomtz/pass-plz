@@ -1,6 +1,8 @@
-export interface Authentication {
+interface Authentication {
     accessToken: string;
+    lastVisited: string;
     refreshToken: string;
-    lastVisited: string; // ISO 8601
     userId: number;
 }
+
+export default Authentication;

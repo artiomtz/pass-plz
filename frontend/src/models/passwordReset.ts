@@ -1,4 +1,6 @@
-export interface PasswordReset {
-    token: string;
+interface PasswordReset {
     newPassword: string;
+    token: string;
 }
+
+export default PasswordReset;

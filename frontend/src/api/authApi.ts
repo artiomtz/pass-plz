@@ -1,76 +1,58 @@
-import { api } from '@api/axiosInstance';
-import {
-    API_AUTH_AUTHENTICATE,
-    API_AUTH_LOGOUT,
-    API_AUTH_REFRESH,
-    API_AUTH_REGISTER,
-} from '@api/constants';
+import api from '@api/axiosInstance';
+import { API_AUTH_AUTHENTICATE, API_AUTH_LOGOUT, API_AUTH_REFRESH, API_AUTH_REGISTER } from '@api/constants';
 import { ApiResponse, handleApiError } from '@api/handleApiError';
-import { Authentication } from '@models/authentication';
+import Authentication from '@models/authentication';
 import { getBearerHeader } from '@utils/authUtil';
-import {
-    clearStoredUser,
-    clearTokens,
-    getRefreshToken,
-    setAccessToken,
-    setRefreshToken,
-} from '@utils/storageUtil';
+import { clearStoredUser, clearTokens, getRefreshToken, setAccessToken, setRefreshToken } from '@utils/storageUtil';
 
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
 
-export const signUpApi = async (
-    email: string,
-    password: string
-): Promise<ApiResponse<Authentication>> => {
+export const signUpApi = async (email: string, password: string): Promise<ApiResponse<Authentication>> => {
     try {
+        console.log(`requesting ${API_AUTH_REGISTER}`);
         const { data } = await api.post<Authentication>(
             API_AUTH_REGISTER,
             { email, password },
-            { auth: { username: email, password } }
+            { auth: { password, username: email } }
         );
 
         setAccessToken(data.accessToken);
         setRefreshToken(data.refreshToken);
 
-        return { ok: true, data: data };
+        return { data: data, ok: true };
     } catch (error) {
-        console.error('Sign-up failed:', error);
+        console.error('failed to sign up');
+
         return handleApiError(error);
-        // const apiError = handleApiError(error);
-        // return { apiError: apiError };
-        // return null;
     }
 };
 
-export const signInApi = async (
-    email: string,
-    password: string
-): Promise<ApiResponse<Authentication>> => {
+export const signInApi = async (email: string, password: string): Promise<ApiResponse<Authentication>> => {
     try {
-        // const headers = getAuthHeader(AUTH_TYPE.BASIC, { email, password });
+        console.log(`requesting ${API_AUTH_AUTHENTICATE}`);
         const { data } = await api.post<Authentication>(
-            // <{ accessToken: string; refreshToken: string }> // create dto type
             API_AUTH_AUTHENTICATE,
             { email, password },
-            { auth: { username: email, password } }
+            { auth: { password, username: email } }
         );
 
         setAccessToken(data.accessToken);
         setRefreshToken(data.refreshToken);
 
-        return { ok: true, data: data };
+        return { data: data, ok: true };
     } catch (error) {
-        console.error('Sign-in failed:', error);
+        console.error('failed to sign in');
+
         return handleApiError(error);
-        // return null;
     }
 };
 
 export const refreshApi = async (): Promise<string | null> => {
-    console.warn('refreshAccessToken........');
+    console.log('refreshing access token');
     if (isRefreshing && refreshPromise) {
-        console.debug('Already refreshing. Returning shared promise.');
+        console.log('already refreshing. returning shared promise');
+
         return refreshPromise;
     }
 
@@ -78,36 +60,37 @@ export const refreshApi = async (): Promise<string | null> => {
     refreshPromise = (async () => {
         try {
             const refreshToken = getRefreshToken();
-            console.log('refreshToken value:', refreshToken);
             if (!refreshToken) {
-                console.error('NO refresh token!!');
+                console.warn('failed to refresh access token. no refresh token found in storage');
+
                 return null;
             }
 
+            console.log(`requesting ${API_AUTH_REFRESH}`);
             const response = await api.get(API_AUTH_REFRESH, {
                 headers: {
                     Authorization: getBearerHeader(refreshToken),
                 },
             });
 
-            console.warn('refresh response:', response);
-
             const { accessToken } = response.data;
             if (!accessToken) {
-                console.error('NO new access token!!');
+                console.error('failed to refresh access token. did not receive new token');
+
                 return null;
             }
 
             setAccessToken(accessToken);
-            console.warn('silently REFRESHED access token!');
+            console.log('new access token set');
+
             return accessToken;
-        } catch (err) {
-            console.log('refreshAccessToken CATCH:', err);
+        } catch {
+            console.error('failed to refresh access token');
             clearTokens();
             clearStoredUser();
+
             return null;
         } finally {
-            console.log('refreshAccessToken finally running...');
             isRefreshing = false;
             refreshPromise = null;
         }
@@ -119,13 +102,13 @@ export const refreshApi = async (): Promise<string | null> => {
 export const logoutApi = async (): Promise<void> => {
     try {
         const refreshToken = getRefreshToken();
-        console.log('refreshToken value:', refreshToken);
         if (!refreshToken) {
-            console.warn('NO refresh token');
+            console.warn('failed to logout. no refresh token found in storage');
+
             return;
-            // return false;
         }
 
+        console.log(`requesting ${API_AUTH_LOGOUT}`);
         const response = await api.post(API_AUTH_LOGOUT, null, {
             headers: {
                 Authorization: getBearerHeader(refreshToken),
@@ -133,12 +116,9 @@ export const logoutApi = async (): Promise<void> => {
         });
 
         if (response.status != 200) {
-            console.error('Logout failed');
-            // return false;
+            console.warn('failed to logout. bad response code');
         }
-        // return true;
     } catch (error) {
-        console.error('logout failed:', error); // dont log error
-        // return false;
+        console.warn('failed to logout');
     }
 };

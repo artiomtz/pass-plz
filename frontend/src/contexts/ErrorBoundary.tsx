@@ -10,22 +10,16 @@ type State = {
     hasError: boolean;
 };
 
-export class ErrorBoundary extends React.Component<Props, State> {
+class ErrorBoundary extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = { hasError: false };
     }
 
-    // static getDerivedStateFromError(error: Error): State {
-    //     console.error('Auth error:', error);
-    //     //   toast.error("Authentication error. Please sign in again.");
-    //     return { hasError: true };
-    // }
-
     static getDerivedStateFromError(_: Error): State {
-        console.error(' error...');
+        console.error('something went wrong');
         toast.error('Something went wrong');
-        // logout
+
         return { hasError: true };
     }
 
@@ -33,6 +27,9 @@ export class ErrorBoundary extends React.Component<Props, State> {
         if (this.state.hasError) {
             return this.props.fallback;
         }
+
         return this.props.children;
     }
 }
+
+export default ErrorBoundary;

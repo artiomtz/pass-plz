@@ -5,23 +5,28 @@ export const handleSuggestionKeyDown = (
     highlightedIndex: number,
     listLength: number
 ): { newIndex: number; action: KeyboardAction } => {
-    if (listLength === 0) return { newIndex: highlightedIndex, action: null };
+    if (listLength === 0) {
+        return { action: null, newIndex: highlightedIndex };
+    }
 
     if (e.key === 'ArrowDown') {
         e.preventDefault();
-        return { newIndex: (highlightedIndex + 1) % listLength, action: null };
+
+        return { action: null, newIndex: (highlightedIndex + 1) % listLength };
     } else if (e.key === 'ArrowUp') {
         e.preventDefault();
+
         return {
-            newIndex: highlightedIndex === 0 ? listLength - 1 : highlightedIndex - 1,
             action: null,
+            newIndex: highlightedIndex === 0 ? listLength - 1 : highlightedIndex - 1,
         };
     } else if (e.key === 'Enter') {
         e.preventDefault();
-        return { newIndex: highlightedIndex, action: 'select' };
+
+        return { action: 'select', newIndex: highlightedIndex };
     } else if (e.key === 'Escape') {
-        return { newIndex: highlightedIndex, action: 'close' };
+        return { action: 'close', newIndex: highlightedIndex };
     }
 
-    return { newIndex: highlightedIndex, action: null };
+    return { action: null, newIndex: highlightedIndex };
 };

@@ -1,19 +1,19 @@
 import React from 'react';
 
 interface EntryFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+    onChange: (_value: string) => void;
     value: string;
-    onChange: (value: string) => void;
 }
 
-const InputField: React.FC<EntryFieldProps> = ({ value, onChange, className = '', ...props }) => {
+const InputField: React.FC<EntryFieldProps> = ({ className = '', onChange, value, ...props }) => {
     return (
         <input
-            {...props} // supports maxLength, placeholder, type="password", etc.
-            // className='border rounded p-2 min-w-[160px] flex-grow'
-            // className='border p-2 rounded w-110'
+            {...props}
+            className={`border rounded shadow-lg p-2 px-3 w-full lg:w-[26rem] ${className}`}
+            onChange={(e) => {
+                return onChange(e.target.value);
+            }}
             value={value}
-            onChange={(e) => onChange(e.target.value)}
-            className={`border rounded shadow-lg p-2 w-full lg:w-[26rem] ${className}`}
         />
     );
 };

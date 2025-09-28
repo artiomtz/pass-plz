@@ -1,24 +1,30 @@
 import React from 'react';
 
 interface TagsProps {
+    onRemove: (_tag: string) => void;
     tags: string[];
-    onRemove: (tag: string) => void;
 }
 
-export const Tags: React.FC<TagsProps> = ({ tags, onRemove }) => {
+const Tags: React.FC<TagsProps> = ({ onRemove, tags }) => {
     const safeTags = Array.isArray(tags) ? tags : [];
 
     return (
         <div className='flex gap-1 flex-wrap lg:ml-[160px]'>
-            {safeTags.map((tag) => (
-                <span
-                    key={tag}
-                    title='Delete'
-                    onClick={() => onRemove(tag)}
-                    className='bg-gray-200 px-2 py-0.5 rounded-full text-xs cursor-pointer hover:bg-red-200'>
-                    {tag}
-                </span>
-            ))}
+            {safeTags.map((tag) => {
+                return (
+                    <span
+                        className='bg-gray-200 px-2 py-0.5 rounded-full text-xs cursor-pointer hover:bg-red-200'
+                        key={tag}
+                        onClick={() => {
+                            return onRemove(tag);
+                        }}
+                        title='Delete'>
+                        {tag}
+                    </span>
+                );
+            })}
         </div>
     );
 };
+
+export default Tags;

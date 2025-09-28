@@ -1,15 +1,14 @@
-export const ROUTES = {
-    WELCOME: '/',
-    SIGN_UP: '/sign-up',
-    SIGN_IN: '/sign-in',
-    REQUEST_RESET: '/request-reset',
-    PASSWORD_RESET: '/password-reset',
+const ROUTES = {
     DASHBOARD: '/dashboard',
-    GOODBYE: '/goodbye',
     ERROR: '/error',
-    // PASSWORD_DETAIL: '/passwords/:id',
-    // ...
+    GOODBYE: '/goodbye',
+    PASSWORD_RESET: '/password-reset',
+    REQUEST_RESET: '/request-reset',
+    SIGN_IN: '/sign-in',
+    SIGN_UP: '/sign-up',
+    WELCOME: '/',
 };
+
 export const UNPROTECTED_ROUTES = [
     ROUTES.WELCOME,
     ROUTES.SIGN_IN,
@@ -19,3 +18,5 @@ export const UNPROTECTED_ROUTES = [
     ROUTES.GOODBYE,
     ROUTES.ERROR,
 ];
+
+export default ROUTES;

@@ -1,65 +1,76 @@
+import { pingApi } from '@api/healthApi';
 import Button from '@components/Button';
-import PageLayout from '@layouts/GlobalLayout';
-import { ROUTES } from '@routes/constants';
+import GlobalLayout from '@layouts/GlobalLayout';
+import ROUTES from '@routes/constants';
 import { LockKeyholeOpen, UserPlus } from 'lucide-react';
+import { useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
-export const WelcomePage = () => {
+const WelcomePage = () => {
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const pingServer = async () => {
+            const response = await pingApi();
+            if (!response.ok) {
+                toast.error(`${response.error}. Try again shortly`);
+            } else {
+                console.log('connected to server');
+                toast.success('Connected to server');
+            }
+        };
+
+        pingServer();
+    }, []);
+
     const handleSignUp = async () => {
-        try {
-            // toast
-            navigate(ROUTES.SIGN_UP);
-        } catch {
-            console.error('failed to navigate');
-        }
+        navigate(ROUTES.SIGN_UP);
     };
 
     const handleSignIn = async () => {
-        try {
-            // toast
-            navigate(ROUTES.SIGN_IN);
-        } catch {
-            console.error('failed to navigate');
-        }
+        navigate(ROUTES.SIGN_IN);
     };
 
     return (
-        <PageLayout title='Welcome To Pass Plz'>
-            <p className='flex text-center mt-30'>
-                Pass Plz is a modern password manager designed to make security effortless. It helps
-                you generate strong, unique passwords, stores them safely using end-to-end
-                encryption, and lets you log in quickly with one click — no compromises on privacy,
-                speed, or simplicity.
-            </p>
+        <GlobalLayout title='Welcome To Pass Plz'>
+            <div className='md:mt-[-5vh] text-center max-w-3xl mx-auto'>
+                <div className='space-y-10 text-center mx-auto'>
+                    <p>
+                        Pass Plz is a modern password manager designed to make security effortless. It works seamlessly
+                        on both web and mobile, so your passwords are always with you.
+                    </p>
 
-            <div className='flex flex-col sm:flex-row justify-center items-center w-full gap-10 mt-20'>
-                <Button onClick={handleSignUp}>
-                    <UserPlus size={18} />
-                    Sign Up
-                </Button>
-                <Button onClick={handleSignIn}>
-                    <LockKeyholeOpen size={18} />
-                    Sign In
-                </Button>
+                    <p>
+                        The app is fast, styled, and intuitive to use. You can store much more than just logins. Pass
+                        Plz supports various fields per password and gives you tools to organize, sort, search, and tag
+                        your entries.
+                    </p>
+
+                    <p>
+                        Your privacy is priority: Pass Plz handles all data securely, avoids storing anything
+                        unnecessary, and comes with email confirmation for added safety.
+                    </p>
+
+                    <p>
+                        Built with the latest technologies, Pass Plz offers a smooth, modern experience with no
+                        compromises on privacy, speed, or simplicity.
+                    </p>
+                </div>
+
+                <div className='flex flex-col sm:flex-row justify-center items-center w-full gap-10 sm:gap-16 p-2 mt-10 sm:mt-20'>
+                    <Button onClick={handleSignUp}>
+                        <UserPlus size={18} />
+                        Sign Up
+                    </Button>
+                    <Button onClick={handleSignIn}>
+                        <LockKeyholeOpen size={18} />
+                        Sign In
+                    </Button>
+                </div>
             </div>
-        </PageLayout>
+        </GlobalLayout>
     );
 };
 
-// <PageLayout title='Welcome to Pass Plz'>
-//     <p className='mt-26 text-center '>
-//         Pass Plz is a secure and fast password manager built for privacy and ease of use. Create
-//         strong passwords, store them safely, and log in with one click.
-//     </p>
-
-//     <div className='mt-20 flex w-full flex-col items-center gap-14 sm:flex-row sm:justify-center '>
-//         <button className='w-full min-w-[180px] rounded-4xl border border-blue-600 px-2 py-2 shadow-xl text-blue-600 transition hover:bg-blue-50 sm:w-auto'>
-//             Sign Up
-//         </button>
-//         <button className='w-full min-w-[180px] rounded-4xl bg-blue-600 px-6 py-3 text-white shadow-xl transition hover:bg-blue-700 sm:w-auto'>
-//             Sign In
-//         </button>
-//     </div>
-// </PageLayout>
+export default WelcomePage;

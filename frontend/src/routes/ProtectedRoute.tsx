@@ -1,10 +1,10 @@
 import Spinner from '@components/Spinner';
-import { useAuth } from '@hooks/useAuth';
-import { ROUTES } from '@routes/constants';
+import useAuth from '@hooks/useAuth';
+import ROUTES from '@routes/constants';
 import { Navigate, Outlet } from 'react-router-dom';
 
-const ProtectedRoute = ({ redirectTo = ROUTES.SIGN_IN }) => {
-    const { user, isLoading } = useAuth();
+const ProtectedRoute = ({ redirectTo = ROUTES.WELCOME }) => {
+    const { isLoading, user } = useAuth();
 
     if (isLoading) {
         return (
@@ -13,7 +13,15 @@ const ProtectedRoute = ({ redirectTo = ROUTES.SIGN_IN }) => {
             </div>
         );
     }
-    return user ? <Outlet /> : <Navigate to={redirectTo} replace />;
+
+    return user ? (
+        <Outlet />
+    ) : (
+        <Navigate
+            replace
+            to={redirectTo}
+        />
+    );
 };
 
 export default ProtectedRoute;

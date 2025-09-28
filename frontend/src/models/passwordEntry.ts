@@ -1,14 +1,16 @@
-export interface PasswordEntry {
-    id: number;
-    userId: number;
-    name: string;
-    username: string;
-    password: string;
-    createdDate: string; // ISO 8601
-    updatedDate: string;
-    expirationDate: string | null;
+interface PasswordEntry {
     category: string | null;
+    createdDate: string;
+    expirationDate: string | null;
+    id: number;
     link: string | null;
+    name: string;
     note: string | null;
-    tags: string[] | null; // comes from a Set<String> on the backend
+    password: string;
+    tags: string[] | null;
+    updatedDate: string;
+    userId: number;
+    username: string;
 }
+
+export default PasswordEntry;

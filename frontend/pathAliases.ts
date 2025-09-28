@@ -2,7 +2,7 @@ import { resolve } from 'path';
 
 const pathSrc = (dir: string) => resolve(__dirname, 'src', dir);
 
-export const alias = {
+const alias = {
     '@api': pathSrc('api'),
     '@assets': pathSrc('assets'),
     '@components': pathSrc('components'),
@@ -15,5 +15,6 @@ export const alias = {
     '@services': pathSrc('services'),
     '@styles': pathSrc('styles'),
     '@utils': pathSrc('utils'),
-    // 'jwt-decode': path.resolve(__dirname, 'node_modules/jwt-decode/build/esm/index.js'),
 };
+
+export default alias;

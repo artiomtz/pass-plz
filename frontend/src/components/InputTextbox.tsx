@@ -1,34 +1,38 @@
 interface InputTextboxProps {
-    value: string;
-    placeholder?: string;
     maxLength?: number;
-    minRows?: number;
     maxRows?: number;
-    onChange: (value: string) => void;
+    minRows?: number;
+    onChange: (_value: string) => void;
+    placeholder?: string;
+    value: string;
 }
 
-export const InputTextbox: React.FC<InputTextboxProps> = ({
-    value,
-    placeholder,
+const InputTextbox: React.FC<InputTextboxProps> = ({
     maxLength,
-    minRows = 4,
     maxRows = 10,
+    minRows = 4,
     onChange,
+    placeholder,
+    value,
 }) => {
     return (
         <textarea
-            value={value}
-            rows={minRows}
+            className='border p-2 px-3 rounded shadow-lg w-full lg:w-[26rem]'
             maxLength={maxLength}
-            placeholder={placeholder}
-            className='border p-2 rounded shadow-lg w-full lg:w-[26rem]'
-            onChange={(e) => onChange(e.target.value)}
-            style={{
-                resize: 'vertical',
-                minHeight: `${minRows}em`,
-                maxHeight: `${maxRows}em`,
-                height: `${Math.floor((minRows + maxRows) / 2)}em`,
+            onChange={(e) => {
+                return onChange(e.target.value);
             }}
+            placeholder={placeholder}
+            rows={minRows}
+            style={{
+                height: `${Math.floor((minRows + maxRows) / 2)}em`,
+                maxHeight: `${maxRows}em`,
+                minHeight: `${minRows}em`,
+                resize: 'vertical',
+            }}
+            value={value}
         />
     );
 };
+
+export default InputTextbox;

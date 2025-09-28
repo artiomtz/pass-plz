@@ -1,59 +1,67 @@
 import api from '@api/axiosInstance';
 import { API_PASSWORDS, API_PASSWORDS_USER } from '@api/constants';
 import { ApiResponse, handleApiError } from '@api/handleApiError';
-import { PasswordEntry } from '@models/passwordEntry';
-import { User } from '@models/user';
+import PasswordEntry from '@models/passwordEntry';
+import User from '@models/user';
 
-export const createPasswordApi = async (
-    newEntry: PasswordEntry
-): Promise<ApiResponse<PasswordEntry>> => {
+export const createPasswordApi = async (newEntry: PasswordEntry): Promise<ApiResponse<PasswordEntry>> => {
     try {
+        console.log(`requesting ${API_PASSWORDS}`);
         const { data } = await api.post(API_PASSWORDS, newEntry);
-        return { ok: true, data: data };
+
+        return { data: data, ok: true };
     } catch (error) {
-        console.error('createPasswordApi error:', error);
+        console.error('failed to create password');
+
         return handleApiError(error);
-        // return null;
     }
 };
 
 export const getPasswordsApi = async (user: User): Promise<ApiResponse<PasswordEntry[]>> => {
     try {
+        console.log(`requesting ${API_PASSWORDS_USER}`);
         const { data, status } = await api.get(`${API_PASSWORDS_USER}/${user.id}`);
 
         if (status === 204 || !data) {
-            return { ok: true, data: [] }; // no content → empty array
+            return { data: [], ok: true };
         }
 
-        return { ok: true, data: Array.isArray(data) ? data : [] }; // ensure array
+        return { data: Array.isArray(data) ? data : [], ok: true };
     } catch (error) {
-        console.error('getPasswordsApi error:', error);
+        console.error('failed to get passwords');
+
         return handleApiError(error);
     }
 };
 
-export const updatePasswordApi = async (
-    updatedEntry: PasswordEntry
-): Promise<ApiResponse<PasswordEntry>> => {
+export const updatePasswordApi = async (updatedEntry: PasswordEntry): Promise<ApiResponse<PasswordEntry>> => {
     try {
+        console.log(`requesting ${API_PASSWORDS}`);
         const { data } = await api.put(`${API_PASSWORDS}/${updatedEntry.id}`, updatedEntry);
-        return { ok: true, data: data };
+
+        return { data: data, ok: true };
     } catch (error) {
-        console.error('updatePasswordApi error:', error);
+        console.error('failed to update password');
+
         return handleApiError(error);
     }
 };
 
 export const deletePasswordApi = async (entry: PasswordEntry): Promise<ApiResponse<boolean>> => {
     try {
+        console.log(`requesting ${API_PASSWORDS}`);
         const response = await api.delete(`${API_PASSWORDS}/${entry.id}`);
+
         if (response.status != 200) {
-            console.error('delete failed');
-            return { ok: true, data: false };
+            console.error('failed to delete password. bad response code');
+
+            return { data: false, ok: true };
         }
-        return { ok: true, data: true };
+
+        return { data: true, ok: true };
     } catch (error) {
-        console.error('deletePasswordApi error:', error);
+        console.error('failed to delete password');
+
         return handleApiError(error);
     }
 };

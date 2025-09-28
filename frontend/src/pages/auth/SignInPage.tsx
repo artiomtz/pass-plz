@@ -3,10 +3,10 @@ import { updateLoginTimeApi } from '@api/userApi';
 import Button from '@components/Button';
 import InputFieldWithLabel from '@components/InputFieldWithLabel';
 import Spinner from '@components/Spinner';
-import { useAuth } from '@hooks/useAuth';
-import PageLayout from '@layouts/GlobalLayout';
-import type { User } from '@models/user';
-import { ROUTES } from '@routes/constants';
+import useAuth from '@hooks/useAuth';
+import GlobalLayout from '@layouts/GlobalLayout';
+import type User from '@models/user';
+import ROUTES from '@routes/constants';
 import { sanitizeInput, validateEmail } from '@utils/inputUtil';
 import { sanitizeBadCharacters } from '@utils/passwordUtil';
 import { LockKeyholeOpen, UserLock } from 'lucide-react';
@@ -15,35 +15,22 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 const SignInPage = () => {
+    const { login } = useAuth();
     const navigate = useNavigate();
-    // const authContext = useAuth();
-    // if (!authContext) {
-    //     // log
-    //     // toast
-    //     navigate(ROUTES.SIGN_IN, { replace: true });
-    //     return;
-    // }
-    // const { login, logout } = authContext;
-    const { login, logout } = useAuth();
-
     const [email, setEmail] = useState('');
-    const [isEmailValid, setIsEmailValid] = useState(false);
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    // const [user, setUser] = useState<User | null>(null);
+    const [isEmailValid, setIsEmailValid] = useState(false);
 
     const handleSignIn = async () => {
         try {
             setLoading(true);
-            console.log('Signing in.......');
-            // validate input
             const response = await signInApi(email, password);
             setLoading(false);
 
             if (!response.ok) {
-                console.error('get failed... toast');
                 toast.error(`Failed to sign in ${email}`);
-                // navigate(ROUTES.SIGN_IN,{ replace: true }); // 404
+
                 return null;
             }
 
@@ -53,30 +40,22 @@ const SignInPage = () => {
                 lastVisited: response.data.lastVisited,
             };
 
-            console.log('Signed in:', user);
             login(user);
-
             const responseLoginTime = await updateLoginTimeApi(user);
             if (!responseLoginTime.ok) {
-                console.error('update failed... toast');
                 toast.error('Failed to update login time');
             }
 
             toast.success(`${email} signed in`);
             navigate(ROUTES.DASHBOARD, { replace: true });
         } catch (error) {
-            console.error('Sign-in failed:', error);
+            console.error('failed to sign in', error);
             toast.error(`Error occurred while signing in ${email}`);
         }
     };
 
     const handleForgotPassword = async () => {
-        try {
-            console.warn('navigating to reset request');
-            navigate(ROUTES.REQUEST_RESET);
-        } catch (error) {
-            console.error('reset request failed:', error);
-        }
+        navigate(ROUTES.REQUEST_RESET);
     };
 
     useEffect(() => {
@@ -84,96 +63,52 @@ const SignInPage = () => {
     }, [email]);
 
     return (
-        // <PageLayout title='Sign In To Your Account'>
-        //     <AuthForm onSubmit={handleSignIn} buttonText='Sign In' />
-        //     <button
-        //         className='mt-4 bg-red-500 text-white px-4 py-2 rounded'
-        //         onClick={handleForgotPassword}>
-        //         Forgot Password
-        //     </button>
-        //     <button className='mt-4 bg-red-500 text-white px-4 py-2 rounded' onClick={logout}>
-        //         Logout (test)
-        //     </button>
-        // </PageLayout>
-        <PageLayout title='Sign In To Your Account'>
-            {/* <form> */}
+        <GlobalLayout title='Sign In To Your Account'>
             <div className='flex flex-col items-center justify-center mx-auto'>
                 <div className='w-full rounded-2xl shadow-xl border sm:max-w-md border-gray-500'>
                     <div className='p-6 space-y-6 sm:p-8'>
                         <InputFieldWithLabel
                             id='email'
                             label='Email'
-                            type='email'
+                            onChange={(e) => {
+                                return setEmail(sanitizeInput(e.target.value));
+                            }}
                             placeholder='me@email.com'
-                            value={email}
-                            // onChange={(e) => setEmail(e.target.value)}
-                            // onChange={(e) => sanitizeInput(e, setEmail)}
-                            onChange={(e) => setEmail(sanitizeInput(e.target.value))}
                             required
+                            type='email'
+                            value={email}
                         />
-                        {/* <div>
-                                <label htmlFor='email' className='block mb-2 text-gray-900'>
-                                    Email
-                                </label>
-                                <input
-                                    placeholder='me@email.com'
-                                    className='bg-gray-50 border border-gray-300 text-gray-500 rounded-2xl block w-full p-3 shadow-lg focus:outline-zinc-400'
-                                    id='email'
-                                    type='text'></input>
-                            </div> */}
 
                         <InputFieldWithLabel
                             id='password'
                             label='Password'
-                            type='password'
+                            onChange={(e) => {
+                                return setPassword(sanitizeBadCharacters(e.target.value));
+                            }}
                             placeholder='••••••••••••'
-                            value={password}
-                            onChange={(e) => setPassword(sanitizeBadCharacters(e.target.value))}
-                            // onChange={(e) => sanitizePassword(e, setPassword)}
                             required
+                            type='password'
+                            value={password}
                         />
-                        {/* <div>
-                                <label htmlFor='password' className='block mb-2 text-gray-900'>
-                                    Password
-                                </label>
-                                <input
-                                    className='bg-gray-50 border border-gray-300 text-gray-500 rounded-2xl block w-full p-3 shadow-lg focus:outline-zinc-400'
-                                    placeholder='••••••••••••'
-                                    id='password'
-                                    type='password'></input>
-                            </div> */}
 
                         <div className='flex flex-col items-center gap-y-4 px-6 py-6 mx-auto space-y-6'>
                             <Button
-                                disabled={!isEmailValid || password.trim() === ''}
+                                disabled={!isEmailValid || password?.trim() === ''}
                                 onClick={handleSignIn}>
-                                {/* <LockKeyholeOpen size={18} />
-                                Sign In */}
-                                {loading ? (
-                                    <>
-                                        <Spinner /> Sign In
-                                    </>
-                                ) : (
-                                    <>
-                                        <LockKeyholeOpen size={18} /> Sign In
-                                    </>
-                                )}
+                                <>
+                                    {loading ? <Spinner /> : <LockKeyholeOpen size={18} />}
+                                    Sign In
+                                </>
                             </Button>
                             <Button onClick={handleForgotPassword}>
                                 <UserLock size={18} />
                                 Forgot Password
                             </Button>
                         </div>
-
-                        {/* <div className='flex justify-center px-6 py-6 mx-auto'>
-                                <Button onClick={handleSignIn}>Sign In</Button>
-                                <Button onClick={handleForgotPassword}>ForgotPassword</Button>
-                            </div> */}
                     </div>
                 </div>
             </div>
-            {/* </form> */}
-        </PageLayout>
+        </GlobalLayout>
     );
 };
 

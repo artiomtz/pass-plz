@@ -1,15 +1,22 @@
 import { Plus } from 'lucide-react';
 
 interface ButtonAddProps {
+    disabled: boolean;
     onClick: () => void;
 }
 
-export const ButtonAdd: React.FC<ButtonAddProps> = ({ onClick }) => (
-    <button
-        type='button'
-        onClick={onClick}
-        className='cursor-pointer w-6 h-6 flex items-center justify-center hover:bg-gray-200'>
-        {/* className='w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center cursor-pointer'> */}
-        <Plus size={18} />
-    </button>
-);
+const ButtonAdd: React.FC<ButtonAddProps> = ({ disabled = false, onClick }) => {
+    return (
+        <button
+            className={`${
+                disabled ? 'text-gray-400' : 'cursor-pointer flex items-center justify-center hover:bg-gray-200'
+            }`}
+            disabled={disabled}
+            onClick={onClick}
+            type='button'>
+            <Plus size={18} />
+        </button>
+    );
+};
+
+export default ButtonAdd;

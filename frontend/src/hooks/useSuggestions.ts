@@ -2,20 +2,15 @@ import { SuggestionsContext, SuggestionsContextType } from '@contexts/Suggestion
 import { useContext } from 'react';
 import toast from 'react-hot-toast';
 
-export const useSuggestions = (): SuggestionsContextType => {
-    //   const ctx = useContext(SuggestionsContext);
-    //   if (!ctx) {
-    //     throw new Error("useSuggestions must be used within SuggestionsProvider");
-    //   }
-    //   return ctx;
-
+const useSuggestions = (): SuggestionsContextType => {
     const context = useContext(SuggestionsContext);
     if (!context) {
-        console.warn('no suggestions context');
-        // toast
-        // log
+        console.error('failed to fetch suggestions context');
         toast.error('Failed to fetch suggestions context');
         throw new Error('useSuggestions must be used within an SuggestionsProvider');
     }
+
     return context;
 };
+
+export default useSuggestions;

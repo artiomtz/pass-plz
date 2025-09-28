@@ -5,7 +5,6 @@ const REFRESH_TOKEN_KEY = 'pass_plz_refresh_token';
 const RESET_TOKEN_KEY = 'pass_plz_reset_token';
 const USER_KEY = 'pass_plz_user';
 
-// export const DRAFT_PREFIX_ID = `${DRAFT_PREFIX}_`
 export const DRAFT_PREFIX = 'pass_plz_draft_';
 export const DRAFT_PREFIX_NEW = `${DRAFT_PREFIX}new`;
 type DraftKey = `${typeof DRAFT_PREFIX_NEW}` | `${typeof DRAFT_PREFIX}${number}`;
@@ -42,6 +41,7 @@ export const clearTokens = () => {
 
 export const getStoredUser = (): User | null => {
     const stored = localStorage.getItem(USER_KEY);
+
     return stored ? (JSON.parse(stored) as User) : null;
 };
 
@@ -62,25 +62,21 @@ export function hasDraft(id?: number | null): boolean {
 }
 
 export const draftStorage = {
-    get: (key: DraftKey) => {
-        const raw = localStorage.getItem(key);
-        return raw ? JSON.parse(raw) : null;
-    },
-    set: (key: DraftKey, value: any) => {
-        localStorage.setItem(key, JSON.stringify(value));
-    },
     clear: (id: number) => {
         const key = getDraftKey(id);
         localStorage.removeItem(key);
-        // localStorage.removeItem(`${DRAFT_PREFIX}_${id}`);
     },
-    // clearNew: () => {
-    //     localStorage.removeItem(`${DRAFT_PREFIX}_new`);
-    // },
+
     clearAll: () => {
         Object.keys(localStorage)
             .filter((k) => k.startsWith(DRAFT_PREFIX))
             .forEach((k) => localStorage.removeItem(k));
+    },
+
+    get: (key: DraftKey) => {
+        const raw = localStorage.getItem(key);
+
+        return raw ? JSON.parse(raw) : null;
     },
 
     getAll: () => {
@@ -93,6 +89,11 @@ export const draftStorage = {
                 }
             }
         });
+
         return drafts;
+    },
+
+    set: (key: DraftKey, value: any) => {
+        localStorage.setItem(key, JSON.stringify(value));
     },
 };

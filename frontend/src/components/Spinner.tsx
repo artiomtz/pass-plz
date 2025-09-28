@@ -1,7 +1,12 @@
 import { Disc3 } from 'lucide-react';
 
-const Spinner: React.FC<{ size?: number; className?: string }> = ({ size = 18, className }) => {
-    return <Disc3 className={`animate-spin text-gray-500`} style={{ width: size, height: size }} />;
+const Spinner: React.FC<{ size?: number; className?: string }> = ({ className, size = 18 }) => {
+    return (
+        <Disc3
+            className={`animate-spin text-gray-500 ${className || ''}`}
+            style={{ height: size, width: size }}
+        />
+    );
 };
 
 export default Spinner;

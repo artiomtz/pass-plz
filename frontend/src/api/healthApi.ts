@@ -7,13 +7,15 @@ export const pingApi = async (): Promise<ApiResponse<boolean>> => {
         const response = await api.get(`${API_HEALTH}/ping`);
 
         if (response.status != 200) {
-            console.error('ping failed');
-            return { ok: true, data: false };
+            console.error('failed to ping server. bad response code');
+
+            return { data: false, ok: true };
         }
 
-        return { ok: true, data: true };
+        return { data: true, ok: true };
     } catch (error) {
-        console.error('ping error:', error);
+        console.error('failed to ping server', error);
+
         return handleApiError(error);
     }
 };

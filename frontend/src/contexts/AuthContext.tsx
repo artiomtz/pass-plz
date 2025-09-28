@@ -1,15 +1,10 @@
 import { refreshApi } from '@api/authApi';
-import { User } from '@models/user';
-import { ROUTES, UNPROTECTED_ROUTES } from '@routes/constants';
-import {
-    clearStoredUser,
-    clearTokens,
-    getAccessToken,
-    getStoredUser,
-    setStoredUser,
-} from '@utils/storageUtil';
+import User from '@models/user';
+import ROUTES, { UNPROTECTED_ROUTES } from '@routes/constants';
+import { clearStoredUser, clearTokens, getAccessToken, getStoredUser, setStoredUser } from '@utils/storageUtil';
 import { isTokenExpired } from '@utils/tokenUtil';
-import { createContext, ReactNode, useEffect, useState } from 'react';
+import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -19,53 +14,51 @@ interface AuthProviderProps {
 }
 
 export interface AuthContextType {
-    user: User | null;
     isLoading: boolean;
-    login: (userData: User) => void;
+    login: (_userData: User) => void;
     logout: () => void;
+    user: User | null;
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-    // const value = useMemo(() => ({ user, login, logout, isLoading }), [user, isLoading]);
-    const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const navigate = useNavigate();
+const AuthProvider = ({ children }: AuthProviderProps) => {
     const location = useLocation();
+    const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        console.log('useAuth.......');
-
         const checkAuth = async () => {
             if (UNPROTECTED_ROUTES.includes(location.pathname)) {
-                console.log('useAuth unprotected route.......');
+                console.log('navigating to an unprotected route');
                 setIsLoading(false);
+
                 return;
             }
 
             const storedUser = getStoredUser();
             const storedToken = getAccessToken();
-
             if (!storedUser || !storedToken) {
-                console.log('No stored user. logging out.....');
+                console.warn('failed to authenticate. no user or access token found in storage');
                 logout();
+
                 return;
             }
 
             if (isTokenExpired(storedToken)) {
-                console.warn('useAuth RE-FRESHING token........');
                 const newAccessToken = await refreshApi();
+
                 if (!newAccessToken) {
-                    // later save user draft + toast
-                    console.warn('refresh Token expired. Logging out....');
+                    toast.error('Authentication token expired');
                     logout();
+
                     return;
                 }
-                // setAccessToken(newAccessToken); // done in ts file
-                console.warn('silently REFRESHED access token!');
+
+                console.log('refreshed access token');
             }
-            setUser(storedUser); ////////////
+
+            setUser(storedUser);
             setIsLoading(false);
-            console.log(`useAuth has user ::::: ${storedUser.email}`);
         };
 
         checkAuth();
@@ -75,7 +68,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser(userData);
         setStoredUser(userData);
         setIsLoading(false);
-        console.log('useAuth login!!!!');
+        console.log('logging in');
     };
 
     const logout = () => {
@@ -83,14 +76,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         clearTokens();
         clearStoredUser();
         setIsLoading(false);
-        navigate(ROUTES.SIGN_IN, { replace: true });
-        console.log('useAuth logout!!!!');
+        navigate(ROUTES.WELCOME, { replace: true });
+        console.log('logging out');
     };
 
-    return (
-        //   <AuthContext.Provider value={value}>
-        <AuthContext.Provider value={{ user, login, logout, isLoading }}>
-            {children}
-        </AuthContext.Provider>
-    );
+    const authState = useMemo(() => {
+        return { isLoading, login, logout, user };
+    }, [user, isLoading]);
+
+    return <AuthContext.Provider value={authState}>{children}</AuthContext.Provider>;
 };
+
+export default AuthProvider;
