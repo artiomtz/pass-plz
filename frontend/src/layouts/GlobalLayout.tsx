@@ -1,7 +1,7 @@
 import githubIcon from '@assets/githubIcon.png';
 import LockIcon from '@assets/iconGray.svg';
 import madeByIcon from '@assets/madeByIcon.png';
-import LabelLastVisited from '@components/LabelLastVisited';
+import LabelLastVisited from '@components/labels/LabelLastVisited';
 import Navbar from '@components/Navbar';
 import React from 'react';
 

@@ -1,6 +1,6 @@
 import { resetPassword } from '@api/userApi';
-import Button from '@components/Button';
-import InputFieldWithLabel from '@components/InputFieldWithLabel';
+import Button from '@components/buttons/Button';
+import InputFieldWithLabel from '@components/inputs/InputFieldWithLabel';
 import PasswordHint from '@components/PasswordHint';
 import Spinner from '@components/Spinner';
 import GlobalLayout from '@layouts/GlobalLayout';

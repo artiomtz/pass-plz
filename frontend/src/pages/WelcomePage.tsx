@@ -1,5 +1,5 @@
 import { pingApi } from '@api/healthApi';
-import Button from '@components/Button';
+import Button from '@components/buttons/Button';
 import GlobalLayout from '@layouts/GlobalLayout';
 import ROUTES from '@routes/constants';
 import { LockKeyholeOpen, UserPlus } from 'lucide-react';

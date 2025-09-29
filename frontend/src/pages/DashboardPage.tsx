@@ -1,10 +1,10 @@
 import { createPasswordApi, deletePasswordApi, getPasswordsApi, updatePasswordApi } from '@api/passwordApi'; // Your API call here
-import Button from '@components/Button';
+import Button from '@components/buttons/Button';
 import PasswordCard from '@components/PasswordCard';
-import SearchBar from '@components/SearchBar';
-import SortDropdown from '@components/SortDropdown';
+import SearchBar from '@components/search/SearchBar';
+import SortDropdown from '@components/search/SortDropdown';
 import Spinner from '@components/Spinner';
-import TagsBox from '@components/TagsBox';
+import TagsBox from '@components/tags/TagsBox';
 import SuggestionsProvider from '@contexts/SuggestionsContext';
 import useAuth from '@hooks/useAuth';
 import GlobalLayout from '@layouts/GlobalLayout';

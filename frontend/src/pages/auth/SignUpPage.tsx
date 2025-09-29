@@ -1,7 +1,7 @@
 import { signUpApi } from '@api/authApi';
-import Button from '@components/Button';
-import InputFieldWithLabel from '@components/InputFieldWithLabel';
-import LabelTermsConditions from '@components/LabelTermsConditions';
+import Button from '@components/buttons/Button';
+import InputFieldWithLabel from '@components/inputs/InputFieldWithLabel';
+import LabelTermsConditions from '@components/labels/LabelTermsConditions';
 import PasswordHint from '@components/PasswordHint';
 import Spinner from '@components/Spinner';
 import GlobalLayout from '@layouts/GlobalLayout';

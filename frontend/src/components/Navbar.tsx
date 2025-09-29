@@ -1,6 +1,6 @@
 import { logoutApi } from '@api/authApi';
 import { requestCancellation } from '@api/userApi';
-import Button from '@components/Button';
+import Button from '@components/buttons/Button';
 import ModalConfirmation from '@components/ModalConfirmation';
 import Spinner from '@components/Spinner';
 import useAuth from '@hooks/useAuth';

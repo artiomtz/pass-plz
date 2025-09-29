@@ -1,16 +1,15 @@
 import Dropdown from '@components/Dropdown';
-import InputField from '@components/InputField';
+import InputField from '@components/inputs/InputField';
 import { handleSuggestionKeyDown } from '@utils/keyboardUtil';
 import React, { useState } from 'react';
 
-interface InputTagProps {
-    limit?: number;
-    onChange: (_value: string) => void;
+interface InputCategoryProps {
+    onChange: (_val: string) => void;
     suggestions?: string[];
     value: string;
 }
 
-const InputTag: React.FC<InputTagProps> = ({ limit = 5, onChange, suggestions = [], value }) => {
+const InputCategory: React.FC<InputCategoryProps> = ({ onChange, suggestions = [], value }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [highlightedIndex, setHighlightedIndex] = useState(0);
 
@@ -45,8 +44,8 @@ const InputTag: React.FC<InputTagProps> = ({ limit = 5, onChange, suggestions = 
                         return setIsOpen(false);
                     }, 200);
                 }}
-                onChange={(value) => {
-                    onChange(value);
+                onChange={(val) => {
+                    onChange(val);
                     setIsOpen(true);
                     setHighlightedIndex(0);
                 }}
@@ -54,9 +53,10 @@ const InputTag: React.FC<InputTagProps> = ({ limit = 5, onChange, suggestions = 
                     return setIsOpen(true);
                 }}
                 onKeyDown={handleKeyDown}
-                placeholder={`Add up to ${limit} tags`}
+                placeholder='i.e. Work, Travel'
                 value={value}
             />
+
             <Dropdown
                 highlightedIndex={highlightedIndex}
                 isOpen={isOpen}
@@ -66,4 +66,4 @@ const InputTag: React.FC<InputTagProps> = ({ limit = 5, onChange, suggestions = 
         </div>
     );
 };
-export default InputTag;
+export default InputCategory;

@@ -1,7 +1,7 @@
 import { signInApi } from '@api/authApi';
 import { updateLoginTimeApi } from '@api/userApi';
-import Button from '@components/Button';
-import InputFieldWithLabel from '@components/InputFieldWithLabel';
+import Button from '@components/buttons/Button';
+import InputFieldWithLabel from '@components/inputs/InputFieldWithLabel';
 import Spinner from '@components/Spinner';
 import useAuth from '@hooks/useAuth';
 import GlobalLayout from '@layouts/GlobalLayout';

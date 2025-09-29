@@ -1,4 +1,4 @@
-import ToastProvider from '@components/ToastProvider';
+import Toast from '@components/Toast';
 import AuthProvider from '@contexts/AuthContext';
 import ErrorBoundary from '@contexts/ErrorBoundary';
 import AppRoutes from '@routes/AppRouter';
@@ -22,7 +22,7 @@ const App = () => (
                     }>
                     <AppRoutes />
                 </ErrorBoundary>
-                <ToastProvider />
+                <Toast />
                 {/* </ThemeProvider> */}
             </AuthProvider>
         </QueryClientProvider>

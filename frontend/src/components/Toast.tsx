@@ -1,6 +1,6 @@
 import { Toaster } from 'react-hot-toast';
 
-const ToastProvider: React.FC = () => {
+const Toast: React.FC = () => {
     return (
         <Toaster
             position='bottom-right'
@@ -26,4 +26,4 @@ const ToastProvider: React.FC = () => {
     );
 };
 
-export default ToastProvider;
+export default Toast;

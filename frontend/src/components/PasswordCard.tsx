@@ -1,17 +1,17 @@
-import Button from '@components/Button';
-import ButtonAdd from '@components/ButtonAdd';
-import ButtonCopy from '@components/ButtonCopy';
-import ButtonEye from '@components/ButtonEye';
+import Button from '@components/buttons/Button';
+import ButtonAdd from '@components/buttons/ButtonAdd';
+import ButtonCopy from '@components/buttons/ButtonCopy';
+import ButtonEye from '@components/buttons/ButtonEye';
 import CircleInitial from '@components/CircleInitial';
-import InputCategory from '@components/InputCategory';
-import InputDate from '@components/InputDate';
-import InputField from '@components/InputField';
-import InputTag from '@components/InputTag';
-import InputTextbox from '@components/InputTextbox';
-import Label from '@components/Label';
+import InputCategory from '@components/inputs/InputCategory';
+import InputDate from '@components/inputs/InputDate';
+import InputField from '@components/inputs/InputField';
+import InputTag from '@components/inputs/InputTag';
+import InputTextbox from '@components/inputs/InputTextbox';
+import Label from '@components/labels/Label';
 import ModalConfirmation from '@components/ModalConfirmation';
 import Spinner from '@components/Spinner';
-import Tags from '@components/Tags';
+import Tags from '@components/tags/Tags';
 import useSuggestions from '@hooks/useSuggestions';
 import PasswordEntry from '@models/passwordEntry';
 import { formatDisplayDate, formatDisplayDateTime, getIsoDateFromString } from '@utils/dateUtil';
@@ -92,6 +92,8 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
     const handleCancel = () => {
         if (isNew) {
             onCancel();
+            setHasDraft(false);
+            draftStorage.clear(entry.id);
             toast.success('Cancelled creating the new password');
         } else {
             setExpand(false);
@@ -108,9 +110,10 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
 
     const handleTrashClick = () => {
         if (isNew) {
-            draftStorage.clear(entry.id);
-            setHasDraft(false);
             onCancel();
+            setHasDraft(false);
+            draftStorage.clear(entry.id);
+            toast.success('Cancelled creating the new password');
         } else {
             setShowConfirm(true);
         }

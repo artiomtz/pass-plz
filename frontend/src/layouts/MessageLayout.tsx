@@ -1,4 +1,4 @@
-import Button from '@components/Button';
+import Button from '@components/buttons/Button';
 import useAuth from '@hooks/useAuth';
 import { AlertTriangle, Home } from 'lucide-react';
 
