@@ -5,6 +5,7 @@ import ModalConfirmation from '@components/ModalConfirmation';
 import Spinner from '@components/Spinner';
 import useAuth from '@hooks/useAuth';
 import ROUTES from '@routes/constants';
+import logger from '@utils/loggerUtil';
 import { CircleX, Menu, Trash2, UserX } from 'lucide-react';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -30,7 +31,7 @@ const Navbar: React.FC = () => {
 
     const handleDeleteConfirm = async () => {
         if (!user) {
-            console.warn('failed to delete account. no user found');
+            logger.warn('failed to delete account. no user found');
 
             return;
         }

@@ -3,15 +3,16 @@ import { API_PASSWORDS, API_PASSWORDS_USER } from '@api/constants';
 import { ApiResponse, handleApiError } from '@api/handleApiError';
 import PasswordEntry from '@models/passwordEntry';
 import User from '@models/user';
+import logger from '@utils/loggerUtil';
 
 export const createPasswordApi = async (newEntry: PasswordEntry): Promise<ApiResponse<PasswordEntry>> => {
     try {
-        console.log(`requesting ${API_PASSWORDS}`);
+        logger.info(`requesting ${API_PASSWORDS}`);
         const { data } = await api.post(API_PASSWORDS, newEntry);
 
         return { data: data, ok: true };
     } catch (error) {
-        console.error('failed to create password');
+        logger.error('failed to create password', error);
 
         return handleApiError(error);
     }
@@ -19,7 +20,7 @@ export const createPasswordApi = async (newEntry: PasswordEntry): Promise<ApiRes
 
 export const getPasswordsApi = async (user: User): Promise<ApiResponse<PasswordEntry[]>> => {
     try {
-        console.log(`requesting ${API_PASSWORDS_USER}`);
+        logger.info(`requesting ${API_PASSWORDS_USER}`);
         const { data, status } = await api.get(`${API_PASSWORDS_USER}/${user.id}`);
 
         if (status === 204 || !data) {
@@ -28,7 +29,7 @@ export const getPasswordsApi = async (user: User): Promise<ApiResponse<PasswordE
 
         return { data: Array.isArray(data) ? data : [], ok: true };
     } catch (error) {
-        console.error('failed to get passwords');
+        logger.error('failed to get passwords', error);
 
         return handleApiError(error);
     }
@@ -36,12 +37,12 @@ export const getPasswordsApi = async (user: User): Promise<ApiResponse<PasswordE
 
 export const updatePasswordApi = async (updatedEntry: PasswordEntry): Promise<ApiResponse<PasswordEntry>> => {
     try {
-        console.log(`requesting ${API_PASSWORDS}`);
+        logger.info(`requesting ${API_PASSWORDS}`);
         const { data } = await api.put(`${API_PASSWORDS}/${updatedEntry.id}`, updatedEntry);
 
         return { data: data, ok: true };
     } catch (error) {
-        console.error('failed to update password');
+        logger.error('failed to update password', error);
 
         return handleApiError(error);
     }
@@ -49,18 +50,18 @@ export const updatePasswordApi = async (updatedEntry: PasswordEntry): Promise<Ap
 
 export const deletePasswordApi = async (entry: PasswordEntry): Promise<ApiResponse<boolean>> => {
     try {
-        console.log(`requesting ${API_PASSWORDS}`);
+        logger.info(`requesting ${API_PASSWORDS}`);
         const response = await api.delete(`${API_PASSWORDS}/${entry.id}`);
 
         if (response.status != 200) {
-            console.error('failed to delete password. bad response code');
+            logger.warn('failed to delete password. bad response code');
 
             return { data: false, ok: true };
         }
 
         return { data: true, ok: true };
     } catch (error) {
-        console.error('failed to delete password');
+        logger.error('failed to delete password', error);
 
         return handleApiError(error);
     }

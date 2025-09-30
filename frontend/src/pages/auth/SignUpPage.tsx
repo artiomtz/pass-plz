@@ -7,6 +7,7 @@ import Spinner from '@components/Spinner';
 import GlobalLayout from '@layouts/GlobalLayout';
 import ROUTES from '@routes/constants';
 import { sanitizeInput, validateEmail } from '@utils/inputUtil';
+import logger from '@utils/loggerUtil';
 import { sanitizeBadCharacters, validatePassword } from '@utils/passwordUtil';
 import { UserPlus } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -39,7 +40,7 @@ const SignUpPage = () => {
             toast.success(`Verification email sent to ${email}`);
             navigate(ROUTES.SIGN_IN, { replace: true });
         } catch (error) {
-            console.error('failed to sign up', error);
+            logger.error('failed to sign up', error);
             toast.error(`Error occurred while signing up ${email}`);
         }
     };

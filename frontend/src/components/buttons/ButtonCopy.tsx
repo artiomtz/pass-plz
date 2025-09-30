@@ -1,3 +1,4 @@
+import logger from '@utils/loggerUtil';
 import { Copy } from 'lucide-react';
 import React from 'react';
 import toast from 'react-hot-toast';
@@ -18,7 +19,7 @@ const ButtonCopy: React.FC<ButtonCopyProps> = ({ textToCopy }) => {
             await navigator.clipboard.writeText(textToCopy);
             toast.success('Copied');
         } catch (error) {
-            console.error('failed to copy to clipboard');
+            logger.error('failed to copy to clipboard', error);
             toast.error('Failed to copy');
         }
     };

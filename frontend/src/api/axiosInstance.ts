@@ -1,6 +1,7 @@
 import { refreshApi } from '@api/authApi';
 import { isBasicAuthRoute, isNoAuthRoute, isUserAuthRoute } from '@api/constants';
 import { getBasicAuthHeader, getBearerHeader } from '@utils/authUtil';
+import logger from '@utils/loggerUtil';
 import { getRefreshToken } from '@utils/storageUtil';
 import axios from 'axios';
 import camelcaseKeys from 'camelcase-keys';
@@ -25,23 +26,23 @@ api.interceptors.request.use(
         }
 
         if (isNoAuthRoute(config.url)) {
-            console.debug('using no authentication for the request');
+            logger.info('using no authentication for the request');
         } else if (isBasicAuthRoute(config.url) && config.auth) {
             const { password, username } = config.auth;
             config.headers.Authorization = getBasicAuthHeader(username, password);
-            console.debug('using basic authentication for the request', `${config.headers.Authorization}`);
+            logger.info('using basic authentication for the request', `${config.headers.Authorization}`);
         } else {
             const refreshToken = getRefreshToken();
             if (refreshToken) {
                 config.headers.Authorization = getBearerHeader(refreshToken);
-                console.debug('using jwt authentication for the request', `Bearer ${refreshToken}`);
+                logger.info('using jwt authentication for the request', `Bearer ${refreshToken}`);
             }
         }
 
         return config;
     },
     (error) => {
-        console.error('failed to intercept request');
+        logger.error('failed to intercept request', error);
         if (error instanceof Error) {
             Promise.reject(error);
         } else {
@@ -71,7 +72,7 @@ api.interceptors.response.use(
                     failedQueue.push({ reject, resolve });
                 }).then((token) => {
                     original.headers.Authorization = `Bearer ${token}`;
-                    console.log('signing in again', `Bearer ${token}`);
+                    logger.info('signing in again', `Bearer ${token}`);
 
                     return api(original);
                 });
@@ -87,13 +88,12 @@ api.interceptors.response.use(
                 }
                 processQueue(null, newAccessToken);
                 original.headers.Authorization = `Bearer ${newAccessToken}`;
-                console.debug('refreshing access token:', `Bearer ${newAccessToken}`);
+                logger.info('refreshing access token:', `Bearer ${newAccessToken}`);
 
                 return api(original);
-            } catch (err) {
-                processQueue(err, null);
-
-                console.error('failed to intercept response. error while refreshing access token');
+            } catch (errorRefresh) {
+                processQueue(errorRefresh, null);
+                logger.error('failed to intercept response. error while refreshing access token', errorRefresh);
 
                 return Promise.reject(error instanceof Error ? error : new Error(String(error)));
             } finally {
@@ -101,7 +101,7 @@ api.interceptors.response.use(
             }
         }
 
-        console.error('failed to intercept response');
+        logger.error('failed to intercept response', error);
 
         return Promise.reject(error instanceof Error ? error : new Error(String(error)));
     }

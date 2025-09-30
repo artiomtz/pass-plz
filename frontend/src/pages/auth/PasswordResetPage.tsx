@@ -6,6 +6,7 @@ import Spinner from '@components/Spinner';
 import GlobalLayout from '@layouts/GlobalLayout';
 import PasswordReset from '@models/passwordReset';
 import ROUTES from '@routes/constants';
+import logger from '@utils/loggerUtil';
 import { sanitizeBadCharacters, validatePassword } from '@utils/passwordUtil';
 import { getResetToken, setResetToken } from '@utils/storageUtil';
 import { LockKeyhole } from 'lucide-react';
@@ -30,7 +31,7 @@ const ResetPasswordPage = () => {
 
         const token = getResetToken();
         if (!token) {
-            console.error('failed to reset password. no reset token found in storage');
+            logger.error('failed to reset password. no reset token found in storage');
             toast.error('Failed to fetch reset token');
 
             return;
@@ -53,8 +54,8 @@ const ResetPasswordPage = () => {
             }
 
             navigate(ROUTES.SIGN_IN, { replace: true });
-        } catch (err) {
-            console.error('failed to reset password', err);
+        } catch (error) {
+            logger.error('failed to reset password', error);
             toast.error('Error occurred while resetting password');
         }
     };
@@ -65,7 +66,7 @@ const ResetPasswordPage = () => {
         if (token) {
             setResetToken(token);
         } else {
-            console.warn('failed to fetch token from search parameters');
+            logger.warn('failed to fetch token from search parameters');
             toast.error('failed to fetch reset token');
         }
     }, [searchParams]);

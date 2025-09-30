@@ -16,6 +16,7 @@ import useSuggestions from '@hooks/useSuggestions';
 import PasswordEntry from '@models/passwordEntry';
 import { formatDisplayDate, formatDisplayDateTime, getIsoDateFromString } from '@utils/dateUtil';
 import { normalizeTag, sanitizeFormData, sanitizeInput, saveFormDataDraft } from '@utils/inputUtil';
+import logger from '@utils/loggerUtil';
 import { sanitizeBadCharacters } from '@utils/passwordUtil';
 import { draftStorage } from '@utils/storageUtil';
 import { ChevronDown, ChevronUp, CircleX, Save, Trash2 } from 'lucide-react';
@@ -76,7 +77,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
 
     const handleSave = () => {
         if (!formData.name?.trim() || !formData.username?.trim() || !formData.password?.trim()) {
-            console.warn('failed to save. required fields must be filled');
+            logger.warn('failed to save. required fields must be filled');
 
             return;
         }
@@ -123,14 +124,14 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
         const tag = normalizeTag(tagInput);
 
         if (!tag || formData.tags?.includes(tag) || (formData.tags?.length ?? 0) >= TAGS_LIMIT) {
-            console.warn(`failed to add tag. must be a unique tag and password can have up to ${TAGS_LIMIT} tags`);
+            logger.warn(`failed to add tag. must be a unique tag and password can have up to ${TAGS_LIMIT} tags`);
 
             return;
         }
 
         handleChange('tags', [...(formData.tags ?? []), tag]);
         setTagInput('');
-        console.log('added tag: ', tag);
+        logger.info('added tag: ', tag);
     };
 
     const toggleExpand = () => {
@@ -145,7 +146,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
     useEffect(() => {
         setFormData(draft ?? entry);
         if (draft) {
-            console.log(`loaded draft for ${draft.name}`);
+            logger.info(`loaded draft for ${draft.name}`);
             toast.success(`draft loaded for ${draft.name}`);
         }
     }, [entry]);

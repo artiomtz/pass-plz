@@ -2,6 +2,7 @@ import { pingApi } from '@api/healthApi';
 import Button from '@components/buttons/Button';
 import GlobalLayout from '@layouts/GlobalLayout';
 import ROUTES from '@routes/constants';
+import logger from '@utils/loggerUtil';
 import { LockKeyholeOpen, UserPlus } from 'lucide-react';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
@@ -16,7 +17,7 @@ const WelcomePage = () => {
             if (!response.ok) {
                 toast.error(`${response.error}. Try again shortly`);
             } else {
-                console.log('connected to server');
+                logger.info('connected to server');
                 toast.success('Connected to server');
             }
         };

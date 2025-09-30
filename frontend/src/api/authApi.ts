@@ -3,6 +3,7 @@ import { API_AUTH_AUTHENTICATE, API_AUTH_LOGOUT, API_AUTH_REFRESH, API_AUTH_REGI
 import { ApiResponse, handleApiError } from '@api/handleApiError';
 import Authentication from '@models/authentication';
 import { getBearerHeader } from '@utils/authUtil';
+import logger from '@utils/loggerUtil';
 import { clearStoredUser, clearTokens, getRefreshToken, setAccessToken, setRefreshToken } from '@utils/storageUtil';
 
 let isRefreshing = false;
@@ -10,7 +11,7 @@ let refreshPromise: Promise<string | null> | null = null;
 
 export const signUpApi = async (email: string, password: string): Promise<ApiResponse<Authentication>> => {
     try {
-        console.log(`requesting ${API_AUTH_REGISTER}`);
+        logger.info(`requesting ${API_AUTH_REGISTER}`);
         const { data } = await api.post<Authentication>(
             API_AUTH_REGISTER,
             { email, password },
@@ -22,7 +23,7 @@ export const signUpApi = async (email: string, password: string): Promise<ApiRes
 
         return { data: data, ok: true };
     } catch (error) {
-        console.error('failed to sign up');
+        logger.error('failed to sign up', error);
 
         return handleApiError(error);
     }
@@ -30,7 +31,7 @@ export const signUpApi = async (email: string, password: string): Promise<ApiRes
 
 export const signInApi = async (email: string, password: string): Promise<ApiResponse<Authentication>> => {
     try {
-        console.log(`requesting ${API_AUTH_AUTHENTICATE}`);
+        logger.info(`requesting ${API_AUTH_AUTHENTICATE}`);
         const { data } = await api.post<Authentication>(
             API_AUTH_AUTHENTICATE,
             { email, password },
@@ -42,16 +43,16 @@ export const signInApi = async (email: string, password: string): Promise<ApiRes
 
         return { data: data, ok: true };
     } catch (error) {
-        console.error('failed to sign in');
+        logger.error('failed to sign in', error);
 
         return handleApiError(error);
     }
 };
 
 export const refreshApi = async (): Promise<string | null> => {
-    console.log('refreshing access token');
+    logger.info('refreshing access token');
     if (isRefreshing && refreshPromise) {
-        console.log('already refreshing. returning shared promise');
+        logger.info('already refreshing. returning shared promise');
 
         return refreshPromise;
     }
@@ -61,12 +62,12 @@ export const refreshApi = async (): Promise<string | null> => {
         try {
             const refreshToken = getRefreshToken();
             if (!refreshToken) {
-                console.warn('failed to refresh access token. no refresh token found in storage');
+                logger.warn('failed to refresh access token. no refresh token found in storage');
 
                 return null;
             }
 
-            console.log(`requesting ${API_AUTH_REFRESH}`);
+            logger.info(`requesting ${API_AUTH_REFRESH}`);
             const response = await api.get(API_AUTH_REFRESH, {
                 headers: {
                     Authorization: getBearerHeader(refreshToken),
@@ -75,17 +76,17 @@ export const refreshApi = async (): Promise<string | null> => {
 
             const { accessToken } = response.data;
             if (!accessToken) {
-                console.error('failed to refresh access token. did not receive new token');
+                logger.warn('failed to refresh access token. did not receive new token');
 
                 return null;
             }
 
             setAccessToken(accessToken);
-            console.log('new access token set');
+            logger.info('new access token set');
 
             return accessToken;
-        } catch {
-            console.error('failed to refresh access token');
+        } catch (error) {
+            logger.error('failed to refresh access token', error);
             clearTokens();
             clearStoredUser();
 
@@ -103,12 +104,12 @@ export const logoutApi = async (): Promise<void> => {
     try {
         const refreshToken = getRefreshToken();
         if (!refreshToken) {
-            console.warn('failed to logout. no refresh token found in storage');
+            logger.warn('failed to logout. no refresh token found in storage');
 
             return;
         }
 
-        console.log(`requesting ${API_AUTH_LOGOUT}`);
+        logger.info(`requesting ${API_AUTH_LOGOUT}`);
         const response = await api.post(API_AUTH_LOGOUT, null, {
             headers: {
                 Authorization: getBearerHeader(refreshToken),
@@ -116,9 +117,9 @@ export const logoutApi = async (): Promise<void> => {
         });
 
         if (response.status != 200) {
-            console.warn('failed to logout. bad response code');
+            logger.warn('failed to logout. bad response code');
         }
     } catch (error) {
-        console.warn('failed to logout');
+        logger.warn('failed to logout');
     }
 };

@@ -1,6 +1,7 @@
 import { refreshApi } from '@api/authApi';
 import User from '@models/user';
 import ROUTES, { UNPROTECTED_ROUTES } from '@routes/constants';
+import logger from '@utils/loggerUtil';
 import { clearStoredUser, clearTokens, getAccessToken, getStoredUser, setStoredUser } from '@utils/storageUtil';
 import { isTokenExpired } from '@utils/tokenUtil';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
@@ -29,7 +30,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     useEffect(() => {
         const checkAuth = async () => {
             if (UNPROTECTED_ROUTES.includes(location.pathname)) {
-                console.log('navigating to an unprotected route');
+                logger.info('navigating to an unprotected route');
                 setIsLoading(false);
 
                 return;
@@ -38,7 +39,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             const storedUser = getStoredUser();
             const storedToken = getAccessToken();
             if (!storedUser || !storedToken) {
-                console.warn('failed to authenticate. no user or access token found in storage');
+                logger.warn('failed to authenticate. no user or access token found in storage');
                 logout();
 
                 return;
@@ -54,7 +55,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
                     return;
                 }
 
-                console.log('refreshed access token');
+                logger.info('refreshed access token');
             }
 
             setUser(storedUser);
@@ -68,7 +69,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser(userData);
         setStoredUser(userData);
         setIsLoading(false);
-        console.log('logging in');
+        logger.info('logging in');
     };
 
     const logout = () => {
@@ -77,7 +78,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         clearStoredUser();
         setIsLoading(false);
         navigate(ROUTES.WELCOME, { replace: true });
-        console.log('logging out');
+        logger.info('logging out');
     };
 
     const authState = useMemo(() => {

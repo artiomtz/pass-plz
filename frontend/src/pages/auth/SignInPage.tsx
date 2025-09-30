@@ -8,6 +8,7 @@ import GlobalLayout from '@layouts/GlobalLayout';
 import type User from '@models/user';
 import ROUTES from '@routes/constants';
 import { sanitizeInput, validateEmail } from '@utils/inputUtil';
+import logger from '@utils/loggerUtil';
 import { sanitizeBadCharacters } from '@utils/passwordUtil';
 import { LockKeyholeOpen, UserLock } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -49,7 +50,7 @@ const SignInPage = () => {
             toast.success(`${email} signed in`);
             navigate(ROUTES.DASHBOARD, { replace: true });
         } catch (error) {
-            console.error('failed to sign in', error);
+            logger.error('failed to sign in', error);
             toast.error(`Error occurred while signing in ${email}`);
         }
     };
