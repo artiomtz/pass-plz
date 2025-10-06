@@ -1,25 +1,33 @@
 import api from '@api/axiosInstance';
 import { API_AUTH_AUTHENTICATE, API_AUTH_LOGOUT, API_AUTH_REFRESH, API_AUTH_REGISTER } from '@api/constants';
 import { ApiResponse, handleApiError } from '@api/handleApiError';
+import HttpStatus from '@api/httpStatus';
 import Authentication from '@models/authentication';
 import { getBearerHeader } from '@utils/authUtil';
 import logger from '@utils/loggerUtil';
 import { clearStoredUser, clearTokens, getRefreshToken, setAccessToken, setRefreshToken } from '@utils/storageUtil';
-
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
 
 export const signUpApi = async (email: string, password: string): Promise<ApiResponse<Authentication>> => {
     try {
         logger.info(`requesting ${API_AUTH_REGISTER}`);
-        const { data } = await api.post<Authentication>(
+        const response = await api.post<Authentication>(
             API_AUTH_REGISTER,
             { email, password },
             { auth: { password, username: email } }
         );
 
+        const { data, status } = response;
+        if (status != HttpStatus.OK || !data) {
+            logger.warn('failed to sign up. bad response code');
+
+            return { error: 'Failed to sign up', ok: false };
+        }
+
         setAccessToken(data.accessToken);
         setRefreshToken(data.refreshToken);
+        logger.info(`successfully signed up ${email}`);
 
         return { data: data, ok: true };
     } catch (error) {
@@ -32,14 +40,22 @@ export const signUpApi = async (email: string, password: string): Promise<ApiRes
 export const signInApi = async (email: string, password: string): Promise<ApiResponse<Authentication>> => {
     try {
         logger.info(`requesting ${API_AUTH_AUTHENTICATE}`);
-        const { data } = await api.post<Authentication>(
+        const response = await api.post<Authentication>(
             API_AUTH_AUTHENTICATE,
             { email, password },
             { auth: { password, username: email } }
         );
 
+        const { data, status } = response;
+        if (status != HttpStatus.OK || !data) {
+            logger.warn('failed to sign in. bad response code');
+
+            return { error: 'Failed to sign in', ok: false };
+        }
+
         setAccessToken(data.accessToken);
         setRefreshToken(data.refreshToken);
+        logger.info(`successfully signed in ${email}`);
 
         return { data: data, ok: true };
     } catch (error) {
@@ -82,7 +98,7 @@ export const refreshApi = async (): Promise<string | null> => {
             }
 
             setAccessToken(accessToken);
-            logger.info('new access token set');
+            logger.info('successfully refreshed access token');
 
             return accessToken;
         } catch (error) {
@@ -116,10 +132,12 @@ export const logoutApi = async (): Promise<void> => {
             },
         });
 
-        if (response.status != 200) {
+        if (response.status != HttpStatus.OK) {
             logger.warn('failed to logout. bad response code');
         }
+
+        logger.info('successfully logged out');
     } catch (error) {
-        logger.warn('failed to logout');
+        logger.error('failed to logout', error);
     }
 };

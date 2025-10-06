@@ -1,4 +1,4 @@
-export const isExpired = (isoDate: string | null) => {
+export const isExpired = (isoDate: string | null): boolean => {
     if (!isoDate) {
         return false;
     }

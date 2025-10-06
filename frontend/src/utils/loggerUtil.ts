@@ -4,7 +4,7 @@ const env = (import.meta.env.VITE_ENV as Env) ?? 'prod';
 const isDev = env === 'local';
 const padding = (level: string) => level.padEnd(8, ' ');
 
-const getTimestamp = () => {
+const getTimestamp = (): string => {
     const now = new Date();
     const time = now.toLocaleTimeString('en-CA', {
         hour: '2-digit',
@@ -19,7 +19,7 @@ const getTimestamp = () => {
 };
 
 const logger = {
-    error: (message: string, ...optional: unknown[]) => {
+    error: (message: string, ...optional: unknown[]): void => {
         if (isDev) {
             console.error(`${getTimestamp()}  ${padding('[ERROR]')} ${message}`, ...optional);
         } else {
@@ -27,15 +27,16 @@ const logger = {
         }
     },
 
-    info: (message: string, ...optional: unknown[]) => {
+    info: (message: string, ...optional: unknown[]): void => {
         if (isDev) {
             console.info(`${getTimestamp()}  ${padding('[INFO]')} ${message}`, ...optional);
         } else {
             console.info(`${message}`);
+            console.info(`${env}`);
         }
     },
 
-    warn: (message: string, ...optional: unknown[]) => {
+    warn: (message: string, ...optional: unknown[]): void => {
         if (isDev) {
             console.warn(`${getTimestamp()}  ${padding('[WARN]')} ${message}`, ...optional);
         } else {

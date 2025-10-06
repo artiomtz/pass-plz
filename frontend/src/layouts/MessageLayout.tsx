@@ -20,7 +20,7 @@ const MessageLayout = ({
 }: MessageLayoutProps) => {
     const { logout } = useAuth();
 
-    const onButtonClick = () => {
+    const onButtonClick = (): void => {
         logout();
     };
 

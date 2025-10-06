@@ -13,7 +13,7 @@ export const getAccessToken = (): string | null => {
     return localStorage.getItem(ACCESS_TOKEN_KEY);
 };
 
-export const setAccessToken = (token: string) => {
+export const setAccessToken = (token: string): void => {
     localStorage.setItem(ACCESS_TOKEN_KEY, token);
 };
 
@@ -21,7 +21,7 @@ export const getRefreshToken = (): string | null => {
     return localStorage.getItem(REFRESH_TOKEN_KEY);
 };
 
-export const setRefreshToken = (token: string) => {
+export const setRefreshToken = (token: string): void => {
     localStorage.setItem(REFRESH_TOKEN_KEY, token);
 };
 
@@ -29,11 +29,11 @@ export const getResetToken = (): string | null => {
     return localStorage.getItem(RESET_TOKEN_KEY);
 };
 
-export const setResetToken = (token: string) => {
+export const setResetToken = (token: string): void => {
     localStorage.setItem(RESET_TOKEN_KEY, token);
 };
 
-export const clearTokens = () => {
+export const clearTokens = (): void => {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem(RESET_TOKEN_KEY);
@@ -62,24 +62,24 @@ export function hasDraft(id?: number | null): boolean {
 }
 
 export const draftStorage = {
-    clear: (id: number) => {
+    clear: (id: number): void => {
         const key = getDraftKey(id);
         localStorage.removeItem(key);
     },
 
-    clearAll: () => {
+    clearAll: (): void => {
         Object.keys(localStorage)
             .filter((k) => k.startsWith(DRAFT_PREFIX))
             .forEach((k) => localStorage.removeItem(k));
     },
 
-    get: (key: DraftKey) => {
+    get: (key: DraftKey): string | null => {
         const raw = localStorage.getItem(key);
 
         return raw ? JSON.parse(raw) : null;
     },
 
-    getAll: () => {
+    getAll: (): Record<string, any> => {
         const drafts: Record<string, any> = {};
         Object.keys(localStorage).forEach((key) => {
             if (key.startsWith(DRAFT_PREFIX)) {
@@ -93,7 +93,7 @@ export const draftStorage = {
         return drafts;
     },
 
-    set: (key: DraftKey, value: any) => {
+    set: (key: DraftKey, value: any): void => {
         localStorage.setItem(key, JSON.stringify(value));
     },
 };

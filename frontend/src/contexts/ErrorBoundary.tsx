@@ -1,5 +1,4 @@
 import logger from '@utils/loggerUtil';
-import { error } from 'console';
 import React from 'react';
 import toast from 'react-hot-toast';
 
@@ -18,8 +17,8 @@ class ErrorBoundary extends React.Component<Props, State> {
         this.state = { hasError: false };
     }
 
-    static getDerivedStateFromError(_: Error): State {
-        logger.error('something went wrong', error);
+    static getDerivedStateFromError(error: Error): State {
+        logger.error('something went wrong', error.message);
         toast.error('Something went wrong');
 
         return { hasError: true };

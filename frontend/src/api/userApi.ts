@@ -7,6 +7,7 @@ import {
     LOGIN_TIME,
 } from '@api/constants';
 import { ApiResponse, handleApiError } from '@api/handleApiError';
+import HttpStatus from '@api/httpStatus';
 import PasswordReset from '@models/passwordReset';
 import User from '@models/user';
 import logger from '@utils/loggerUtil';
@@ -16,11 +17,13 @@ export const updateLoginTimeApi = async (user: User): Promise<ApiResponse<boolea
         logger.info(`requesting ${API_USERS}`);
         const response = await api.patch(`${API_USERS}/${user.id}${LOGIN_TIME}`);
 
-        if (response.status != 200) {
+        if (response.status != HttpStatus.OK) {
             logger.warn('failed to update login time. bad response code');
 
-            return { data: false, ok: true };
+            return { error: 'Failed to update login time', ok: false };
         }
+
+        logger.info('successfully updated login time');
 
         return { data: true, ok: true };
     } catch (error) {
@@ -30,18 +33,26 @@ export const updateLoginTimeApi = async (user: User): Promise<ApiResponse<boolea
     }
 };
 
-export const requestResetPassword = async (email: string): Promise<ApiResponse<boolean>> => {
+export const requestResetPassword = async (email: string): Promise<ApiResponse<string>> => {
     try {
         logger.info(`requesting ${API_USERS_REQUEST_RESET_PASSWORD}`);
         const response = await api.post(`${API_USERS_REQUEST_RESET_PASSWORD}/${email}`);
 
-        if (response.status != 200) {
-            logger.warn('failed to request password reset. bad response code');
+        if (response.status == HttpStatus.TOO_MANY_REQUESTS) {
+            logger.warn('failed to request password reset. too many requests');
 
-            return { data: false, ok: true };
+            return { error: 'Already requested a password reset', ok: false };
         }
 
-        return { data: true, ok: true };
+        if (response.status != HttpStatus.OK) {
+            logger.warn('failed to request password reset. bad response code');
+
+            return { error: 'Failed to request password reset', ok: false };
+        }
+
+        logger.info('successfully requested password reset');
+
+        return { data: 'Password reset request sent via email', ok: true };
     } catch (error) {
         logger.error('failed to request password reset', error);
 
@@ -49,18 +60,20 @@ export const requestResetPassword = async (email: string): Promise<ApiResponse<b
     }
 };
 
-export const resetPassword = async (passwordReset: PasswordReset): Promise<ApiResponse<boolean>> => {
+export const resetPassword = async (passwordReset: PasswordReset): Promise<ApiResponse<string>> => {
     try {
         logger.info(`requesting ${API_USERS_RESET_PASSWORD}`);
         const response = await api.post(`${API_USERS_RESET_PASSWORD}`, passwordReset);
 
-        if (response.status != 200) {
+        if (response.status != HttpStatus.OK) {
             logger.warn('failed to reset password. bad response code');
 
-            return { data: false, ok: true };
+            return { error: 'Failed to reset password', ok: false };
         }
 
-        return { data: true, ok: true };
+        logger.info('successfully reset password');
+
+        return { data: 'Successfully reset password', ok: true };
     } catch (error) {
         logger.error('failed to reset password', error);
 
@@ -68,18 +81,26 @@ export const resetPassword = async (passwordReset: PasswordReset): Promise<ApiRe
     }
 };
 
-export const requestCancellation = async (user: User): Promise<ApiResponse<boolean>> => {
+export const requestCancellation = async (user: User): Promise<ApiResponse<string>> => {
     try {
         logger.info(`requesting ${API_USERS_REQUEST_CANCELLATION}`);
         const response = await api.post(`${API_USERS_REQUEST_CANCELLATION}/${user.id}`);
 
-        if (response.status != 200) {
-            logger.warn('failed to cancel account. bad response code');
+        if (response.status == HttpStatus.TOO_MANY_REQUESTS) {
+            logger.warn('failed to cancel account. too many requests');
 
-            return { data: false, ok: true };
+            return { error: 'Already requested a cancellation', ok: false };
         }
 
-        return { data: true, ok: true };
+        if (response.status != HttpStatus.OK) {
+            logger.warn('failed to cancel account. bad response code');
+
+            return { error: 'Failed to cancel account', ok: false };
+        }
+
+        logger.info('successfully requested cancellation');
+
+        return { data: 'Deletion confirmation sent via email', ok: true };
     } catch (error) {
         logger.error('failed to cancel account', error);
 

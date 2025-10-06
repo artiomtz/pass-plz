@@ -1,9 +1,4 @@
-// import DashTest from '@pages/dashboard/DashTest';
 import ErrorBoundary from '@contexts/ErrorBoundary';
-// import ConfirmEmail from '@pages/Auth/ConfirmEmail';
-// import { SuggestionsProvider } from '@contexts/SuggestionsContext';
-// import SignUp from '@pages/Auth/SignUp';
-// import PasswordDetail from '@pages/Dashboard/PasswordDetail';
 import PasswordResetPage from '@pages/auth/PasswordResetPage';
 import RequestResetPage from '@pages/auth/RequestResetPage';
 import SignInPage from '@pages/auth/SignInPage';

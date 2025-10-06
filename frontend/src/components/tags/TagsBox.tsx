@@ -8,7 +8,7 @@ type TagsBoxProps = {
 const TagsBox: React.FC<TagsBoxProps> = ({ onChange, selectedTags }) => {
     const { tags } = useSuggestions();
 
-    const toggleTag = (tag: string) => {
+    const toggleTag = (tag: string): void => {
         if (selectedTags.includes(tag)) {
             onChange(
                 selectedTags.filter((t) => {

@@ -28,7 +28,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        const checkAuth = async () => {
+        const checkAuth = async (): Promise<void> => {
             if (UNPROTECTED_ROUTES.includes(location.pathname)) {
                 logger.info('navigating to an unprotected route');
                 setIsLoading(false);
@@ -55,7 +55,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
                     return;
                 }
 
-                logger.info('refreshed access token');
+                logger.info('successfully refreshed access token');
             }
 
             setUser(storedUser);
@@ -65,20 +65,20 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         checkAuth();
     }, [location.pathname]);
 
-    const login = (userData: User) => {
+    const login = (userData: User): void => {
         setUser(userData);
         setStoredUser(userData);
         setIsLoading(false);
-        logger.info('logging in');
+        logger.info('successfully logged in');
     };
 
-    const logout = () => {
+    const logout = (): void => {
         setUser(null);
         clearTokens();
         clearStoredUser();
         setIsLoading(false);
         navigate(ROUTES.WELCOME, { replace: true });
-        logger.info('logging out');
+        logger.info('successfully logged out');
     };
 
     const authState = useMemo(() => {

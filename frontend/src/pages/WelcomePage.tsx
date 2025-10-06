@@ -2,7 +2,6 @@ import { pingApi } from '@api/healthApi';
 import Button from '@components/buttons/Button';
 import GlobalLayout from '@layouts/GlobalLayout';
 import ROUTES from '@routes/constants';
-import logger from '@utils/loggerUtil';
 import { LockKeyholeOpen, UserPlus } from 'lucide-react';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
@@ -12,24 +11,24 @@ const WelcomePage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const pingServer = async () => {
+        const pingServer = async (): Promise<void> => {
             const response = await pingApi();
+
             if (!response.ok) {
                 toast.error(`${response.error}. Try again shortly`);
             } else {
-                logger.info('connected to server');
-                toast.success('Connected to server');
+                toast.success(response.data);
             }
         };
 
         pingServer();
     }, []);
 
-    const handleSignUp = async () => {
+    const handleSignUp = (): void => {
         navigate(ROUTES.SIGN_UP);
     };
 
-    const handleSignIn = async () => {
+    const handleSignIn = (): void => {
         navigate(ROUTES.SIGN_IN);
     };
 

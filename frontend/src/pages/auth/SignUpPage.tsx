@@ -25,27 +25,27 @@ const SignUpPage = () => {
     const [isPasswordValid, setIsPasswordValid] = useState(false);
     const [showPasswordHint, setShowPasswordHint] = useState(false);
 
-    const handleSignUp = async () => {
+    const handleSignUp = async (): Promise<void> => {
         try {
             setLoading(true);
             const response = await signUpApi(email, password);
-
             setLoading(false);
-            if (!response.ok) {
-                toast.error(`Failed to sign up ${email}`);
 
-                return null;
+            if (!response.ok) {
+                toast.error(response.error);
+
+                return;
             }
 
             toast.success(`Verification email sent to ${email}`);
             navigate(ROUTES.SIGN_IN, { replace: true });
         } catch (error) {
             logger.error('failed to sign up', error);
-            toast.error(`Error occurred while signing up ${email}`);
+            toast.error(`Failed to sign up ${email}`);
         }
     };
 
-    const inputHint = () => {
+    const inputHint = (): string => {
         if (!email && !password && !confirmPassword) {
             return '';
         }

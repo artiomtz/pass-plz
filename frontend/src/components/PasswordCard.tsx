@@ -62,10 +62,11 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
     const [showPassword, setShowPassword] = useState(false);
     const [tagInput, setTagInput] = useState('');
     const [hasDraft, setHasDraft] = useState(isDraft);
+
     const circleInitial = formData.name?.trim()[0]?.toUpperCase();
     const { categories, tags } = useSuggestions();
 
-    const handleChange = (field: keyof PasswordEntry, value: string | string[] | null) => {
+    const handleChange = (field: keyof PasswordEntry, value: string | string[] | null): void => {
         setHasDraft(true);
         setFormData((prev) => {
             const updated = { ...prev, [field]: value };
@@ -75,9 +76,10 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
         });
     };
 
-    const handleSave = () => {
+    const handleSave = (): void => {
         if (!formData.name?.trim() || !formData.username?.trim() || !formData.password?.trim()) {
             logger.warn('failed to save. required fields must be filled');
+            toast.error('Required fields must be filled');
 
             return;
         }
@@ -90,12 +92,12 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
         setTagInput('');
     };
 
-    const handleCancel = () => {
+    const handleCancel = (): void => {
         if (isNew) {
             onCancel();
             setHasDraft(false);
             draftStorage.clear(entry.id);
-            toast.success('Cancelled creating the new password');
+            toast.success('New password cancelled');
         } else {
             setExpand(false);
             setFormData(entry);
@@ -109,32 +111,33 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
         setTagInput('');
     };
 
-    const handleTrashClick = () => {
+    const handleTrashClick = (): void => {
         if (isNew) {
             onCancel();
             setHasDraft(false);
             draftStorage.clear(entry.id);
-            toast.success('Cancelled creating the new password');
+            toast.success('New password cancelled');
         } else {
             setShowConfirm(true);
         }
     };
 
-    const handleAddTag = () => {
+    const handleAddTag = (): void => {
         const tag = normalizeTag(tagInput);
 
         if (!tag || formData.tags?.includes(tag) || (formData.tags?.length ?? 0) >= TAGS_LIMIT) {
             logger.warn(`failed to add tag. must be a unique tag and password can have up to ${TAGS_LIMIT} tags`);
+            toast.error('Tag must be unique within limits');
 
             return;
         }
 
         handleChange('tags', [...(formData.tags ?? []), tag]);
         setTagInput('');
-        logger.info('added tag: ', tag);
+        logger.info('successfully added tag: ', tag);
     };
 
-    const toggleExpand = () => {
+    const toggleExpand = (): void => {
         setExpand(!expand);
         if (expand) {
             setShowUsername(false);
@@ -146,8 +149,8 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
     useEffect(() => {
         setFormData(draft ?? entry);
         if (draft) {
-            logger.info(`loaded draft for ${draft.name}`);
-            toast.success(`draft loaded for ${draft.name}`);
+            logger.info(`successfully loaded draft for ${draft.name}`);
+            toast.success(`Draft loaded for ${draft.name}`);
         }
     }, [entry]);
 

@@ -19,7 +19,7 @@ const Navbar: React.FC = () => {
     const [loadingDelete, setLoadingDelete] = useState(false);
     const { logout, user } = useAuth();
 
-    const handleLogout = async () => {
+    const handleLogout = async (): Promise<void> => {
         setLoadingLogOut(true);
         await logoutApi();
         setLoadingLogOut(false);
@@ -29,9 +29,10 @@ const Navbar: React.FC = () => {
         logout();
     };
 
-    const handleDeleteConfirm = async () => {
+    const handleDeleteConfirm = async (): Promise<void> => {
         if (!user) {
-            logger.warn('failed to delete account. no user found');
+            logger.warn('failed to delete account. user not found');
+            toast.error('User not found');
 
             return;
         }
@@ -41,17 +42,17 @@ const Navbar: React.FC = () => {
         setLoadingDelete(false);
 
         if (!response.ok) {
-            toast.error('Failed to request cancellation');
+            toast.error(response.error);
         } else {
-            toast.success('Deletion confirmation sent via email');
+            toast.success(response.data);
+            logout();
+            navigate(ROUTES.WELCOME, { replace: true });
         }
 
-        logout();
         setShowConfirm(false);
-        navigate(ROUTES.WELCOME, { replace: true });
     };
 
-    const handleRequestCancellation = async () => {
+    const handleRequestCancellation = (): void => {
         setOpen(false);
         setShowConfirm(true);
     };

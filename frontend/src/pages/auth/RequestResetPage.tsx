@@ -16,15 +16,15 @@ const RequestResetPage = () => {
     const [loading, setLoading] = useState(false);
     const [isEmailValid, setIsEmailValid] = useState(false);
 
-    const handleResetRequest = async () => {
+    const handleResetRequest = async (): Promise<void> => {
         setLoading(true);
         const response = await requestResetPassword(email);
         setLoading(false);
 
         if (!response.ok) {
-            toast.error('Failed to send password reset request');
+            toast.error(response.error);
         } else {
-            toast.success('Password reset request sent via email');
+            toast.success(response.data);
         }
         navigate(ROUTES.SIGN_IN, { replace: true });
     };

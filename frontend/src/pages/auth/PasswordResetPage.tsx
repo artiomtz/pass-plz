@@ -24,8 +24,11 @@ const ResetPasswordPage = () => {
     const [passwordsMatch, setPasswordsMatch] = useState(false);
     const [showPasswordHint, setShowPasswordHint] = useState(false);
 
-    const handlePasswordReset = async () => {
+    const handlePasswordReset = async (): Promise<void> => {
         if (newPassword !== confirmNewPassword) {
+            logger.error('failed to reset password. passwords do not match');
+            toast.error('Passwords do not match');
+
             return;
         }
 
@@ -48,15 +51,15 @@ const ResetPasswordPage = () => {
             setLoading(false);
 
             if (!response.ok) {
-                toast.error('Failed to reset password');
+                toast.error(response.error);
             } else {
-                toast.success('Successfully reset password');
+                toast.success(response.data);
             }
 
             navigate(ROUTES.SIGN_IN, { replace: true });
         } catch (error) {
             logger.error('failed to reset password', error);
-            toast.error('Error occurred while resetting password');
+            toast.error('Failed to reset password');
         }
     };
 
@@ -67,7 +70,7 @@ const ResetPasswordPage = () => {
             setResetToken(token);
         } else {
             logger.warn('failed to fetch token from search parameters');
-            toast.error('failed to fetch reset token');
+            toast.error('Failed to fetch reset token');
         }
     }, [searchParams]);
 

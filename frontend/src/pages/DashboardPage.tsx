@@ -12,6 +12,7 @@ import PasswordEntry from '@models/passwordEntry';
 import { getUserDisplayName } from '@models/user';
 import { getIsoDate } from '@utils/dateUtil';
 import { getUniqueName } from '@utils/inputUtil';
+import logger from '@utils/loggerUtil';
 import { filterAndSortEntries, SortBy, SortOrder } from '@utils/sortUtil';
 import { DRAFT_PREFIX_NEW, draftStorage, getDraftKey } from '@utils/storageUtil';
 import { ArrowDownAz, ArrowDownZA, ChevronsDownUp, ChevronsUpDown, CirclePlus } from 'lucide-react';
@@ -37,7 +38,7 @@ const DashboardPage = () => {
     const NEW_ENTRY_NAME = 'New Unsaved Password';
     const anyExpanded = expandedIds.length > 0;
 
-    const handleToggleAll = () => {
+    const handleToggleAll = (): void => {
         if (anyExpanded) {
             setExpandedIds([]);
         } else {
@@ -53,36 +54,21 @@ const DashboardPage = () => {
         }
     };
 
-    useEffect(() => {
-        const fetchPasswords = async () => {
-            if (!user) {
-                return;
-            }
+    const handleExpandChange = (isExpanded: boolean, id: number): void => {
+        setExpandedIds((expanded) => {
+            return isExpanded
+                ? [...expanded, id]
+                : expanded.filter((i) => {
+                      return i !== id;
+                  });
+        });
+    };
 
-            const response = await getPasswordsApi(user);
-            setLoading(false);
+    const handleCancelNew = (): void => {
+        setNewEntry(null);
+    };
 
-            if (!response.ok) {
-                toast.error('Failed to fetch passwords');
-                setPasswords([]);
-
-                return;
-            }
-
-            setPasswords(response.data);
-        };
-
-        fetchPasswords();
-        const loadedDrafts = draftStorage.getAll();
-        const newDraft = loadedDrafts[DRAFT_PREFIX_NEW];
-        if (newDraft) {
-            setNewEntry(newDraft);
-        }
-
-        setDrafts(loadedDrafts);
-    }, []);
-
-    const handleAdd = () => {
+    const handleAdd = (): void => {
         setNewEntry({
             category: null,
             createdDate: getIsoDate(),
@@ -100,7 +86,7 @@ const DashboardPage = () => {
         setExpandedIds([]);
     };
 
-    const handleCreate = async (entry: PasswordEntry) => {
+    const handleCreate = async (entry: PasswordEntry): Promise<void> => {
         const baseName = entry.name?.trim() || NEW_ENTRY_NAME;
         const uniqueName = getUniqueName(
             baseName,
@@ -122,7 +108,7 @@ const DashboardPage = () => {
         });
 
         if (!response.ok) {
-            toast.error('Failed to create the new password');
+            toast.error(response.error);
 
             return;
         }
@@ -132,24 +118,10 @@ const DashboardPage = () => {
         });
 
         setNewEntry(null);
-        toast.success('Successfully created the new password');
+        toast.success('New password created');
     };
 
-    const handleCancelNew = () => {
-        setNewEntry(null);
-    };
-
-    const handleExpandChange = (isExpanded: boolean, id: number) => {
-        setExpandedIds((expanded) => {
-            return isExpanded
-                ? [...expanded, id]
-                : expanded.filter((i) => {
-                      return i !== id;
-                  });
-        });
-    };
-
-    const handleSave = async (entry: PasswordEntry) => {
+    const handleSave = async (entry: PasswordEntry): Promise<void> => {
         const uniqueName = getUniqueName(
             entry.name,
             passwords.filter((e) => {
@@ -170,7 +142,7 @@ const DashboardPage = () => {
         });
 
         if (!response.ok) {
-            toast.error('Failed to update the password');
+            toast.error(response.error);
 
             return;
         }
@@ -181,11 +153,11 @@ const DashboardPage = () => {
             });
         });
 
-        toast.success('Successfully updated the password');
+        toast.success('Password updated');
         setNewEntry(null);
     };
 
-    const handleDelete = async (entry: PasswordEntry) => {
+    const handleDelete = async (entry: PasswordEntry): Promise<void> => {
         setDeletingIds((prev) => {
             return [...prev, entry.id];
         });
@@ -198,7 +170,7 @@ const DashboardPage = () => {
         });
 
         if (!response.ok) {
-            toast.error('Failed to delete the password');
+            toast.error(response.error);
 
             return;
         }
@@ -210,8 +182,40 @@ const DashboardPage = () => {
         });
 
         draftStorage.clear(entry.id);
-        toast.success('Successfully deleted the password');
+        toast.success(response.data);
     };
+
+    useEffect(() => {
+        const fetchPasswords = async (): Promise<void> => {
+            if (!user) {
+                logger.error('failed to get passwords. user not found');
+                toast.error('User not found');
+
+                return;
+            }
+
+            const response = await getPasswordsApi(user);
+            setLoading(false);
+
+            if (!response.ok) {
+                toast.error(response.error);
+                setPasswords([]);
+
+                return;
+            }
+
+            setPasswords(response.data);
+        };
+
+        fetchPasswords();
+        const loadedDrafts = draftStorage.getAll();
+        const newDraft = loadedDrafts[DRAFT_PREFIX_NEW];
+        if (newDraft) {
+            setNewEntry(newDraft);
+        }
+
+        setDrafts(loadedDrafts);
+    }, []);
 
     return (
         <SuggestionsProvider passwords={passwords}>

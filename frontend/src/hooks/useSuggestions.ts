@@ -7,7 +7,7 @@ const useSuggestions = (): SuggestionsContextType => {
     const context = useContext(SuggestionsContext);
     if (!context) {
         logger.error('failed to fetch suggestions context');
-        toast.error('Failed to fetch suggestions context');
+        toast.error('Failed to fetch suggestions');
         throw new Error('useSuggestions must be used within an SuggestionsProvider');
     }
 

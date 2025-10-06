@@ -31,7 +31,7 @@ const GlobalLayout = ({ children, title }: GlobalLayoutProps) => {
             <footer className='flex h-[7vh] items-center justify-between border-t px-4 py-6 text-sm text-gray-500 w-full max-w-6xl mx-auto'>
                 <a
                     className='flex items-center gap-2 hover:text-gray-800 transition'
-                    href='https://github.com/your-username'
+                    href='https://github.com/artiomtz/pass-plz'
                     rel='noopener noreferrer'
                     target='_blank'>
                     <img

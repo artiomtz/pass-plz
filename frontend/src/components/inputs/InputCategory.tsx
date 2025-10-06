@@ -19,12 +19,12 @@ const InputCategory: React.FC<InputCategoryProps> = ({ onChange, suggestions = [
           })
         : [];
 
-    const handleSelect = (value: string) => {
+    const handleSelect = (value: string): void => {
         onChange(value);
         setIsOpen(false);
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
         const { action, newIndex } = handleSuggestionKeyDown(e, highlightedIndex, filtered.length);
         setHighlightedIndex(newIndex);
 

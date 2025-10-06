@@ -10,14 +10,14 @@ interface ButtonCopyProps {
 const ButtonCopy: React.FC<ButtonCopyProps> = ({ textToCopy }) => {
     const disabled = !textToCopy?.trim();
 
-    const handleCopy = async () => {
+    const handleCopy = async (): Promise<void> => {
         if (disabled) {
             return;
         }
 
         try {
             await navigator.clipboard.writeText(textToCopy);
-            toast.success('Copied');
+            toast.success('Text copied');
         } catch (error) {
             logger.error('failed to copy to clipboard', error);
             toast.error('Failed to copy');

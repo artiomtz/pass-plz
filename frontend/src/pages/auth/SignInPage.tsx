@@ -23,16 +23,16 @@ const SignInPage = () => {
     const [loading, setLoading] = useState(false);
     const [isEmailValid, setIsEmailValid] = useState(false);
 
-    const handleSignIn = async () => {
+    const handleSignIn = async (): Promise<void> => {
         try {
             setLoading(true);
             const response = await signInApi(email, password);
             setLoading(false);
 
             if (!response.ok) {
-                toast.error(`Failed to sign in ${email}`);
+                toast.error(response.error);
 
-                return null;
+                return;
             }
 
             const user: User = {
@@ -51,11 +51,11 @@ const SignInPage = () => {
             navigate(ROUTES.DASHBOARD, { replace: true });
         } catch (error) {
             logger.error('failed to sign in', error);
-            toast.error(`Error occurred while signing in ${email}`);
+            toast.error(`Failed to sign in ${email}`);
         }
     };
 
-    const handleForgotPassword = async () => {
+    const handleForgotPassword = (): void => {
         navigate(ROUTES.REQUEST_RESET);
     };
 

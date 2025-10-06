@@ -1,5 +1,6 @@
 import { refreshApi } from '@api/authApi';
 import { isBasicAuthRoute, isNoAuthRoute, isUserAuthRoute } from '@api/constants';
+import HttpStatus from '@api/httpStatus';
 import { getBasicAuthHeader, getBearerHeader } from '@utils/authUtil';
 import logger from '@utils/loggerUtil';
 import { getRefreshToken } from '@utils/storageUtil';
@@ -66,7 +67,11 @@ api.interceptors.response.use(
         }
 
         const { response } = error;
-        if (response?.status === 403 && !isNoAuthRoute(original.url) && !isUserAuthRoute(original.url)) {
+        if (
+            response?.status === HttpStatus.FORBIDDEN &&
+            !isNoAuthRoute(original.url) &&
+            !isUserAuthRoute(original.url)
+        ) {
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
                     failedQueue.push({ reject, resolve });

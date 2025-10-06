@@ -16,6 +16,7 @@ const Dropdown: React.FC<DropdownProps> = ({ highlightedIndex, isOpen, onSelect,
             el.scrollIntoView({ block: 'nearest' });
         }
     }, [highlightedIndex]);
+
     if (!isOpen || suggestions.length === 0) {
         return null;
     }
