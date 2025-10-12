@@ -6,7 +6,7 @@ export interface SuggestionsContextType {
     tags: string[];
 }
 
-export const SuggestionsContext = createContext<SuggestionsContextType>({
+export const SuggestionsContext = createContext<SuggestionsContextType | null>({
     categories: [],
     tags: [],
 });
@@ -15,31 +15,10 @@ const SuggestionsProvider: React.FC<{
     passwords: PasswordEntry[];
     children: React.ReactNode;
 }> = ({ children, passwords }) => {
-    const tags = useMemo(() => {
-        return Array.from(
-            new Set(
-                passwords.flatMap((p) => {
-                    return p.tags ?? [];
-                })
-            )
-        );
-    }, [passwords]);
+    const tags = useMemo(() => Array.from(new Set(passwords.flatMap((p) => p.tags ?? []))), [passwords]);
+    const categories = Array.from(new Set(passwords.map((p) => p.category).filter((c): c is string => Boolean(c))));
 
-    const categories = Array.from(
-        new Set(
-            passwords
-                .map((p) => {
-                    return p.category;
-                })
-                .filter((c): c is string => {
-                    return Boolean(c);
-                })
-        )
-    );
-
-    const value = useMemo(() => {
-        return { categories, tags };
-    }, [tags, categories]);
+    const value = useMemo(() => ({ categories, tags }), [tags, categories]);
 
     return <SuggestionsContext.Provider value={value}>{children}</SuggestionsContext.Provider>;
 };

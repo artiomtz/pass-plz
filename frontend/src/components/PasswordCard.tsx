@@ -14,7 +14,7 @@ import Spinner from '@components/Spinner';
 import Tags from '@components/tags/Tags';
 import useSuggestions from '@hooks/useSuggestions';
 import PasswordEntry from '@models/passwordEntry';
-import { formatDisplayDate, formatDisplayDateTime, getIsoDateFromString } from '@utils/dateUtil';
+import { formatDisplayDate, formatDisplayDateTime } from '@utils/dateUtil';
 import { normalizeTag, sanitizeFormData, sanitizeInput, saveFormDataDraft } from '@utils/inputUtil';
 import logger from '@utils/loggerUtil';
 import { sanitizeBadCharacters } from '@utils/passwordUtil';
@@ -161,7 +161,8 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
     }, [isSaving]);
 
     return (
-        <div className={`shadow-lg rounded-xl p-4 flex flex-col gap-2 border ${hasDraft ? 'bg-gray-100' : 'bg-white'}`}>
+        <div
+            className={`shadow-xl rounded-xl p-4 flex flex-col gap-2 border ${hasDraft ? 'card-style-draft' : 'card-style'}`}>
             <div
                 className='flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 w-full cursor-pointer'
                 onClick={toggleExpand}>
@@ -171,11 +172,11 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                         <span className='font-semibold truncate md:max-w-[22rem] max-w-[12rem]'>
                             {isNew ? 'New Unsaved Password' : (hasDraft ? 'Draft: ' : '') + formData.name}
                         </span>
-                        <span className='text-sm text-gray-500 min-h-[1.25rem]'>{formData.category || ''}</span>
+                        <span className='text-sm min-h-[1.25rem]'>{formData.category || ''}</span>
                     </div>
                 </div>
                 <div className='flex sm:flex-row sm:items-start justify-between w-full sm:w-auto gap-4 p-1'>
-                    <div className='flex flex-col text-xs text-gray-400 w-full sm:w-auto items-end'>
+                    <div className='flex flex-col text-xs w-full sm:w-auto items-end'>
                         <span>
                             Created:
                             {formatDisplayDateTime(formData.createdDate)}
@@ -224,9 +225,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                             <InputField
                                 className={!formData.name?.trim() ? 'border-red-500' : 'border-gray-300'}
                                 maxLength={32}
-                                onChange={(value) => {
-                                    return handleChange('name', value);
-                                }}
+                                onChange={(value) => handleChange('name', value)}
                                 placeholder='i.e Google, Banking'
                                 value={formData.name ?? ''}
                             />
@@ -247,11 +246,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                                 <ButtonCopy textToCopy={formData.username ?? ''} />
                                 <ButtonEye
                                     isVisible={showUsername}
-                                    onToggle={() => {
-                                        return setShowUsername((prev) => {
-                                            return !prev;
-                                        });
-                                    }}
+                                    onToggle={() => setShowUsername((prev) => !prev)}
                                 />
                             </div>
                         </div>
@@ -259,9 +254,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                             <InputField
                                 className={!formData.username ? 'border-red-500' : 'border-gray-300'}
                                 maxLength={32}
-                                onChange={(value) => {
-                                    return handleChange('username', sanitizeBadCharacters(value));
-                                }}
+                                onChange={(value) => handleChange('username', sanitizeBadCharacters(value))}
                                 placeholder='Your username'
                                 type={showUsername ? 'text' : 'password'}
                                 value={formData.username ?? ''}
@@ -270,11 +263,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                                 <ButtonCopy textToCopy={formData.username ?? ''} />
                                 <ButtonEye
                                     isVisible={showUsername}
-                                    onToggle={() => {
-                                        return setShowUsername((prev) => {
-                                            return !prev;
-                                        });
-                                    }}
+                                    onToggle={() => setShowUsername((prev) => !prev)}
                                 />
                             </div>
                         </div>
@@ -291,11 +280,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                                 <ButtonCopy textToCopy={formData.password} />
                                 <ButtonEye
                                     isVisible={showPassword}
-                                    onToggle={() => {
-                                        return setShowPassword((prev) => {
-                                            return !prev;
-                                        });
-                                    }}
+                                    onToggle={() => setShowPassword((prev) => !prev)}
                                 />
                             </div>
                         </div>
@@ -303,9 +288,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                             <InputField
                                 className={!formData.password ? 'border-red-500' : 'border-gray-300'}
                                 maxLength={64}
-                                onChange={(value) => {
-                                    return handleChange('password', sanitizeBadCharacters(value));
-                                }}
+                                onChange={(value) => handleChange('password', sanitizeBadCharacters(value))}
                                 placeholder='Your password'
                                 type={showPassword ? 'text' : 'password'}
                                 value={formData.password ?? ''}
@@ -314,11 +297,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                                 <ButtonCopy textToCopy={formData.password} />
                                 <ButtonEye
                                     isVisible={showPassword}
-                                    onToggle={() => {
-                                        return setShowPassword((prev) => {
-                                            return !prev;
-                                        });
-                                    }}
+                                    onToggle={() => setShowPassword((prev) => !prev)}
                                 />
                             </div>
                         </div>
@@ -334,9 +313,8 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                         </div>
                         <div className={CLASS_LANDSCAPE}>
                             <InputDate
-                                onChange={(value) => {
-                                    return handleChange('expirationDate', getIsoDateFromString(value));
-                                }}
+                                onChange={(value) => handleChange('expirationDate', value)}
+                                placeholder='Expiry date'
                                 value={formData.expirationDate}
                             />
                             <div className={CLASS_BUTTONS}>
@@ -355,9 +333,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                         </div>
                         <div className={CLASS_LANDSCAPE}>
                             <InputCategory
-                                onChange={(value) => {
-                                    return handleChange('category', value);
-                                }}
+                                onChange={(value) => handleChange('category', value)}
                                 suggestions={categories}
                                 value={formData.category ?? ''}
                             />
@@ -378,9 +354,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                         <div className={CLASS_LANDSCAPE}>
                             <InputField
                                 maxLength={128}
-                                onChange={(value) => {
-                                    return handleChange('link', sanitizeBadCharacters(value));
-                                }}
+                                onChange={(value) => handleChange('link', sanitizeBadCharacters(value))}
                                 placeholder='The service URL'
                                 value={formData.link ?? ''}
                             />
@@ -408,9 +382,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                         <div className={CLASS_LANDSCAPE}>
                             <InputTag
                                 limit={TAGS_LIMIT}
-                                onChange={(value) => {
-                                    return setTagInput(sanitizeInput(value));
-                                }}
+                                onChange={(value) => setTagInput(sanitizeInput(value))}
                                 suggestions={tags}
                                 value={tagInput}
                             />
@@ -428,14 +400,12 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                     </div>
                     <div className='lg:col-start-2 col-span-1 w-full pl-2'>
                         <Tags
-                            onRemove={(tag: string) => {
-                                return handleChange(
+                            onRemove={(tag: string) =>
+                                handleChange(
                                     'tags',
-                                    (formData.tags ?? []).filter((t) => {
-                                        return t !== tag;
-                                    })
-                                );
-                            }}
+                                    (formData.tags ?? []).filter((t) => t !== tag)
+                                )
+                            }
                             tags={formData.tags ?? []}
                         />
                     </div>
@@ -452,9 +422,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                             <InputTextbox
                                 maxLength={1024}
                                 minRows={4}
-                                onChange={(value) => {
-                                    return handleChange('note', value);
-                                }}
+                                onChange={(value) => handleChange('note', value)}
                                 placeholder='Any other information'
                                 value={formData.note ?? ''}
                             />
@@ -489,9 +457,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
             {showConfirm && (
                 <ModalConfirmation
                     message={`Are you sure you want to delete "${formData.name}"?`}
-                    onCancel={() => {
-                        return setShowConfirm(false);
-                    }}
+                    onCancel={() => setShowConfirm(false)}
                     onConfirm={() => {
                         setShowConfirm(false);
                         onDelete?.(entry);

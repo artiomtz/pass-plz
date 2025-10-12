@@ -1,4 +1,5 @@
 import useSuggestions from '@hooks/useSuggestions';
+import { Square, SquareCheckBig } from 'lucide-react';
 
 type TagsBoxProps = {
     selectedTags: string[];
@@ -10,38 +11,43 @@ const TagsBox: React.FC<TagsBoxProps> = ({ onChange, selectedTags }) => {
 
     const toggleTag = (tag: string): void => {
         if (selectedTags.includes(tag)) {
-            onChange(
-                selectedTags.filter((t) => {
-                    return t !== tag;
-                })
-            );
+            onChange(selectedTags.filter((t) => t !== tag));
         } else {
             onChange([...selectedTags, tag]);
         }
     };
 
     return (
-        <div className='flex flex-1 flex-col gap-2 border rounded shadow-lg p-2 max-h-27 overflow-y-auto text-sm scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400 w-full'>
+        // scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400
+        <div className='flex flex-1 flex-col gap-2 border rounded-xl shadow-xl p-2 max-h-27 overflow-y-auto text-sm w-full popup'>
             {[...tags]
-                .sort((a, b) => {
-                    return a.localeCompare(b);
-                })
-                .map((tag) => {
-                    return (
-                        <label
-                            className='flex items-center gap-2 cursor-pointer'
-                            key={tag}>
-                            <input
-                                checked={selectedTags.includes(tag)}
-                                onChange={() => {
-                                    return toggleTag(tag);
-                                }}
-                                type='checkbox'
+                .sort((a, b) => a.localeCompare(b))
+                .map((tag) => (
+                    <label
+                        className='flex items-center gap-2 cursor-pointer ps-1'
+                        key={tag}>
+                        <input
+                            checked={selectedTags.includes(tag)}
+                            className='sr-only'
+                            onChange={() => toggleTag(tag)}
+                            type='checkbox'
+                        />
+                        {/* <div className='w-5 h-5 flex items-center justify-center border rounded-sm bg-white'> */}
+                        {selectedTags.includes(tag) ? (
+                            <SquareCheckBig
+                                className='text-blue-600'
+                                size={16}
                             />
-                            {tag}
-                        </label>
-                    );
-                })}
+                        ) : (
+                            <Square
+                                className='text-gray-400'
+                                size={16}
+                            />
+                        )}
+                        {/* </div> */}
+                        {tag}
+                    </label>
+                ))}
         </div>
     );
 };

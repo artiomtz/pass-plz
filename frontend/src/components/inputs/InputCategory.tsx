@@ -13,11 +13,7 @@ const InputCategory: React.FC<InputCategoryProps> = ({ onChange, suggestions = [
     const [isOpen, setIsOpen] = useState(false);
     const [highlightedIndex, setHighlightedIndex] = useState(0);
 
-    const filtered = value
-        ? suggestions.filter((s) => {
-              return s.toLowerCase().includes(value.toLowerCase());
-          })
-        : [];
+    const filtered = value ? suggestions.filter((s) => s.toLowerCase().includes(value.toLowerCase())) : [];
 
     const handleSelect = (value: string): void => {
         onChange(value);
@@ -36,22 +32,16 @@ const InputCategory: React.FC<InputCategoryProps> = ({ onChange, suggestions = [
     };
 
     return (
-        <div className='w-full'>
+        <div className='w-full lg:w-auto'>
             <InputField
                 maxLength={16}
-                onBlur={() => {
-                    return setTimeout(() => {
-                        return setIsOpen(false);
-                    }, 200);
-                }}
+                onBlur={() => setTimeout(() => setIsOpen(false), 200)}
                 onChange={(val) => {
                     onChange(val);
                     setIsOpen(true);
                     setHighlightedIndex(0);
                 }}
-                onFocus={() => {
-                    return setIsOpen(true);
-                }}
+                onFocus={() => setIsOpen(true)}
                 onKeyDown={handleKeyDown}
                 placeholder='i.e. Work, Travel'
                 value={value}

@@ -5,8 +5,6 @@ interface LabelProps {
     text: string;
 }
 
-const Label: React.FC<LabelProps> = ({ bold, text }) => {
-    return <label className={bold ? 'font-bold' : ''}>{text}</label>;
-};
+const Label: React.FC<LabelProps> = ({ bold, text }) => <label className={bold ? 'font-bold' : ''}>{text}</label>;
 
 export default Label;

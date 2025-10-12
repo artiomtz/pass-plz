@@ -4,6 +4,4 @@ export const getBasicAuthHeader = (email: string, password: string): string => {
     return `Basic ${base64}`;
 };
 
-export const getBearerHeader = (token: string): string => {
-    return `Bearer ${token}`;
-};
+export const getBearerHeader = (token: string): string => `Bearer ${token}`;

@@ -18,20 +18,11 @@ export const BASIC_AUTH_ENDPOINTS = [API_AUTH_REGISTER, API_AUTH_AUTHENTICATE];
 export const NO_AUTH_ENDPOINTS = [API_USERS_RESET_PASSWORD, API_USERS_REQUEST_RESET_PASSWORD];
 export const USER_AUTH_ENDPOINTS = [API_AUTH_REGISTER, API_AUTH_AUTHENTICATE, API_AUTH_REFRESH, API_AUTH_LOGOUT];
 
-export const isBasicAuthRoute = (url: string = ''): boolean => {
-    return BASIC_AUTH_ENDPOINTS.some((endpoint) => {
-        return url.includes(endpoint);
-    });
-};
+export const isBasicAuthRoute = (url: string = ''): boolean =>
+    BASIC_AUTH_ENDPOINTS.some((endpoint) => url.includes(endpoint));
 
-export const isNoAuthRoute = (url: string = ''): boolean => {
-    return NO_AUTH_ENDPOINTS.some((endpoint) => {
-        return url.includes(endpoint);
-    });
-};
+export const isNoAuthRoute = (url: string = ''): boolean =>
+    NO_AUTH_ENDPOINTS.some((endpoint) => url.includes(endpoint));
 
-export const isUserAuthRoute = (url: string = ''): boolean => {
-    return USER_AUTH_ENDPOINTS.some((endpoint) => {
-        return url.includes(endpoint);
-    });
-};
+export const isUserAuthRoute = (url: string = ''): boolean =>
+    USER_AUTH_ENDPOINTS.some((endpoint) => url.includes(endpoint));

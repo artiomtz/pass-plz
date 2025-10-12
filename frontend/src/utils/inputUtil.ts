@@ -25,11 +25,7 @@ export const normalizeTag = (tag: string): string => {
 export const getUniqueName = (name: string, entries: PasswordEntry[]): string => {
     let candidate = name;
     let counter = 1;
-    const names = new Set(
-        entries.map((e) => {
-            return e.name;
-        })
-    );
+    const names = new Set(entries.map((e) => e.name));
 
     while (names.has(candidate)) {
         candidate = `${name} (${counter})`;

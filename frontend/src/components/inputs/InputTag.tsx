@@ -14,11 +14,7 @@ const InputTag: React.FC<InputTagProps> = ({ limit = 5, onChange, suggestions = 
     const [isOpen, setIsOpen] = useState(false);
     const [highlightedIndex, setHighlightedIndex] = useState(0);
 
-    const filtered = value
-        ? suggestions.filter((s) => {
-              return s.toLowerCase().includes(value.toLowerCase());
-          })
-        : [];
+    const filtered = value ? suggestions.filter((s) => s.toLowerCase().includes(value.toLowerCase())) : [];
 
     const handleSelect = (value: string): void => {
         onChange(value);
@@ -37,22 +33,16 @@ const InputTag: React.FC<InputTagProps> = ({ limit = 5, onChange, suggestions = 
     };
 
     return (
-        <div className='w-full'>
+        <div className='w-full lg:w-auto'>
             <InputField
                 maxLength={16}
-                onBlur={() => {
-                    return setTimeout(() => {
-                        return setIsOpen(false);
-                    }, 200);
-                }}
+                onBlur={() => setTimeout(() => setIsOpen(false), 200)}
                 onChange={(value) => {
                     onChange(value);
                     setIsOpen(true);
                     setHighlightedIndex(0);
                 }}
-                onFocus={() => {
-                    return setIsOpen(true);
-                }}
+                onFocus={() => setIsOpen(true)}
                 onKeyDown={handleKeyDown}
                 placeholder={`Add up to ${limit} tags`}
                 value={value}

@@ -5,17 +5,13 @@ interface EntryFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElemen
     value: string;
 }
 
-const InputField: React.FC<EntryFieldProps> = ({ className = '', onChange, value, ...props }) => {
-    return (
-        <input
-            {...props}
-            className={`border rounded shadow-lg p-2 px-3 w-full lg:w-[26rem] ${className}`}
-            onChange={(e) => {
-                return onChange(e.target.value);
-            }}
-            value={value}
-        />
-    );
-};
+const InputField: React.FC<EntryFieldProps> = ({ className = '', onChange, value, ...props }) => (
+    <input
+        {...props}
+        className={`border rounded-xl shadow-xl p-2 px-3 w-full lg:w-[26rem] ${className}`}
+        onChange={(e) => onChange(e.target.value)}
+        value={value}
+    />
+);
 
 export default InputField;
