@@ -11,12 +11,14 @@ type GlobalLayoutProps = {
 };
 
 const GlobalLayout = ({ children, title }: GlobalLayoutProps) => {
+    const LONG_TITLE_LENGTH = 30;
+
     return (
         <div className='flex flex-col min-h-screen'>
-            <header className='relative flex items-center justify-center text-center h-[14vh] sm:h-[12vh] px-4 py-6 font-bold border-b'>
+            <header className='relative flex items-center justify-center text-center h-[14vh] sm:h-[12vh] px-4 py-6 font-bold'>
                 <div
                     className={`pb-2 sm:pb-0 break-words ${
-                        title.length > 30 ? 'text-xl sm:text-4xl' : 'text-4xl sm:text-[2.5rem]'
+                        title.length > LONG_TITLE_LENGTH ? 'text-xl sm:text-4xl' : 'text-4xl sm:text-[2.5rem]'
                     }`}>
                     {title}
                 </div>
@@ -24,13 +26,13 @@ const GlobalLayout = ({ children, title }: GlobalLayoutProps) => {
                 <LabelLastVisited />
             </header>
 
-            <div className='flex flex-col flex-1 items-center justify-center sm:pt-8 px-6 py-10'>
+            <div className='flex flex-col flex-1 items-center justify-start sm:pt-8 px-6 mt-[2vh]'>
                 <div className='w-full max-w-5xl items-center justify-center'>{children}</div>
             </div>
 
-            <footer className='flex h-[7vh] items-center justify-between border-t px-4 py-6 text-sm text-gray-500 w-full max-w-6xl mx-auto'>
+            <footer className='flex h-[7vh] items-center justify-between px-4 py-6 text-sm w-full max-w-6xl mx-auto'>
                 <a
-                    className='flex items-center gap-2 hover:text-gray-800 transition'
+                    className='flex items-center gap-2'
                     href='https://github.com/artiomtz/pass-plz'
                     rel='noopener noreferrer'
                     target='_blank'>
@@ -43,13 +45,13 @@ const GlobalLayout = ({ children, title }: GlobalLayoutProps) => {
                 <span className='flex items-center gap-2'>
                     <img
                         alt='Pass Plz'
-                        className='w-7'
+                        className='w-8'
                         src={LockIcon}
                     />
-                    Pass Plz © 2024
+                    Pass Plz © 2025
                 </span>
                 <a
-                    className='flex items-center gap-2 hover:text-gray-800 transition'
+                    className='flex items-center gap-2'
                     href='https://artiomtsimk.in'
                     rel='noopener noreferrer'
                     target='_blank'>

@@ -1,0 +1,14 @@
+.dropdown-style {
+    color: var(--text-primary);
+    background-color: var(--background-primary);
+}
+
+.dropdown-style-selected {
+    color: var(--text-primary);
+    background-color: var(--background-draft);
+}
+
+.dropdown-style:hover {
+    color: var(--text-primary);
+    background-color: var(--background-draft);
+}

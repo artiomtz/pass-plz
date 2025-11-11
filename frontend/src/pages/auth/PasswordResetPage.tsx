@@ -84,21 +84,15 @@ const ResetPasswordPage = () => {
     return (
         <GlobalLayout title='Create A New Password'>
             <div className='flex flex-col items-center justify-center mx-auto'>
-                <div className='w-full rounded-2xl shadow-xl border sm:max-w-md border-gray-500'>
-                    <div className='p-6 space-y-6 sm:p-8'>
+                <div className='w-full sm:max-w-md'>
+                    <div className='p-6 space-y-6 sm:p-8 shadow-xl rounded-2xl login-style'>
                         <div className='relative'>
                             <InputFieldWithLabel
                                 id='password'
                                 label='Password'
-                                onBlur={() => {
-                                    return setShowPasswordHint(false);
-                                }}
-                                onChange={(e) => {
-                                    return setNewPassword(sanitizeBadCharacters(e.target.value));
-                                }}
-                                onFocus={() => {
-                                    return setShowPasswordHint(true);
-                                }}
+                                onBlur={() => setShowPasswordHint(false)}
+                                onChange={(e) => setNewPassword(sanitizeBadCharacters(e.target.value))}
+                                onFocus={() => setShowPasswordHint(true)}
                                 placeholder='••••••••••••'
                                 required
                                 type='password'
@@ -110,9 +104,7 @@ const ResetPasswordPage = () => {
                         <InputFieldWithLabel
                             id='confirmNewPassword'
                             label='Confirm Password'
-                            onChange={(e) => {
-                                return setConfirmNewPassword(sanitizeBadCharacters(e.target.value));
-                            }}
+                            onChange={(e) => setConfirmNewPassword(sanitizeBadCharacters(e.target.value))}
                             placeholder='••••••••••••'
                             required
                             type='password'

@@ -18,8 +18,7 @@ const TagsBox: React.FC<TagsBoxProps> = ({ onChange, selectedTags }) => {
     };
 
     return (
-        // scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400
-        <div className='flex flex-1 flex-col gap-2 border rounded-xl shadow-xl p-2 max-h-27 overflow-y-auto text-sm w-full popup'>
+        <div className='flex flex-1 flex-col gap-2 border rounded-xl shadow-xl p-2 max-h-27 overflow-y-auto text-sm w-full input-style'>
             {[...tags]
                 .sort((a, b) => a.localeCompare(b))
                 .map((tag) => (
@@ -32,19 +31,17 @@ const TagsBox: React.FC<TagsBoxProps> = ({ onChange, selectedTags }) => {
                             onChange={() => toggleTag(tag)}
                             type='checkbox'
                         />
-                        {/* <div className='w-5 h-5 flex items-center justify-center border rounded-sm bg-white'> */}
                         {selectedTags.includes(tag) ? (
                             <SquareCheckBig
-                                className='text-blue-600'
+                                className='pill-style'
                                 size={16}
                             />
                         ) : (
                             <Square
-                                className='text-gray-400'
+                                className='pill-style'
                                 size={16}
                             />
                         )}
-                        {/* </div> */}
                         {tag}
                     </label>
                 ))}

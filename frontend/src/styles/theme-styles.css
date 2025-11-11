@@ -1,0 +1,79 @@
+[data-theme='dark'] {
+    --text-primary: oklch(80% 0.08 265);
+    --text-secondary: oklch(65% 0.18 135);
+    --text-info: oklch(60% 0.12 260);
+
+    --background-primary: oklch(35% 0.01 242);
+    --background-secondary: oklch(25% 0.01 240);
+    --background-draft: oklch(30% 0.016 230);
+    --background-info: oklch(40% 0.024 246);
+
+    --border-primary: oklch(45% 0.075 245);
+    --border-secondary: oklch(40% 0.2 280);
+    --border-info: oklch(65% 0.15 250);
+
+    --button-primary: oklch(80% 0 280);
+    --button-primary-border: oklch(50% 0.18 265);
+    --button-primary-background: oklch(45% 0.15 265);
+    --button-secondary: oklch(80% 0 280);
+    --button-secondary-border: oklch(50% 0.18 150);
+    --button-secondary-background: oklch(45% 0.15 150);
+    --button-info: oklch(80% 0 280);
+    --button-info-border: oklch(50% 0.02 250);
+    --button-info-background: oklch(45% 0.02 250);
+    --button-danger: oklch(80% 0 280);
+    --button-danger-border: oklch(50% 0.18 25);
+    --button-danger-background: oklch(45% 0.15 25);
+
+    --toast-success: oklch(80% 0.08 265);
+    --toast-success-background: oklch(30% 0.016 230);
+    --toast-loading: oklch(80% 0.08 265);
+    --toast-loading-background: oklch(30% 0.016 230);
+    --toast-error: oklch(80% 0.08 265);
+    --toast-error-background: oklch(30% 0.016 230);
+
+    --scrollbar: oklch(40% 0.025 245);
+    --scrollbar-hover: oklch(45% 0.028 245);
+
+    --footer: oklch(0% 0 0);
+}
+
+[data-theme='light'] {
+    --text-primary: oklch(30% 0.08 265);
+    --text-secondary: oklch(45% 0.18 135);
+    --text-info: oklch(50% 0.12 260);
+
+    --background-primary: oklch(75% 0.01 242);
+    --background-secondary: oklch(65% 0.01 240);
+    --background-draft: oklch(60% 0.016 230);
+    --background-info: oklch(65% 0.024 246);
+
+    --border-primary: oklch(55% 0.075 245);
+    --border-secondary: oklch(50% 0.2 280);
+    --border-info: oklch(35% 0.15 250);
+
+    --button-primary: oklch(25% 0 280);
+    --button-primary-border: oklch(55% 0.18 265);
+    --button-primary-background: oklch(60% 0.15 265);
+    --button-secondary: oklch(25% 0 280);
+    --button-secondary-border: oklch(55% 0.18 150);
+    --button-secondary-background: oklch(60% 0.15 150);
+    --button-info: oklch(25% 0 280);
+    --button-info-border: oklch(55% 0.02 250);
+    --button-info-background: oklch(60% 0.02 250);
+    --button-danger: oklch(25% 0 280);
+    --button-danger-border: oklch(55% 0.18 25);
+    --button-danger-background: oklch(60% 0.15 25);
+
+    --toast-success: oklch(30% 0.08 265);
+    --toast-success-background: oklch(60% 0.016 230);
+    --toast-loading: oklch(30% 0.08 265);
+    --toast-loading-background: oklch(60% 0.016 230);
+    --toast-error: oklch(30% 0.08 265);
+    --toast-error-background: oklch(60% 0.016 230);
+
+    --scrollbar: oklch(60% 0.025 245);
+    --scrollbar-hover: oklch(55% 0.028 245);
+
+    --footer: oklch(0% 0 0);
+}

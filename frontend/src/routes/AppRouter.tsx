@@ -12,55 +12,53 @@ import ROUTES from '@routes/constants';
 import ProtectedRoute from '@routes/ProtectedRoute';
 import { Route, Routes } from 'react-router-dom';
 
-export const AppRoutes = () => {
-    return (
-        <Routes>
+export const AppRoutes = () => (
+    <Routes>
+        <Route
+            element={<WelcomePage />}
+            path={ROUTES.WELCOME}
+        />
+        <Route
+            element={<SignInPage />}
+            path={ROUTES.SIGN_IN}
+        />
+        <Route
+            element={<SignUpPage />}
+            path={ROUTES.SIGN_UP}
+        />
+        <Route
+            element={<RequestResetPage />}
+            path={ROUTES.REQUEST_RESET}
+        />
+        <Route
+            element={<PasswordResetPage />}
+            path={ROUTES.PASSWORD_RESET}
+        />
+        <Route
+            element={<CancellationPage />}
+            path={ROUTES.GOODBYE}
+        />
+        <Route
+            element={<ErrorPage />}
+            path={ROUTES.ERROR}
+        />
+        <Route
+            element={
+                <ErrorBoundary fallback={<ErrorPage />}>
+                    <ProtectedRoute />
+                </ErrorBoundary>
+            }>
             <Route
-                element={<WelcomePage />}
-                path={ROUTES.WELCOME}
+                element={<DashboardPage />}
+                path={ROUTES.DASHBOARD}
             />
-            <Route
-                element={<SignInPage />}
-                path={ROUTES.SIGN_IN}
-            />
-            <Route
-                element={<SignUpPage />}
-                path={ROUTES.SIGN_UP}
-            />
-            <Route
-                element={<RequestResetPage />}
-                path={ROUTES.REQUEST_RESET}
-            />
-            <Route
-                element={<PasswordResetPage />}
-                path={ROUTES.PASSWORD_RESET}
-            />
-            <Route
-                element={<CancellationPage />}
-                path={ROUTES.GOODBYE}
-            />
-            <Route
-                element={<ErrorPage />}
-                path={ROUTES.ERROR}
-            />
-            <Route
-                element={
-                    <ErrorBoundary fallback={<ErrorPage />}>
-                        <ProtectedRoute />
-                    </ErrorBoundary>
-                }>
-                <Route
-                    element={<DashboardPage />}
-                    path={ROUTES.DASHBOARD}
-                />
-            </Route>
-            <Route
-                element={<NotFoundPage />}
-                path='*'
-            />
-        </Routes>
-    );
-};
+        </Route>
+        <Route
+            element={<NotFoundPage />}
+            path='*'
+        />
+    </Routes>
+);
 
 export default AppRoutes;
 

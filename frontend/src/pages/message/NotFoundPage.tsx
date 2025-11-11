@@ -5,7 +5,7 @@ const NotFoundPage = () => (
     <MessageLayout
         icon={
             <AlertTriangle
-                className='text-gray-500'
+                className='label-style'
                 size={60}
             />
         }

@@ -14,25 +14,21 @@ const InputTextbox: React.FC<InputTextboxProps> = ({
     onChange,
     placeholder,
     value,
-}) => {
-    return (
-        <textarea
-            className='border p-2 px-3 rounded shadow-lg w-full lg:w-[26rem]'
-            maxLength={maxLength}
-            onChange={(e) => {
-                return onChange(e.target.value);
-            }}
-            placeholder={placeholder}
-            rows={minRows}
-            style={{
-                height: `${Math.floor((minRows + maxRows) / 2)}em`,
-                maxHeight: `${maxRows}em`,
-                minHeight: `${minRows}em`,
-                resize: 'vertical',
-            }}
-            value={value}
-        />
-    );
-};
+}) => (
+    <textarea
+        className='input-style p-2 px-3 rounded-xl shadow-xl w-full lg:w-[26rem]'
+        maxLength={maxLength}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        rows={minRows}
+        style={{
+            height: `${Math.floor((minRows + maxRows) / 2)}em`,
+            maxHeight: `${maxRows}em`,
+            minHeight: `${minRows}em`,
+            resize: 'vertical',
+        }}
+        value={value}
+    />
+);
 
 export default InputTextbox;

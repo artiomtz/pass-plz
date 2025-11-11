@@ -2,7 +2,14 @@ import { refreshApi } from '@api/authApi';
 import User from '@models/user';
 import ROUTES, { UNPROTECTED_ROUTES } from '@routes/constants';
 import logger from '@utils/loggerUtil';
-import { clearStoredUser, clearTokens, getAccessToken, getStoredUser, setStoredUser } from '@utils/storageUtil';
+import {
+    clearStoredUser,
+    clearTheme,
+    clearTokens,
+    getAccessToken,
+    getStoredUser,
+    setStoredUser,
+} from '@utils/storageUtil';
 import { isTokenExpired } from '@utils/tokenUtil';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -49,7 +56,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
                 const newAccessToken = await refreshApi();
 
                 if (!newAccessToken) {
-                    toast.error('Authentication token expired');
+                    toast.error('Authentication expired');
                     logout();
 
                     return;
@@ -74,6 +81,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const logout = (): void => {
         setUser(null);
+        clearTheme();
         clearTokens();
         clearStoredUser();
         setIsLoading(false);
@@ -81,9 +89,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         logger.info('successfully logged out');
     };
 
-    const authState = useMemo(() => {
-        return { isLoading, login, logout, user };
-    }, [user, isLoading]);
+    const authState = useMemo(() => ({ isLoading, login, logout, user }), [user, isLoading]);
 
     return <AuthContext.Provider value={authState}>{children}</AuthContext.Provider>;
 };

@@ -1,0 +1,51 @@
+.button-primary-style {
+    color: var(--button-primary);
+    border: 1px solid var(--button-primary-border);
+    background-color: var(--button-primary-background);
+    transition:
+        opacity 0.4s ease,
+        background-color 0.4s ease;
+}
+
+.button-primary-style:hover {
+    background-color: var(--button-primary-border);
+}
+
+.button-secondary-style {
+    color: var(--button-secondary);
+    border: 1px solid var(--button-secondary-border);
+    background-color: var(--button-secondary-background);
+    transition:
+        opacity 0.4s ease,
+        background-color 0.4s ease;
+}
+
+.button-secondary-style:hover {
+    background-color: var(--button-secondary-border);
+}
+
+.button-info-style {
+    color: var(--button-info);
+    border: 1px solid var(--button-info-border);
+    background-color: var(--button-info-background);
+    transition:
+        opacity 0.4s ease,
+        background-color 0.4s ease;
+}
+
+.button-info-style:hover {
+    background-color: var(--button-info-border);
+}
+
+.button-danger-style {
+    color: var(--button-danger);
+    border: 1px solid var(--button-danger-border);
+    background-color: var(--button-danger-background);
+    transition:
+        opacity 0.4s ease,
+        background-color 0.4s ease;
+}
+
+.button-danger-style:hover {
+    background-color: var(--button-danger-border);
+}

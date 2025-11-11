@@ -14,9 +14,9 @@ const InputDate: React.FC<InputDateProps> = ({ onChange, placeholder, value }) =
     return (
         <div className='w-full lg:w-auto'>
             <DatePicker
-                className={`border p-2 rounded-xl shadow-xl w-full lg:w-[26rem] ${
-                    isExpired(value) ? 'border-red-500' : ''
-                } ${!value ? 'text-gray-500' : ''}`}
+                className={`input-style p-2 rounded-xl shadow-xl w-full lg:w-[26rem] ${
+                    isExpired(value) ? 'warning-style' : ''
+                }`}
                 dateFormat='dd-MMM-yyyy'
                 onChange={(date) => onChange(toUtcIsoDate(date))}
                 placeholderText={placeholder}

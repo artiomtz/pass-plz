@@ -7,8 +7,7 @@ type SortDropdownProps = {
 
 const SortDropdown: React.FC<SortDropdownProps> = ({ onChange, value }) => (
     <select
-        className='border rounded-xl p-2 flex-1 w-full shadow-xl'
-        // className='border rounded p-2 flex-1 w-full shadow-xl'
+        className='input-style rounded-xl p-2 flex-1 w-full shadow-xl cursor-pointer'
         onChange={(e) => onChange(e.target.value as SortBy)}
         value={value}>
         <option value='name'>Name</option>

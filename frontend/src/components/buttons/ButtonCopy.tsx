@@ -26,7 +26,7 @@ const ButtonCopy: React.FC<ButtonCopyProps> = ({ textToCopy }) => {
 
     return (
         <button
-            className={`p-1 rounded transition ${disabled ? 'text-gray-400' : 'cursor-pointer hover:bg-gray-200'}`}
+            className={`p-2 rounded-lg transition icon-style ${disabled ? 'disabled-style' : 'hover-style'}`}
             disabled={disabled}
             onClick={handleCopy}
             type='button'>

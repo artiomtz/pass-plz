@@ -11,7 +11,7 @@ type MessageLayoutProps = {
 const MessageLayout = ({
     icon = (
         <AlertTriangle
-            className='text-gray-500'
+            className='label-style'
             size={60}
         />
     ),
@@ -28,7 +28,7 @@ const MessageLayout = ({
         <div className='flex flex-col items-center justify-center h-screen text-center gap-6'>
             {icon}
             <h1 className='text-2xl font-bold'>{title}</h1>
-            <p className='text-gray-600'>{message}</p>
+            <p>{message}</p>
 
             <Button
                 className='mt-8'

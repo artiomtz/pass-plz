@@ -36,14 +36,12 @@ const RequestResetPage = () => {
     return (
         <GlobalLayout title='Reset Password Request'>
             <div className='flex flex-col items-center justify-center mx-auto'>
-                <div className='w-full rounded-2xl shadow-xl border sm:max-w-md border-gray-500'>
-                    <div className='p-6 space-y-6 sm:p-8'>
+                <div className='w-full sm:max-w-md'>
+                    <div className='p-6 space-y-6 sm:p-8 shadow-xl rounded-2xl login-style'>
                         <InputFieldWithLabel
                             id='email'
                             label='Email'
-                            onChange={(e) => {
-                                return setEmail(sanitizeInput(e.target.value));
-                            }}
+                            onChange={(e) => setEmail(sanitizeInput(e.target.value))}
                             placeholder='me@email.com'
                             required
                             type='email'

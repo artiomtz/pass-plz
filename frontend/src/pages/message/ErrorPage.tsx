@@ -5,7 +5,7 @@ const ErrorPage = () => (
     <MessageLayout
         icon={
             <ServerCrash
-                className='text-gray-500'
+                className='label-style'
                 size={60}
             />
         }

@@ -1,17 +1,26 @@
 import User from '@models/user';
 
+const THEME = 'pass_plz_theme';
+const USER_KEY = 'pass_plz_user';
 const ACCESS_TOKEN_KEY = 'pass_plz_access_token';
 const REFRESH_TOKEN_KEY = 'pass_plz_refresh_token';
 const RESET_TOKEN_KEY = 'pass_plz_reset_token';
-const USER_KEY = 'pass_plz_user';
 
 export const DRAFT_PREFIX = 'pass_plz_draft_';
 export const DRAFT_PREFIX_NEW = `${DRAFT_PREFIX}new`;
 type DraftKey = `${typeof DRAFT_PREFIX_NEW}` | `${typeof DRAFT_PREFIX}${number}`;
 
-export const getAccessToken = (): string | null => {
-    return localStorage.getItem(ACCESS_TOKEN_KEY);
+export const getTheme = (): string | null => localStorage.getItem(THEME);
+
+export const setTheme = (theme: string): void => {
+    localStorage.setItem(THEME, theme);
 };
+
+export const clearTheme = (): void => {
+    localStorage.removeItem(THEME);
+};
+
+export const getAccessToken = (): string | null => localStorage.getItem(ACCESS_TOKEN_KEY);
 
 export const setAccessToken = (token: string): void => {
     localStorage.setItem(ACCESS_TOKEN_KEY, token);

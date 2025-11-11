@@ -1,4 +1,4 @@
-import { createPasswordApi, deletePasswordApi, getPasswordsApi, updatePasswordApi } from '@api/passwordApi'; // Your API call here
+import { createPasswordApi, deletePasswordApi, getPasswordsApi, updatePasswordApi } from '@api/passwordApi';
 import Button from '@components/buttons/Button';
 import PasswordCard from '@components/PasswordCard';
 import SearchBar from '@components/search/SearchBar';
@@ -10,12 +10,12 @@ import useAuth from '@hooks/useAuth';
 import GlobalLayout from '@layouts/GlobalLayout';
 import PasswordEntry from '@models/passwordEntry';
 import { getUserDisplayName } from '@models/user';
-import { getIsoDate } from '@utils/dateUtil';
+import { getUtcIsoDate } from '@utils/dateUtil';
 import { getUniqueName } from '@utils/inputUtil';
 import logger from '@utils/loggerUtil';
 import { filterAndSortEntries, SortBy, SortOrder } from '@utils/sortUtil';
 import { DRAFT_PREFIX_NEW, draftStorage, getDraftKey } from '@utils/storageUtil';
-import { ArrowDownAz, ArrowDownZA, ChevronsDownUp, ChevronsUpDown, CirclePlus } from 'lucide-react';
+import { ArrowDownAz, ArrowDownZa, ChevronsDownUp, ChevronsUpDown, CirclePlus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
@@ -42,9 +42,7 @@ const DashboardPage = () => {
         if (anyExpanded) {
             setExpandedIds([]);
         } else {
-            const ids = filteredEntries.map((e) => {
-                return e.id;
-            });
+            const ids = filteredEntries.map((e) => e.id);
 
             if (newEntry?.id != null && !ids.includes(newEntry.id)) {
                 ids.push(newEntry.id);
@@ -55,13 +53,7 @@ const DashboardPage = () => {
     };
 
     const handleExpandChange = (isExpanded: boolean, id: number): void => {
-        setExpandedIds((expanded) => {
-            return isExpanded
-                ? [...expanded, id]
-                : expanded.filter((i) => {
-                      return i !== id;
-                  });
-        });
+        setExpandedIds((expanded) => (isExpanded ? [...expanded, id] : expanded.filter((i) => i !== id)));
     };
 
     const handleCancelNew = (): void => {
@@ -69,9 +61,10 @@ const DashboardPage = () => {
     };
 
     const handleAdd = (): void => {
+        const nowUtc = getUtcIsoDate();
         setNewEntry({
             category: null,
-            createdDate: getIsoDate(),
+            createdDate: nowUtc,
             expirationDate: null,
             id: 0,
             link: null,
@@ -79,7 +72,7 @@ const DashboardPage = () => {
             note: null,
             password: '',
             tags: [],
-            updatedDate: getIsoDate(),
+            updatedDate: nowUtc,
             userId: user?.id ?? 0,
             username: '',
         });
@@ -90,22 +83,14 @@ const DashboardPage = () => {
         const baseName = entry.name?.trim() || NEW_ENTRY_NAME;
         const uniqueName = getUniqueName(
             baseName,
-            passwords.filter((e) => {
-                return e.id !== entry.id;
-            })
+            passwords.filter((e) => e.id !== entry.id)
         );
 
         const newEntryWithName = { ...entry, name: uniqueName };
-        setSavingIds((prev) => {
-            return [...prev, entry.id];
-        });
+        setSavingIds((prev) => [...prev, entry.id]);
 
         const response = await createPasswordApi(newEntryWithName);
-        setSavingIds((prev) => {
-            return prev.filter((id) => {
-                return id !== entry.id;
-            });
-        });
+        setSavingIds((prev) => prev.filter((id) => id !== entry.id));
 
         if (!response.ok) {
             toast.error(response.error);
@@ -113,9 +98,7 @@ const DashboardPage = () => {
             return;
         }
 
-        setPasswords((prev) => {
-            return [response.data, ...prev];
-        });
+        setPasswords((prev) => [response.data, ...prev]);
 
         setNewEntry(null);
         toast.success('New password created');
@@ -124,22 +107,14 @@ const DashboardPage = () => {
     const handleSave = async (entry: PasswordEntry): Promise<void> => {
         const uniqueName = getUniqueName(
             entry.name,
-            passwords.filter((e) => {
-                return e.id !== entry.id;
-            })
+            passwords.filter((e) => e.id !== entry.id)
         );
 
-        const updatedEntry = { ...entry, name: uniqueName, updatedDate: getIsoDate() };
-        setSavingIds((prev) => {
-            return [...prev, entry.id];
-        });
+        const updatedEntry = { ...entry, name: uniqueName, updatedDate: getUtcIsoDate() };
+        setSavingIds((prev) => [...prev, entry.id]);
 
         const response = await updatePasswordApi(updatedEntry);
-        setSavingIds((prev) => {
-            return prev.filter((id) => {
-                return id !== entry.id;
-            });
-        });
+        setSavingIds((prev) => prev.filter((id) => id !== entry.id));
 
         if (!response.ok) {
             toast.error(response.error);
@@ -147,27 +122,17 @@ const DashboardPage = () => {
             return;
         }
 
-        setPasswords((prev) => {
-            return prev.map((e) => {
-                return e.id === entry.id ? response.data : e;
-            });
-        });
+        setPasswords((prev) => prev.map((e) => (e.id === entry.id ? response.data : e)));
 
         toast.success('Password updated');
         setNewEntry(null);
     };
 
     const handleDelete = async (entry: PasswordEntry): Promise<void> => {
-        setDeletingIds((prev) => {
-            return [...prev, entry.id];
-        });
+        setDeletingIds((prev) => [...prev, entry.id]);
 
         const response = await deletePasswordApi(entry);
-        setDeletingIds((prev) => {
-            return prev.filter((id) => {
-                return id !== entry.id;
-            });
-        });
+        setDeletingIds((prev) => prev.filter((id) => id !== entry.id));
 
         if (!response.ok) {
             toast.error(response.error);
@@ -175,11 +140,7 @@ const DashboardPage = () => {
             return;
         }
 
-        setPasswords((prev) => {
-            return prev.filter((e) => {
-                return e.id !== entry.id;
-            });
-        });
+        setPasswords((prev) => prev.filter((e) => e.id !== entry.id));
 
         draftStorage.clear(entry.id);
         toast.success(response.data);
@@ -221,7 +182,7 @@ const DashboardPage = () => {
         <SuggestionsProvider passwords={passwords}>
             <GlobalLayout title={`${user ? getUserDisplayName(user.email) : 'Your'}'s Passwords`}>
                 <div className='flex flex-col w-full max-w-3xl mx-auto min-h-[75vh]'>
-                    <div className='grid grid-cols-1 md:grid-cols-[50%_25%_15%] gap-8 p-4 md:p-6 bg-gray-50 rounded-lg shadow-xl border mb-8 items-stretch'>
+                    <div className='grid grid-cols-1 md:grid-cols-[50%_25%_15%] gap-8 p-4 md:p-6 rounded-xl shadow-xl border mb-8 items-stretch menu-style'>
                         {/* Sort Section */}
                         <div className='flex flex-col gap-4'>
                             <span className='font-semibold'>Sort</span>
@@ -231,11 +192,9 @@ const DashboardPage = () => {
                                     value={sortBy}
                                 />
                                 <button
-                                    className='border rounded p-2 w-12 shadow-lg'
-                                    onClick={() => {
-                                        return setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-                                    }}>
-                                    {sortOrder === 'asc' ? <ArrowDownAz size={24} /> : <ArrowDownZA size={24} />}
+                                    className='border rounded-xl p-2 w-12 shadow-xl button-info-style cursor-pointer'
+                                    onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}>
+                                    {sortOrder === 'asc' ? <ArrowDownAz size={24} /> : <ArrowDownZa size={24} />}
                                 </button>
                             </div>
                             <div>
@@ -262,7 +221,7 @@ const DashboardPage = () => {
                                 <Button
                                     className='w-full text-sm font-semibold'
                                     onClick={handleToggleAll}
-                                    variant='secondary'>
+                                    variant='info'>
                                     {anyExpanded ? (
                                         <>
                                             <ChevronsDownUp size={18} /> Collapse
@@ -277,7 +236,7 @@ const DashboardPage = () => {
                                     className='min-w-80 max-w-100 w-90'
                                     disabled={!!newEntry}
                                     onClick={handleAdd}
-                                    variant='primary'>
+                                    variant='secondary'>
                                     <CirclePlus size={18} /> Create
                                 </Button>
                             </div>
@@ -291,12 +250,12 @@ const DashboardPage = () => {
                         </div>
                     ) : filteredEntries.length === 0 && !newEntry ? (
                         passwords.length === 0 ? (
-                            <div className='flex flex-col items-center justify-center h-64 text-gray-500 gap-2'>
+                            <div className='flex flex-col items-center justify-center h-64 gap-2'>
                                 <CirclePlus className='w-8 h-8' />
                                 <span>Click Create to add your first password</span>
                             </div>
                         ) : (
-                            <div className='flex flex-col items-center justify-center h-50 text-gray-500 gap-2'>
+                            <div className='flex flex-col items-center justify-center h-50 gap-2'>
                                 <span>No Matches</span>
                             </div>
                         )
@@ -311,9 +270,7 @@ const DashboardPage = () => {
                                     isSaving={savingIds.includes(newEntry.id)}
                                     onCancel={handleCancelNew}
                                     onSave={handleCreate}
-                                    setExpand={(isExpanded) => {
-                                        return handleExpandChange(isExpanded, newEntry.id);
-                                    }}
+                                    setExpand={(isExpanded) => handleExpandChange(isExpanded, newEntry.id)}
                                 />
                             )}
                             {filteredEntries.map((entry) => {
@@ -333,9 +290,7 @@ const DashboardPage = () => {
                                         onCancel={() => {}}
                                         onDelete={handleDelete}
                                         onSave={handleSave}
-                                        setExpand={(isExpanded) => {
-                                            return handleExpandChange(isExpanded, entry.id);
-                                        }}
+                                        setExpand={(isExpanded) => handleExpandChange(isExpanded, entry.id)}
                                     />
                                 );
                             })}

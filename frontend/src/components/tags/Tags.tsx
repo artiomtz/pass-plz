@@ -12,7 +12,7 @@ const Tags: React.FC<TagsProps> = ({ onRemove, tags }) => {
         <div className='flex gap-2 flex-wrap lg:ml-[160px]'>
             {safeTags.map((tag) => (
                 <span
-                    className='px-2 py-0.5 rounded-full text-xs cursor-pointer shadow-md popup'
+                    className='px-2 py-0.5 rounded-full text-xs cursor-pointer shadow-md pill-style'
                     key={tag}
                     onClick={() => onRemove(tag)}
                     title='Delete'>

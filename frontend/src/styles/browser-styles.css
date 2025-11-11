@@ -1,0 +1,8 @@
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    color: var(--text-secondary) !important;
+    transition: background-color 9999s ease-in-out 0s;
+    background-color: var(--background-secondary) !important;
+    -webkit-text-fill-color: var(--text-secondary) !important;
+}

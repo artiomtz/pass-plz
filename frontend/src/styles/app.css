@@ -1,0 +1,41 @@
+@import 'tailwindcss';
+@import '@styles/theme-styles.css';
+@import '@styles/element-styles.css';
+@import '@styles/scrollbar-styles.css';
+@import '@styles/button-styles.css';
+@import '@styles/toast-styles.css';
+@import '@styles/dropdown-styles.css';
+@import '@styles/date-picker-styles.css';
+@import '@styles/browser-styles.css';
+@import '@fontsource/ubuntu/400.css';
+
+:root {
+    --font-base: 20px;
+}
+
+html {
+    color: var(--text-primary);
+    background-color: var(--background-primary);
+    transition: background-color 0.4s ease;
+}
+
+body {
+    font-size: var(--font-base);
+    font-family: 'Ubuntu', 'Verdana', sans-serif;
+}
+
+header {
+    color: var(--text-secondary);
+}
+
+footer {
+    opacity: 0.7;
+    color: var(--footer);
+}
+
+input,
+select,
+textarea {
+    color: var(--text-secondary);
+    background-color: var(--background-primary);
+}

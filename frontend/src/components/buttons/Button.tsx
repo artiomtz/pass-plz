@@ -5,25 +5,25 @@ interface ButtonProps {
     className?: string;
     disabled?: boolean;
     onClick: (..._args: any[]) => void;
-    variant?: 'primary' | 'secondary' | 'danger';
+    variant?: 'primary' | 'secondary' | 'info' | 'danger';
 }
 
 const Button: React.FC<ButtonProps> = ({ children, className, disabled = false, onClick, variant = 'primary' }) => {
-    const baseClassNameShape = 'flex items-center justify-center border w-auto h-12 min-w-[125px]';
-    const baseClassNameStyle = 'gap-2 px-4 py-2 rounded-4xl shadow-xl font-medium transition '; // w-full?
+    const baseClassNameShape = 'flex items-center justify-center input-style w-auto h-12 min-w-[125px]';
+    const baseClassNameStyle = 'gap-2 px-4 py-2 rounded-2xl shadow-xl font-medium transition';
     const baseClassName = `${baseClassNameShape} + ${baseClassNameStyle}`;
 
     const variants: Record<typeof variant, string> = {
-        danger: 'bg-red-500 text-white hover:bg-red-600',
-        primary: 'bg-blue-500 text-white hover:bg-blue-600',
-        secondary: 'bg-green-200 text-gray-800 hover:bg-gray-300',
+        danger: 'button-danger-style',
+        info: 'button-info-style',
+        primary: 'button-primary-style',
+        secondary: 'button-secondary-style',
     };
 
     return (
         <button
-            className={`${baseClassName} ${variants[variant]} ${
-                disabled ? 'bg-gray-400 hover:bg-gray-400 text-white opacity-50' : 'cursor-pointer'
-            } ${className || ''}`}
+            className={`${baseClassName} ${className || ''} ${variants[variant]}
+                ${disabled ? 'disabled-style' : 'cursor-pointer'}`}
             disabled={disabled}
             onClick={onClick}>
             {children}

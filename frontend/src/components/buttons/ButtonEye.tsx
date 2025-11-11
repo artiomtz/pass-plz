@@ -5,15 +5,13 @@ interface ButtonEyeProps {
     onToggle: () => void;
 }
 
-const ButtonEye: React.FC<ButtonEyeProps> = ({ isVisible, onToggle }) => {
-    return (
-        <button
-            className='p-2 hover:bg-gray-100 rounded cursor-pointer'
-            onClick={onToggle}
-            type='button'>
-            {isVisible ? <Eye size={18} /> : <EyeOff size={18} />}
-        </button>
-    );
-};
+const ButtonEye: React.FC<ButtonEyeProps> = ({ isVisible, onToggle }) => (
+    <button
+        className='p-2 hover-style rounded-lg cursor-pointer icon-style'
+        onClick={onToggle}
+        type='button'>
+        {isVisible ? <Eye size={18} /> : <EyeOff size={18} />}
+    </button>
+);
 
 export default ButtonEye;

@@ -9,7 +9,7 @@ const LabelLastVisited: React.FC = () => {
     }
 
     return (
-        <span className='absolute right-4 bottom-2 text-xs text-gray-300'>
+        <span className='absolute right-4 bottom-2 text-xs'>
             Last visited: {formatDisplayDateTime(user.lastVisited)}
         </span>
     );

@@ -166,29 +166,32 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
             <div
                 className='flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 w-full cursor-pointer'
                 onClick={toggleExpand}>
-                <div className='flex items-center gap-6 flex-1 '>
+                <div className='flex items-center gap-6 flex-1'>
                     <CircleInitial initial={circleInitial} />
                     <div className='flex flex-col '>
                         <span className='font-semibold truncate md:max-w-[22rem] max-w-[12rem]'>
-                            {isNew ? 'New Unsaved Password' : (hasDraft ? 'Draft: ' : '') + formData.name}
+                            {isNew ? (
+                                <span className='bold-style'>New Unsaved Password</span>
+                            ) : hasDraft ? (
+                                <>
+                                    <span className='bold-style'>DRAFT: </span>
+                                    {formData.name}
+                                </>
+                            ) : (
+                                formData.name
+                            )}
                         </span>
                         <span className='text-sm min-h-[1.25rem]'>{formData.category || ''}</span>
                     </div>
                 </div>
                 <div className='flex sm:flex-row sm:items-start justify-between w-full sm:w-auto gap-4 p-1'>
                     <div className='flex flex-col text-xs w-full sm:w-auto items-end'>
-                        <span>
-                            Created:
-                            {formatDisplayDateTime(formData.createdDate)}
-                        </span>
-                        <span>
-                            Updated:
-                            {formatDisplayDateTime(formData.updatedDate)}
-                        </span>
+                        <span>Created: {formatDisplayDateTime(formData.createdDate)}</span>
+                        <span>Updated: {formatDisplayDateTime(formData.updatedDate)}</span>
                     </div>
                     <div className='flex items-center gap-4'>
                         <button
-                            className='cursor-pointer'
+                            className='icon-style hover-style'
                             onClick={(e) => {
                                 e.stopPropagation();
                                 toggleExpand();
@@ -196,10 +199,9 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                             {expand ? <ChevronUp size={26} /> : <ChevronDown size={26} />}
                         </button>
                         <button
-                            className='cursor-pointer ml-auto'
+                            className='ml-auto icon-style hover-style'
                             onClick={(e) => {
                                 e.stopPropagation();
-
                                 handleTrashClick();
                             }}>
                             {isDeleting ? <Spinner /> : <Trash2 size={18} />}
@@ -223,7 +225,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                         </div>
                         <div className={CLASS_LANDSCAPE}>
                             <InputField
-                                className={!formData.name?.trim() ? 'border-red-500' : 'border-gray-300'}
+                                className={!formData.name?.trim() ? 'warning-style' : ''}
                                 maxLength={32}
                                 onChange={(value) => handleChange('name', value)}
                                 placeholder='i.e Google, Banking'
@@ -252,7 +254,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                         </div>
                         <div className={CLASS_LANDSCAPE}>
                             <InputField
-                                className={!formData.username ? 'border-red-500' : 'border-gray-300'}
+                                className={!formData.username ? 'warning-style' : ''}
                                 maxLength={32}
                                 onChange={(value) => handleChange('username', sanitizeBadCharacters(value))}
                                 placeholder='Your username'
@@ -286,7 +288,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                         </div>
                         <div className={CLASS_LANDSCAPE}>
                             <InputField
-                                className={!formData.password ? 'border-red-500' : 'border-gray-300'}
+                                className={!formData.password ? 'warning-style' : ''}
                                 maxLength={64}
                                 onChange={(value) => handleChange('password', sanitizeBadCharacters(value))}
                                 placeholder='Your password'
@@ -446,7 +448,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                         </Button>
                         <Button
                             onClick={handleCancel}
-                            variant='secondary'>
+                            variant='info'>
                             <CircleX size={18} />
                             Cancel
                         </Button>

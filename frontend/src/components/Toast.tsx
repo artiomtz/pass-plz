@@ -6,19 +6,18 @@ const Toast: React.FC = () => (
         toastOptions={{
             duration: 3000,
             error: {
-                style: { background: '#fee2e2', color: '#991b1b' },
+                className: 'toast-style-error',
+            },
+            loading: {
+                className: 'toast-style-loading',
             },
             style: {
-                background: '#fff',
-                // background: theme === 'dark' ? '#1f2937' : '#fff',
-                // color: theme === 'dark' ? '#f9fafb' : '#333',
-                borderRadius: '8px',
-                color: '#333',
-                fontSize: '0.9rem',
+                borderRadius: '10px',
+                fontSize: '1rem',
                 padding: '12px 16px',
             },
             success: {
-                style: { background: '#dcfce7', color: '#166534' },
+                className: 'toast-style-success',
             },
         }}
     />

@@ -9,7 +9,8 @@ import ROUTES from '@routes/constants';
 import { sanitizeInput, validateEmail } from '@utils/inputUtil';
 import logger from '@utils/loggerUtil';
 import { sanitizeBadCharacters, validatePassword } from '@utils/passwordUtil';
-import { UserPlus } from 'lucide-react';
+import { LockKeyhole, LockKeyholeOpen, UserPlus } from 'lucide-react';
+import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -45,9 +46,9 @@ const SignUpPage = () => {
         }
     };
 
-    const inputHint = (): string => {
+    const inputHint = (): JSX.Element | null => {
         if (!email && !password && !confirmPassword) {
-            return '';
+            return null;
         }
 
         const errors = [];
@@ -64,11 +65,23 @@ const SignUpPage = () => {
         }
 
         if (errors.length === 0) {
-            return '✅ All checks passed';
+            return (
+                <span className='flex items-center gap-2'>
+                    <LockKeyhole size={18} />
+                    All checks passed
+                </span>
+            );
         }
 
-        return `❌ ${errors.join(', ')}`;
+        return (
+            <span className='flex items-center gap-2'>
+                <LockKeyholeOpen size={18} />
+                {errors.join(', ')}
+            </span>
+        );
     };
+
+    const hint = inputHint();
 
     useEffect(() => {
         const trimmedPassword = password?.trim();
@@ -81,14 +94,12 @@ const SignUpPage = () => {
     return (
         <GlobalLayout title='Create A New Account'>
             <div className='flex flex-col items-center justify-center mx-auto'>
-                <div className='w-full rounded-2xl shadow-xl border sm:max-w-md border-gray-500'>
-                    <div className='p-6 space-y-6 sm:p-8'>
+                <div className='w-full sm:max-w-md'>
+                    <div className='p-6 space-y-6 sm:p-8 shadow-xl rounded-2xl login-style'>
                         <InputFieldWithLabel
                             id='email'
                             label='Email'
-                            onChange={(e) => {
-                                return setEmail(sanitizeInput(e.target.value));
-                            }}
+                            onChange={(e) => setEmail(sanitizeInput(e.target.value))}
                             placeholder='me@email.com'
                             required
                             type='email'
@@ -99,40 +110,35 @@ const SignUpPage = () => {
                             <InputFieldWithLabel
                                 id='password'
                                 label='Password'
-                                onBlur={() => {
-                                    return setShowPasswordHint(false);
-                                }}
-                                onChange={(e) => {
-                                    return setPassword(sanitizeBadCharacters(e.target.value));
-                                }}
-                                onFocus={() => {
-                                    return setShowPasswordHint(true);
-                                }}
+                                onBlur={() => setShowPasswordHint(false)}
+                                onChange={(e) => setPassword(sanitizeBadCharacters(e.target.value))}
+                                onFocus={() => setShowPasswordHint(true)}
                                 placeholder='••••••••••••'
                                 required
                                 type='password'
                                 value={password}
                             />
-                            {showPasswordHint && <PasswordHint password={password} />}
+                            <div className={`transition-style ${showPasswordHint ? 'opacity-100' : 'opacity-0'}`}>
+                                <PasswordHint password={password} />
+                            </div>
                         </div>
 
                         <InputFieldWithLabel
                             id='confirmPassword'
                             label='Confirm Password'
-                            onChange={(e) => {
-                                return setConfirmPassword(sanitizeBadCharacters(e.target.value));
-                            }}
+                            onChange={(e) => setConfirmPassword(sanitizeBadCharacters(e.target.value))}
                             placeholder='••••••••••••'
                             required
                             type='password'
                             value={confirmPassword}
                         />
 
-                        <p
-                            aria-live='polite'
-                            className='text-sm text-gray-500 mb-4'>
-                            {inputHint()}
-                        </p>
+                        <div
+                            className={`transition-all duration-400 ease overflow-hidden text-sm label-style mb-4 ${
+                                hint ? 'opacity-100 max-h-48' : 'opacity-0 max-h-0 pointer-events-none'
+                            }`}>
+                            {hint}
+                        </div>
 
                         <div className='flex items-start'>
                             <div className='ml-3 text-sm'>

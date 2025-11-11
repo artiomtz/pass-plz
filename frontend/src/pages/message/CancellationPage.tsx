@@ -5,7 +5,7 @@ const CancellationPage = () => (
     <MessageLayout
         icon={
             <UserMinus
-                className='text-gray-500'
+                className='label-style'
                 size={60}
             />
         }

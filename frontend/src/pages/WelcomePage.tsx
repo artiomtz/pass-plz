@@ -21,6 +21,7 @@ const WelcomePage = () => {
             }
         };
 
+        toast.loading('Connecting to server');
         pingServer();
     }, []);
 
