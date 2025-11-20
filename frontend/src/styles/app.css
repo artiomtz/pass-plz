@@ -17,6 +17,26 @@ html {
     color: var(--text-primary);
     background-color: var(--background-primary);
     transition: background-color 0.4s ease;
+    background-size: 100vw 100vh;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-image: radial-gradient(circle, var(--background-top), var(--background-back));
+}
+
+html::before {
+    top: 0;
+    left: 0;
+    content: '';
+    z-index: -10;
+    opacity: 0.1;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    pointer-events: none;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: var(--background-path);
 }
 
 body {

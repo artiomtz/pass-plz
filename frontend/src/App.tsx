@@ -1,3 +1,4 @@
+import BackgroundAnimation from '@components/BackgroundAnimation';
 import Toast from '@components/Toast';
 import AuthProvider from '@contexts/AuthContext';
 import ErrorBoundary from '@contexts/ErrorBoundary';
@@ -14,6 +15,7 @@ const App = () => (
         <QueryClientProvider client={queryClient}>
             <AuthProvider>
                 <ThemeProvider>
+                    <BackgroundAnimation />
                     <ErrorBoundary
                         fallback={
                             <Navigate
