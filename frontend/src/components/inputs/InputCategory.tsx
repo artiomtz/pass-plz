@@ -1,6 +1,8 @@
 import Dropdown from '@components/Dropdown';
 import InputField from '@components/inputs/InputField';
 import { handleSuggestionKeyDown } from '@utils/keyboardUtil';
+import { descendMotionProps } from '@utils/motionUtil';
+import { AnimatePresence, motion } from 'framer-motion';
 import React, { useState } from 'react';
 
 interface InputCategoryProps {
@@ -36,9 +38,9 @@ const InputCategory: React.FC<InputCategoryProps> = ({ onChange, suggestions = [
             <InputField
                 maxLength={16}
                 onBlur={() => setTimeout(() => setIsOpen(false), 200)}
-                onChange={(val) => {
-                    onChange(val);
-                    setIsOpen(true);
+                onChange={(value) => {
+                    onChange(value);
+                    setIsOpen(value.length > 0);
                     setHighlightedIndex(0);
                 }}
                 onFocus={() => setIsOpen(true)}
@@ -46,13 +48,20 @@ const InputCategory: React.FC<InputCategoryProps> = ({ onChange, suggestions = [
                 placeholder='i.e. Work, Travel'
                 value={value}
             />
-
-            <Dropdown
-                highlightedIndex={highlightedIndex}
-                isOpen={isOpen}
-                onSelect={handleSelect}
-                suggestions={filtered}
-            />
+            <AnimatePresence initial={false}>
+                {isOpen && filtered.length > 0 && (
+                    <motion.div
+                        key='dropdown-category'
+                        {...descendMotionProps}>
+                        <Dropdown
+                            highlightedIndex={highlightedIndex}
+                            isOpen={isOpen}
+                            onSelect={handleSelect}
+                            suggestions={filtered}
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

@@ -1,4 +1,7 @@
 import { isExpired, toUtcIsoDate } from '@utils/dateUtil';
+import { scaleMotionProps } from '@utils/motionUtil';
+import { AnimatePresence, motion } from 'framer-motion';
+import React from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -14,6 +17,16 @@ const InputDate: React.FC<InputDateProps> = ({ onChange, placeholder, value }) =
     return (
         <div className='w-full lg:w-auto'>
             <DatePicker
+                calendarContainer={({ children, className }) => (
+                    <AnimatePresence mode='wait'>
+                        <motion.div
+                            className={className}
+                            key='datepicker'
+                            {...scaleMotionProps}>
+                            {children}
+                        </motion.div>
+                    </AnimatePresence>
+                )}
                 className={`input-style p-2 rounded-xl shadow-xl w-full lg:w-[26rem] ${
                     isExpired(value) ? 'warning-style' : ''
                 }`}

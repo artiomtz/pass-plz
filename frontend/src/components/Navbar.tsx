@@ -7,6 +7,8 @@ import useAuth from '@hooks/useAuth';
 import useTheme from '@hooks/useTheme';
 import ROUTES from '@routes/constants';
 import logger from '@utils/loggerUtil';
+import { fadeMotionProps, slideMotionProps } from '@utils/motionUtil';
+import { AnimatePresence, motion } from 'framer-motion';
 import { CircleX, Menu, Moon, Sun, Trash2, UserX } from 'lucide-react';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -71,62 +73,69 @@ const Navbar: React.FC = () => {
                 <Menu size={26} />
             </button>
 
-            {open && (
-                <div
-                    className='fixed inset-0 bg-black/30 z-20'
-                    onClick={() => setOpen(false)}>
-                    <div
-                        className='absolute top-0 left-0 w-70 h-full shadow-xl flex flex-col p-8 gap-8 navbar-style'
-                        onClick={(e) => e.stopPropagation()}>
-                        <Button
-                            onClick={toggleTheme}
-                            variant='secondary'>
-                            {appTheme === 'light' ? (
-                                <>
-                                    <Moon size={18} /> Dark Mode
-                                </>
-                            ) : (
-                                <>
-                                    <Sun size={18} /> Light Mode
-                                </>
-                            )}
-                        </Button>
-                        <Button
-                            onClick={handleLogout}
-                            variant='primary'>
-                            <>
-                                {loadingLogOut ? <Spinner /> : <UserX size={18} />}
-                                Logout
-                            </>
-                        </Button>
-                        <Button
-                            onClick={handleRequestCancellation}
-                            variant='danger'>
-                            <>
-                                {loadingDelete ? <Spinner /> : <Trash2 size={18} />}
-                                Delete Account
-                            </>
-                        </Button>
+            <AnimatePresence>
+                {open && (
+                    <motion.div
+                        className='fixed inset-0 z-20 backdrop-blur-xs'
+                        key='navbar-background'
+                        onClick={() => setOpen(false)}
+                        {...fadeMotionProps}>
+                        <div className='absolute inset-0 bg-black/30' />
 
-                        <div className='flex justify-start items-end h-full'>
-                            <button
-                                className='icon-style hover-style'
-                                onClick={() => setOpen(false)}>
-                                <CircleX size={26} />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+                        <motion.div
+                            className='absolute top-0 left-0 w-70 h-full shadow-xl flex flex-col p-8 gap-8 navbar-style'
+                            key='navbar'
+                            onClick={(e) => e.stopPropagation()}
+                            {...slideMotionProps}>
+                            <Button
+                                onClick={toggleTheme}
+                                variant='secondary'>
+                                {appTheme === 'light' ? (
+                                    <>
+                                        <Moon size={18} /> Dark Mode
+                                    </>
+                                ) : (
+                                    <>
+                                        <Sun size={18} /> Light Mode
+                                    </>
+                                )}
+                            </Button>
+                            <Button
+                                onClick={handleLogout}
+                                variant='primary'>
+                                <>
+                                    {loadingLogOut ? <Spinner /> : <UserX size={18} />}
+                                    Logout
+                                </>
+                            </Button>
+                            <Button
+                                onClick={handleRequestCancellation}
+                                variant='danger'>
+                                <>
+                                    {loadingDelete ? <Spinner /> : <Trash2 size={18} />}
+                                    Delete Account
+                                </>
+                            </Button>
 
-            {showConfirm && (
-                <ModalConfirmation
-                    message='Are you sure you want to permanently delete your account?'
-                    onCancel={() => setShowConfirm(false)}
-                    onConfirm={handleDeleteConfirm}
-                    title='Delete Account'
-                />
-            )}
+                            <div className='flex justify-start items-end h-full'>
+                                <button
+                                    className='icon-style hover-style'
+                                    onClick={() => setOpen(false)}>
+                                    <CircleX size={26} />
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <ModalConfirmation
+                message='Are you sure you want to permanently delete your account and all its data?'
+                onCancel={() => setShowConfirm(false)}
+                onConfirm={handleDeleteConfirm}
+                show={showConfirm}
+                title='Delete Account'
+            />
         </>
     );
 };

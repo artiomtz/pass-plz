@@ -6,6 +6,7 @@ import ThemeProvider from '@contexts/ThemeContext';
 import AppRoutes from '@routes/AppRouter';
 import ROUTES from '@routes/constants';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AnimatePresence } from 'framer-motion';
 import { Navigate, BrowserRouter as Router } from 'react-router-dom';
 
 const queryClient = new QueryClient();
@@ -23,7 +24,9 @@ const App = () => (
                                 to={ROUTES.ERROR}
                             />
                         }>
-                        <AppRoutes />
+                        <AnimatePresence mode='wait'>
+                            <AppRoutes />
+                        </AnimatePresence>
                     </ErrorBoundary>
                     <Toast />
                 </ThemeProvider>

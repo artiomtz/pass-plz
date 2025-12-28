@@ -13,8 +13,10 @@ import { getUserDisplayName } from '@models/user';
 import { getUtcIsoDate } from '@utils/dateUtil';
 import { getUniqueName } from '@utils/inputUtil';
 import logger from '@utils/loggerUtil';
+import { scaleMotionProps } from '@utils/motionUtil';
 import { filterAndSortEntries, SortBy, SortOrder } from '@utils/sortUtil';
 import { DRAFT_PREFIX_NEW, draftStorage, getDraftKey } from '@utils/storageUtil';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowDownAz, ArrowDownZa, ChevronsDownUp, ChevronsUpDown, CirclePlus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -146,6 +148,16 @@ const DashboardPage = () => {
         toast.success(response.data);
     };
 
+    const loadDrafts = (): void => {
+        const loadedDrafts = draftStorage.getAll();
+        const newDraft = loadedDrafts[DRAFT_PREFIX_NEW];
+        if (newDraft) {
+            setNewEntry(newDraft);
+        }
+
+        setDrafts(loadedDrafts);
+    };
+
     useEffect(() => {
         const fetchPasswords = async (): Promise<void> => {
             if (!user) {
@@ -169,20 +181,17 @@ const DashboardPage = () => {
         };
 
         fetchPasswords();
-        const loadedDrafts = draftStorage.getAll();
-        const newDraft = loadedDrafts[DRAFT_PREFIX_NEW];
-        if (newDraft) {
-            setNewEntry(newDraft);
-        }
-
-        setDrafts(loadedDrafts);
     }, []);
+
+    useEffect(() => {
+        loadDrafts();
+    }, [searchTerm, selectedTags]);
 
     return (
         <SuggestionsProvider passwords={passwords}>
             <GlobalLayout title={`${user ? getUserDisplayName(user.email) : 'Your'}'s Passwords`}>
                 <div className='flex flex-col w-full max-w-3xl mx-auto min-h-[75vh]'>
-                    <div className='grid grid-cols-1 md:grid-cols-[50%_25%_15%] gap-8 p-4 md:p-6 rounded-xl shadow-xl border mb-8 items-stretch menu-style'>
+                    <div className='grid grid-cols-1 md:grid-cols-[3fr_1fr_1fr] gap-8 p-4 md:p-6 rounded-xl shadow-xl border mb-8 menu-style'>
                         {/* Sort Section */}
                         <div className='flex flex-col gap-4'>
                             <span className='font-semibold'>Sort</span>
@@ -192,7 +201,7 @@ const DashboardPage = () => {
                                     value={sortBy}
                                 />
                                 <button
-                                    className='border rounded-xl p-2 w-12 shadow-xl button-info-style cursor-pointer'
+                                    className='border rounded-xl p-2 w-12 h-12 shadow-xl button-info-style cursor-pointer'
                                     onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}>
                                     {sortOrder === 'asc' ? <ArrowDownAz size={24} /> : <ArrowDownZa size={24} />}
                                 </button>
@@ -207,7 +216,7 @@ const DashboardPage = () => {
                         </div>
 
                         {/* Tags Section */}
-                        <div className='flex flex-col gap-4 h-full'>
+                        <div className='flex flex-col gap-4 h-40'>
                             <span className='font-semibold'>Tags</span>
                             <TagsBox
                                 onChange={setSelectedTags}
@@ -217,23 +226,32 @@ const DashboardPage = () => {
 
                         {/* Buttons */}
                         <div className='flex flex-col items-center justify-end'>
-                            <div className='flex flex-col gap-4 sm:gap-3'>
+                            <div className='flex flex-col gap-4'>
                                 <Button
-                                    className='w-full text-sm font-semibold'
+                                    className='w-full text-[1rem] font-semibold'
                                     onClick={handleToggleAll}
                                     variant='info'>
-                                    {anyExpanded ? (
-                                        <>
-                                            <ChevronsDownUp size={18} /> Collapse
-                                        </>
-                                    ) : (
-                                        <>
-                                            <ChevronsUpDown size={18} /> Expand
-                                        </>
-                                    )}
+                                    <AnimatePresence
+                                        initial={false}
+                                        mode='wait'>
+                                        {anyExpanded ? (
+                                            <motion.span
+                                                className='inline-flex items-center gap-2'
+                                                key='button-collapse'
+                                                {...scaleMotionProps}>
+                                                <ChevronsDownUp size={18} /> Collapse
+                                            </motion.span>
+                                        ) : (
+                                            <motion.span
+                                                className='inline-flex items-center gap-2'
+                                                key='button-expand'
+                                                {...scaleMotionProps}>
+                                                <ChevronsUpDown size={18} /> Expand
+                                            </motion.span>
+                                        )}
+                                    </AnimatePresence>
                                 </Button>
                                 <Button
-                                    className='min-w-80 max-w-100 w-90'
                                     disabled={!!newEntry}
                                     onClick={handleAdd}
                                     variant='secondary'>
@@ -245,55 +263,75 @@ const DashboardPage = () => {
 
                     {/* Passwords */}
                     {loading ? (
-                        <div className='flex justify-center items-center h-100'>
-                            <Spinner size={60} />
-                        </div>
-                    ) : filteredEntries.length === 0 && !newEntry ? (
-                        passwords.length === 0 ? (
-                            <div className='flex flex-col items-center justify-center h-64 gap-2'>
+                        <AnimatePresence>
+                            <motion.div
+                                key='spinner'
+                                {...scaleMotionProps}
+                                className='flex justify-center items-center h-100'>
+                                <Spinner size={60} />
+                            </motion.div>
+                        </AnimatePresence>
+                    ) : passwords.length === 0 && !newEntry ? (
+                        <AnimatePresence mode='wait'>
+                            <motion.div
+                                key='card-create'
+                                {...scaleMotionProps}
+                                className='flex flex-col items-center justify-center h-64 gap-2'>
                                 <CirclePlus className='w-8 h-8' />
                                 <span>Click Create to add your first password</span>
-                            </div>
-                        ) : (
-                            <div className='flex flex-col items-center justify-center h-50 gap-2'>
-                                <span>No Matches</span>
-                            </div>
-                        )
+                            </motion.div>
+                        </AnimatePresence>
                     ) : (
                         <div className='space-y-1 p-4 flex flex-col gap-4'>
-                            {newEntry && (
-                                <PasswordCard
-                                    entry={newEntry}
-                                    expand={expandedIds.includes(newEntry.id)}
-                                    isDraft
-                                    isNew
-                                    isSaving={savingIds.includes(newEntry.id)}
-                                    onCancel={handleCancelNew}
-                                    onSave={handleCreate}
-                                    setExpand={(isExpanded) => handleExpandChange(isExpanded, newEntry.id)}
-                                />
-                            )}
-                            {filteredEntries.map((entry) => {
-                                const draftKey = getDraftKey(entry.id);
-                                const draft = drafts[draftKey];
-                                const formData = draft ?? entry;
+                            <AnimatePresence>
+                                {filteredEntries.length === 0 && !newEntry && (
+                                    <motion.div
+                                        key='no-cards'
+                                        {...scaleMotionProps}
+                                        className='flex flex-col items-center justify-center h-50 gap-2'>
+                                        <span>No Matches</span>
+                                    </motion.div>
+                                )}
+                                {newEntry && (
+                                    <motion.div
+                                        key={'card-' + newEntry.id}
+                                        {...scaleMotionProps}>
+                                        <PasswordCard
+                                            entry={newEntry}
+                                            expand={expandedIds.includes(newEntry.id)}
+                                            isDraft
+                                            isNew
+                                            isSaving={savingIds.includes(newEntry.id)}
+                                            onCancel={handleCancelNew}
+                                            onSave={handleCreate}
+                                            setExpand={(isExpanded) => handleExpandChange(isExpanded, newEntry.id)}
+                                        />
+                                    </motion.div>
+                                )}
+                                {filteredEntries.map((entry) => {
+                                    const draftKey = getDraftKey(entry.id);
+                                    const draft = drafts[draftKey];
 
-                                return (
-                                    <PasswordCard
-                                        draft={draft}
-                                        entry={formData}
-                                        expand={expandedIds.includes(entry.id)}
-                                        isDeleting={deletingIds.includes(entry.id)}
-                                        isDraft={!!draft}
-                                        isSaving={savingIds.includes(entry.id)}
-                                        key={entry.id}
-                                        onCancel={() => {}}
-                                        onDelete={handleDelete}
-                                        onSave={handleSave}
-                                        setExpand={(isExpanded) => handleExpandChange(isExpanded, entry.id)}
-                                    />
-                                );
-                            })}
+                                    return (
+                                        <motion.div
+                                            key={'card-' + entry.id}
+                                            {...scaleMotionProps}>
+                                            <PasswordCard
+                                                draft={draft}
+                                                entry={entry}
+                                                expand={expandedIds.includes(entry.id)}
+                                                isDeleting={deletingIds.includes(entry.id)}
+                                                isDraft={!!draft}
+                                                isSaving={savingIds.includes(entry.id)}
+                                                onCancel={() => {}}
+                                                onDelete={handleDelete}
+                                                onSave={handleSave}
+                                                setExpand={(isExpanded) => handleExpandChange(isExpanded, entry.id)}
+                                            />
+                                        </motion.div>
+                                    );
+                                })}
+                            </AnimatePresence>
                         </div>
                     )}
                 </div>

@@ -10,60 +10,101 @@ import NotFoundPage from '@pages/message/NotFoundPage';
 import WelcomePage from '@pages/WelcomePage';
 import ROUTES from '@routes/constants';
 import ProtectedRoute from '@routes/ProtectedRoute';
-import { Route, Routes } from 'react-router-dom';
+import { fadeMotionProps } from '@utils/motionUtil';
+import { motion } from 'framer-motion';
+import { Route, Routes, useLocation } from 'react-router-dom';
 
-export const AppRoutes = () => (
-    <Routes>
-        <Route
-            element={<WelcomePage />}
-            path={ROUTES.WELCOME}
-        />
-        <Route
-            element={<SignInPage />}
-            path={ROUTES.SIGN_IN}
-        />
-        <Route
-            element={<SignUpPage />}
-            path={ROUTES.SIGN_UP}
-        />
-        <Route
-            element={<RequestResetPage />}
-            path={ROUTES.REQUEST_RESET}
-        />
-        <Route
-            element={<PasswordResetPage />}
-            path={ROUTES.PASSWORD_RESET}
-        />
-        <Route
-            element={<CancellationPage />}
-            path={ROUTES.GOODBYE}
-        />
-        <Route
-            element={<ErrorPage />}
-            path={ROUTES.ERROR}
-        />
-        <Route
-            element={
-                <ErrorBoundary fallback={<ErrorPage />}>
-                    <ProtectedRoute />
-                </ErrorBoundary>
-            }>
+export const AppRoutes = () => {
+    const location = useLocation();
+
+    return (
+        <Routes
+            key={location.pathname}
+            location={location}>
             <Route
-                element={<DashboardPage />}
-                path={ROUTES.DASHBOARD}
+                element={
+                    <motion.div {...fadeMotionProps}>
+                        <WelcomePage />
+                    </motion.div>
+                }
+                path={ROUTES.WELCOME}
             />
-        </Route>
-        <Route
-            element={<NotFoundPage />}
-            path='*'
-        />
-    </Routes>
-);
+            <Route
+                element={
+                    <motion.div {...fadeMotionProps}>
+                        <SignInPage />
+                    </motion.div>
+                }
+                path={ROUTES.SIGN_IN}
+            />
+            <Route
+                element={
+                    <motion.div {...fadeMotionProps}>
+                        <SignUpPage />
+                    </motion.div>
+                }
+                path={ROUTES.SIGN_UP}
+            />
+            <Route
+                element={
+                    <motion.div {...fadeMotionProps}>
+                        <RequestResetPage />
+                    </motion.div>
+                }
+                path={ROUTES.REQUEST_RESET}
+            />
+            <Route
+                element={
+                    <motion.div {...fadeMotionProps}>
+                        <PasswordResetPage />
+                    </motion.div>
+                }
+                path={ROUTES.PASSWORD_RESET}
+            />
+            <Route
+                element={
+                    <motion.div {...fadeMotionProps}>
+                        <CancellationPage />
+                    </motion.div>
+                }
+                path={ROUTES.GOODBYE}
+            />
+            <Route
+                element={
+                    <motion.div {...fadeMotionProps}>
+                        <ErrorPage />
+                    </motion.div>
+                }
+                path={ROUTES.ERROR}
+            />
+            <Route
+                element={
+                    <motion.div {...fadeMotionProps}>
+                        <ErrorBoundary fallback={<ErrorPage />}>
+                            <ProtectedRoute />
+                        </ErrorBoundary>
+                    </motion.div>
+                }>
+                <Route
+                    element={
+                        <motion.div {...fadeMotionProps}>
+                            <DashboardPage />
+                        </motion.div>
+                    }
+                    path={ROUTES.DASHBOARD}
+                />
+            </Route>
+            <Route
+                element={
+                    <motion.div {...fadeMotionProps}>
+                        <NotFoundPage />
+                    </motion.div>
+                }
+                path='*'
+            />
+        </Routes>
+    );
+};
 
 export default AppRoutes;
 
-// logger
-// set ts types for functions and return types
-
-
-export default AppRoutes;
