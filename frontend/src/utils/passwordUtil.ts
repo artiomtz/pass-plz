@@ -1,5 +1,5 @@
 const DISALLOWED_CHARS = /[ \t]/g;
-const MIN_PASSWORD_LENGTH = 12;
+export const MIN_PASSWORD_LENGTH = import.meta.env.USER_PASSWORD_MIN_LENGTH ?? 12;
 
 export function sanitizeBadCharacters(input: string) {
     return input?.trim().replace(DISALLOWED_CHARS, '');

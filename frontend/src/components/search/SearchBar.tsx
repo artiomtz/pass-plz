@@ -7,9 +7,9 @@ interface SearchBarProps {
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onChange, placeholder = 'Search', value }) => (
-    <div className='flex items-center gap-2 w-full'>
+    <div className='flex items-center w-full'>
         <input
-            className='input-style rounded-xl shadow-xl p-2 w-full'
+            className='input-style rounded-xl shadow-xl p-2 w-full h-12'
             maxLength={36}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}

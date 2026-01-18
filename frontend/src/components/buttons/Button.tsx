@@ -25,7 +25,10 @@ const Button: React.FC<ButtonProps> = ({ children, className, disabled = false, 
             className={`${baseClassName} ${className || ''} ${variants[variant]}
                 ${disabled ? 'disabled-style' : 'cursor-pointer'}`}
             disabled={disabled}
-            onClick={onClick}>
+            onClick={(e) => {
+                onClick?.(e);
+                e.currentTarget.blur();
+            }}>
             {children}
         </button>
     );

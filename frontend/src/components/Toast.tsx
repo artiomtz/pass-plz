@@ -7,9 +7,11 @@ const Toast: React.FC = () => (
             duration: 3000,
             error: {
                 className: 'toast-style-error',
+                duration: 5000,
             },
             loading: {
                 className: 'toast-style-loading',
+                duration: 10000,
             },
             style: {
                 borderRadius: '10px',

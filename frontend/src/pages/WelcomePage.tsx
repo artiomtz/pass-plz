@@ -12,16 +12,23 @@ const WelcomePage = () => {
 
     useEffect(() => {
         const pingServer = async (): Promise<void> => {
+            const id = toast.loading('Connecting to server');
             const response = await pingApi();
 
             if (!response.ok) {
-                toast.error(`${response.error}. Try again shortly`);
+                toast.error(
+                    <span>
+                        {response.error}
+                        <br />
+                        Try again shortly
+                    </span>,
+                    { id }
+                );
             } else {
-                toast.success(response.data);
+                toast.success(response.data, { id });
             }
         };
 
-        toast.loading('Connecting to server');
         pingServer();
     }, []);
 
@@ -35,7 +42,7 @@ const WelcomePage = () => {
 
     return (
         <GlobalLayout title='Welcome To Pass Plz'>
-            <div className='md:mt-[-5vh] text-center max-w-3xl mx-auto'>
+            <div className='text-center max-w-3xl mx-auto'>
                 <div className='space-y-10 text-center mx-auto'>
                     <p>
                         Pass Plz is a modern password manager designed to make security effortless. It works seamlessly
@@ -59,7 +66,7 @@ const WelcomePage = () => {
                     </p>
                 </div>
 
-                <div className='flex flex-col sm:flex-row justify-center items-center w-full gap-10 sm:gap-16 p-2 mt-10 sm:mt-20'>
+                <div className='flex flex-col sm:flex-row justify-center items-center w-full gap-10 sm:gap-16 p-10 md:p-2 mt-10 sm:mt-20'>
                     <Button onClick={handleSignUp}>
                         <UserPlus size={18} />
                         Sign Up

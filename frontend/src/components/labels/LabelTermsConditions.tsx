@@ -7,7 +7,7 @@ const LabelTermsConditions: React.FC = () => (
             className='popup-style-wrapper relative group'
             id='terms'>
             <span className='font-semibold'>Terms and Conditions</span>
-            <div className='text-left absolute right-0 lg:right-auto top-full mt-1 w-64 p-4 rounded-2xl shadow-xl popup-style'>
+            <div className='text-left absolute right-0 lg:right-auto top-full mt-1 w-65 p-4 rounded-2xl shadow-xl popup-style'>
                 By using this service, you agree that Pass Plz is not liable for any damages, losses, or data breaches.
                 Use at your own risk. No warranties are implied.
             </div>

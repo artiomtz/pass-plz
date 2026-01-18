@@ -1,4 +1,4 @@
-import { validatePassword } from '@utils/passwordUtil';
+import { MIN_PASSWORD_LENGTH, validatePassword } from '@utils/passwordUtil';
 import { LockKeyhole, LockKeyholeOpen } from 'lucide-react';
 
 interface PasswordHintProps {
@@ -12,7 +12,8 @@ const PasswordHint: React.FC<PasswordHintProps> = ({ password }) => {
     return (
         <div className='absolute z-10 top-full left-0 mt-1 w-70 rounded-xl text-sm p-4 shadow-xl card-style'>
             <p className={hintStyle + ` ${checks.length ? 'check-pass-style' : 'check-fail-style'}`}>
-                {checks.length ? <LockKeyhole size={18} /> : <LockKeyholeOpen size={18} />} At least 12 characters
+                {checks.length ? <LockKeyhole size={18} /> : <LockKeyholeOpen size={18} />} At least{' '}
+                {MIN_PASSWORD_LENGTH} characters
             </p>
             <p className={hintStyle + ` ${checks.upper ? 'check-pass-style' : 'check-fail-style'}`}>
                 {checks.upper ? <LockKeyhole size={18} /> : <LockKeyholeOpen size={18} />} At least one uppercase letter

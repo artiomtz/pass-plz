@@ -32,6 +32,7 @@
 }
 
 .card-style-draft {
+    outline: none;
     color: var(--text-primary);
     border: 1px solid var(--border-primary);
     background-color: var(--background-draft);
@@ -130,7 +131,7 @@
 
 .bold-style {
     font-weight: 700;
-    text-shadow: 0 2px 2px rgb(73, 73, 73);
+    text-shadow: 0 1px 2px var(--text-primary);
 }
 
 .disabled-style {

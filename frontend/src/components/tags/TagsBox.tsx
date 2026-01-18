@@ -18,7 +18,7 @@ const TagsBox: React.FC<TagsBoxProps> = ({ onChange, selectedTags }) => {
     };
 
     return (
-        <div className='flex flex-1 flex-col gap-2 border rounded-xl shadow-xl p-2 max-h-27 overflow-y-auto text-sm w-full input-style'>
+        <div className='flex flex-1 flex-col gap-2 border rounded-xl shadow-xl p-2 overflow-y-auto text-sm w-full input-style'>
             {[...tags]
                 .sort((a, b) => a.localeCompare(b))
                 .map((tag) => (

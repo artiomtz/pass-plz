@@ -41,7 +41,7 @@ html::before {
 
 body {
     font-size: var(--font-base);
-    font-family: 'Ubuntu', 'Verdana', sans-serif;
+    font-family: 'Ubuntu', 'Verdana', 'Arial', sans-serif;
 }
 
 header {
