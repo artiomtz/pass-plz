@@ -54,7 +54,8 @@ public class SecurityConfig {
                         config.getAllowedOrigins());
                 }
 
-                config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
+                config
+                    .setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
                 config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
                 config.setExposedHeaders(List.of("Authorization"));
                 config.setAllowCredentials(true);
@@ -69,8 +70,10 @@ public class SecurityConfig {
             .authorizeHttpRequests(request -> {
                 request
                     .requestMatchers("/api/auth/**",
+                        "/error",
                         "/api/email/**",
                         "/swagger-ui/**",
+                        "/v3/api-docs/**",
                         "/api/users/reset-password",
                         "/api/users/request-reset-password/**")
                     .permitAll()

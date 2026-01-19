@@ -9,12 +9,16 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.passplz.service.EmailService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -144,9 +148,35 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(NoResourceFoundException.class)
+    public String handleNoResourceFoundException(HttpServletRequest request) {
+        log.error("caught resource exception for: {}", request.getRequestURI());
+        return "forward:/error";
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public String handleNoHandlerFoundException(HttpServletRequest request) {
+        log.error("caught handler exception for: {}", request.getRequestURI());
+        return "forward:/error";
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(
+        HttpRequestMethodNotSupportedException exception) {
+        log.error("caught method exception: {}", exception.getMessage());
+
+        final ErrorResponse error = new ErrorResponse(
+            HttpStatus.BAD_REQUEST.value(),
+            "HTTP_ERROR",
+            exception.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception exception) {
-        log.error("caught a general exception: {}", exception.getMessage());
+        log.error("caught a general exception [{}]: {}",
+            exception.getClass(),
+            exception.getMessage());
         emailService
             .sendAdminEmail(String.format("The backend server has encountered an exception:%n%s",
                 exception.getMessage()));

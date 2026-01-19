@@ -19,6 +19,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PasswordEntryDto {
 
     @NotNull(message = "id is required")
-    @Positive(message = "id must be positive")
+    @PositiveOrZero(message = "id must be positive")
     private Long id;
 
     @JsonProperty("user_id")
