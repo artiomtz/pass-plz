@@ -24,7 +24,7 @@ const Dropdown: React.FC<DropdownProps> = ({ highlightedIndex, isOpen, onSelect,
     return (
         <div className='relative'>
             <ul
-                className='absolute mt-1 w-full card-style border rounded-xl shadow-xl z-10 max-h-40 overflow-y-auto'
+                className='absolute z-10 max-h-40 overflow-y-auto mt-1 w-full border rounded-xl shadow-xl card-style'
                 role='listbox'>
                 {suggestions.map((s, idx) => (
                     <li

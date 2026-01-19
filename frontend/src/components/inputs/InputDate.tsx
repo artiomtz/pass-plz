@@ -27,7 +27,7 @@ const InputDate: React.FC<InputDateProps> = ({ onChange, placeholder, value }) =
                         </motion.div>
                     </AnimatePresence>
                 )}
-                className={`input-style p-2 rounded-xl shadow-xl w-full lg:w-[26rem] ${
+                className={`w-full lg:w-[26rem] p-2 rounded-xl shadow-xl input-style ${
                     isExpired(value) ? 'warning-style' : ''
                 }`}
                 dateFormat='dd-MMM-yyyy'

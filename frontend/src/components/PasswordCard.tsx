@@ -167,11 +167,11 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
 
     return (
         <div
-            className={`shadow-xl rounded-xl p-4 flex flex-col gap-2 border ${hasDraft ? 'card-style-draft' : 'card-style'}`}>
+            className={`flex flex-col gap-2 border shadow-xl rounded-xl p-4 ${hasDraft ? 'card-style-draft' : 'card-style'}`}>
             <div
                 className='flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 w-full cursor-pointer'
                 onClick={toggleExpand}>
-                <div className='flex items-center gap-6 flex-1'>
+                <div className='flex flex-1 items-center gap-6'>
                     <CircleInitial initial={circleInitial} />
                     <div className='flex flex-col '>
                         <span className='font-semibold truncate md:max-w-[22rem] max-w-[12rem]'>
@@ -460,7 +460,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                             </div>
 
                             {/* Buttons */}
-                            <div className='flex justify-center gap-8 flex-wrap p-4'>
+                            <div className='flex flex-wrap justify-center gap-8 p-4'>
                                 <Button
                                     disabled={
                                         !formData.name?.trim() ||

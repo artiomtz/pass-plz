@@ -18,12 +18,12 @@ const TagsBox: React.FC<TagsBoxProps> = ({ onChange, selectedTags }) => {
     };
 
     return (
-        <div className='flex flex-1 flex-col gap-2 border rounded-xl shadow-xl p-2 overflow-y-auto text-sm w-full input-style'>
+        <div className='flex flex-1 flex-col overflow-y-auto text-sm w-full gap-2 p-2 border rounded-xl shadow-xl input-style'>
             {[...tags]
                 .sort((a, b) => a.localeCompare(b))
                 .map((tag) => (
                     <label
-                        className='flex items-center gap-2 cursor-pointer ps-1'
+                        className='flex items-center gap-2 ps-1 cursor-pointer'
                         key={tag}>
                         <input
                             checked={selectedTags.includes(tag)}

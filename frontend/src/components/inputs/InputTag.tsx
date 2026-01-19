@@ -66,4 +66,5 @@ const InputTag: React.FC<InputTagProps> = ({ limit = 5, onChange, suggestions = 
         </div>
     );
 };
+
 export default InputTag;

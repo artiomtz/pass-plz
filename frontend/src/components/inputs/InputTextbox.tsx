@@ -16,7 +16,7 @@ const InputTextbox: React.FC<InputTextboxProps> = ({
     value,
 }) => (
     <textarea
-        className='input-style p-2 px-3 rounded-xl shadow-xl w-full lg:w-[26rem]'
+        className='w-full lg:w-[26rem] p-2 px-3 rounded-xl shadow-xl input-style'
         maxLength={maxLength}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}

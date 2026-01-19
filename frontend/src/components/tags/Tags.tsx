@@ -13,13 +13,13 @@ const Tags: React.FC<TagsProps> = ({ onRemove, tags }) => {
     return (
         <AnimatePresence>
             <motion.div
-                className='flex gap-2 flex-wrap lg:ml-[160px]'
+                className='flex flex-wrap lg:ml-[160px] gap-2'
                 key='tags'
                 {...scaleMotionProps}>
                 {safeTags.length > 0 &&
                     safeTags.map((tag) => (
                         <motion.span
-                            className='px-2 py-0.5 rounded-full text-xs cursor-pointer shadow-md pill-style'
+                            className='text-xs px-2 py-0.5 rounded-full shadow-md cursor-pointer pill-style'
                             key={'tag-' + tag}
                             onClick={() => onRemove(tag)}
                             title='Delete'

@@ -83,7 +83,7 @@ const Navbar: React.FC = () => {
                         <div className='absolute inset-0 bg-black/30' />
 
                         <motion.div
-                            className='absolute top-0 left-0 w-70 h-full shadow-xl flex flex-col p-8 gap-8 navbar-style'
+                            className='absolute flex flex-col p-8 gap-8 top-0 left-0 w-70 h-full shadow-xl navbar-style'
                             key='navbar'
                             onClick={(e) => e.stopPropagation()}
                             {...slideMotionProps}>

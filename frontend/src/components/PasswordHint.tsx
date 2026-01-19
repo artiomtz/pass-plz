@@ -10,7 +10,7 @@ const PasswordHint: React.FC<PasswordHintProps> = ({ password }) => {
     const hintStyle = 'flex items-center gap-2';
 
     return (
-        <div className='absolute z-10 top-full left-0 mt-1 w-70 rounded-xl text-sm p-4 shadow-xl card-style'>
+        <div className='absolute z-10 top-full left-0 mt-1 w-70 p-4 text-sm rounded-xl shadow-xl card-style'>
             <p className={hintStyle + ` ${checks.length ? 'check-pass-style' : 'check-fail-style'}`}>
                 {checks.length ? <LockKeyhole size={18} /> : <LockKeyholeOpen size={18} />} At least{' '}
                 {MIN_PASSWORD_LENGTH} characters

@@ -201,7 +201,7 @@ const DashboardPage = () => {
                                     value={sortBy}
                                 />
                                 <button
-                                    className='border rounded-xl p-2 w-12 h-12 shadow-xl button-info-style cursor-pointer'
+                                    className='border p-2 w-12 h-12 rounded-xl shadow-xl cursor-pointer button-info-style'
                                     onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}>
                                     {sortOrder === 'asc' ? <ArrowDownAz size={24} /> : <ArrowDownZa size={24} />}
                                 </button>
@@ -282,7 +282,7 @@ const DashboardPage = () => {
                             </motion.div>
                         </AnimatePresence>
                     ) : (
-                        <div className='space-y-1 p-4 flex flex-col gap-4'>
+                        <div className='flex flex-col space-y-1 p-4 gap-4'>
                             <AnimatePresence>
                                 {filteredEntries.length === 0 && !newEntry && (
                                     <motion.div

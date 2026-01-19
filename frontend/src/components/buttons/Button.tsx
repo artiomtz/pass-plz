@@ -9,9 +9,9 @@ interface ButtonProps {
 }
 
 const Button: React.FC<ButtonProps> = ({ children, className, disabled = false, onClick, variant = 'primary' }) => {
-    const baseClassNameShape = 'flex items-center justify-center input-style w-auto h-12 min-w-[125px]';
-    const baseClassNameStyle = 'gap-2 px-4 py-2 rounded-2xl shadow-xl font-medium transition';
-    const baseClassName = `${baseClassNameShape} + ${baseClassNameStyle}`;
+    const baseClassNameShape = 'flex items-center justify-center w-auto h-12 min-w-[125px]';
+    const baseClassNameStyle = 'px-4 py-2 gap-2 font-medium rounded-2xl shadow-xl transition';
+    const baseClassName = `${baseClassNameShape} ${baseClassNameStyle} input-style`;
 
     const variants: Record<typeof variant, string> = {
         danger: 'button-danger-style',

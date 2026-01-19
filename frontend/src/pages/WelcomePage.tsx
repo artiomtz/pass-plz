@@ -43,7 +43,7 @@ const WelcomePage = () => {
     return (
         <GlobalLayout title='Welcome To Pass Plz'>
             <div className='text-center max-w-3xl mx-auto'>
-                <div className='space-y-10 text-center mx-auto'>
+                <div className='text-center space-y-10 mx-auto'>
                     <p>
                         Pass Plz is a modern password manager designed to make security effortless. It works seamlessly
                         on both web and mobile, so your passwords are always with you.

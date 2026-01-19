@@ -14,12 +14,12 @@ const ModalConfirmation: React.FC<ModalConfirmationProps> = ({ message, onCancel
     <AnimatePresence>
         {show && (
             <motion.div
-                className='fixed inset-0 bg-black/30 flex items-center justify-center z-20 backdrop-blur-xs'
+                className='flex items-center justify-center z-20 fixed inset-0 backdrop-blur-xs bg-black/30'
                 key='modal-background'
                 onClick={onCancel}
                 {...fadeMotionProps}>
                 <motion.div
-                    className='card-style rounded-xl shadow-xl p-6 w-xs sm:w-sm'
+                    className='p-6 w-xs sm:w-sm rounded-xl shadow-xl card-style'
                     key='modal'
                     onClick={(e) => e.stopPropagation()}
                     {...scaleMotionProps}>

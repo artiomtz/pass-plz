@@ -65,4 +65,5 @@ const InputCategory: React.FC<InputCategoryProps> = ({ onChange, suggestions = [
         </div>
     );
 };
+
 export default InputCategory;
