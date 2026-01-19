@@ -1,14 +1,14 @@
 import api from '@api/axiosInstance';
 import { API_HEALTH } from '@api/constants';
 import { ApiResponse, handleApiError } from '@api/handleApiError';
-import HttpStatus from '@api/httpStatus';
 import logger from '@utils/loggerUtil';
+import { HttpStatusCode } from 'axios';
 
 export const pingApi = async (): Promise<ApiResponse<string>> => {
     try {
         const response = await api.get(`${API_HEALTH}/ping`);
 
-        if (response.status != HttpStatus.OK) {
+        if (response.status != HttpStatusCode.Ok) {
             logger.warn('failed to ping server. bad response code');
 
             return { error: 'Failed to ping server', ok: false };

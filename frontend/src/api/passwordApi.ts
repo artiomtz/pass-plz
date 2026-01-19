@@ -1,10 +1,10 @@
 import api from '@api/axiosInstance';
 import { API_PASSWORDS, API_PASSWORDS_USER } from '@api/constants';
 import { ApiResponse, handleApiError } from '@api/handleApiError';
-import HttpStatus from '@api/httpStatus';
 import PasswordEntry from '@models/passwordEntry';
 import User from '@models/user';
 import logger from '@utils/loggerUtil';
+import { HttpStatusCode } from 'axios';
 
 export const createPasswordApi = async (newEntry: PasswordEntry): Promise<ApiResponse<PasswordEntry>> => {
     try {
@@ -12,7 +12,7 @@ export const createPasswordApi = async (newEntry: PasswordEntry): Promise<ApiRes
         const response = await api.post(API_PASSWORDS, newEntry);
 
         const { data, status } = response;
-        if (status != HttpStatus.OK || !data) {
+        if (status != HttpStatusCode.Ok || !data) {
             logger.warn('failed to create password. bad response code');
 
             return { error: 'Failed to create password', ok: false };
@@ -34,13 +34,13 @@ export const getPasswordsApi = async (user: User): Promise<ApiResponse<PasswordE
         const response = await api.get(`${API_PASSWORDS_USER}/${user.id}`);
 
         const { data, status } = response;
-        if (status != HttpStatus.OK && status != HttpStatus.NO_CONTENT) {
+        if (status != HttpStatusCode.Ok && status != HttpStatusCode.NoContent) {
             logger.warn('failed to get passwords. bad response code');
 
             return { error: 'Failed to get passwords', ok: false };
         }
 
-        if (status === HttpStatus.NO_CONTENT || !data) {
+        if (status === HttpStatusCode.NoContent || !data) {
             return { data: [], ok: true };
         }
 
@@ -60,7 +60,7 @@ export const updatePasswordApi = async (updatedEntry: PasswordEntry): Promise<Ap
         const response = await api.put(`${API_PASSWORDS}/${updatedEntry.id}`, updatedEntry);
 
         const { data, status } = response;
-        if (status != HttpStatus.OK || !data) {
+        if (status != HttpStatusCode.Ok || !data) {
             logger.warn('failed to update password. bad response code');
 
             return { error: 'Failed to update password', ok: false };
@@ -81,7 +81,7 @@ export const deletePasswordApi = async (entry: PasswordEntry): Promise<ApiRespon
         logger.info(`requesting ${API_PASSWORDS}`);
         const response = await api.delete(`${API_PASSWORDS}/${entry.id}`);
 
-        if (response.status != HttpStatus.OK) {
+        if (response.status != HttpStatusCode.Ok) {
             logger.warn('failed to delete password. bad response code');
 
             return { error: 'Failed to delete password', ok: false };

@@ -7,17 +7,17 @@ import {
     LOGIN_TIME,
 } from '@api/constants';
 import { ApiResponse, handleApiError } from '@api/handleApiError';
-import HttpStatus from '@api/httpStatus';
 import PasswordReset from '@models/passwordReset';
 import User from '@models/user';
 import logger from '@utils/loggerUtil';
+import { HttpStatusCode } from 'axios';
 
 export const updateLoginTimeApi = async (user: User): Promise<ApiResponse<boolean>> => {
     try {
         logger.info(`requesting ${API_USERS}`);
         const response = await api.patch(`${API_USERS}/${user.id}${LOGIN_TIME}`);
 
-        if (response.status != HttpStatus.OK) {
+        if (response.status != HttpStatusCode.Ok) {
             logger.warn('failed to update login time. bad response code');
 
             return { error: 'Failed to update login time', ok: false };
@@ -38,13 +38,13 @@ export const requestResetPassword = async (email: string): Promise<ApiResponse<s
         logger.info(`requesting ${API_USERS_REQUEST_RESET_PASSWORD}`);
         const response = await api.post(`${API_USERS_REQUEST_RESET_PASSWORD}/${email}`);
 
-        if (response.status == HttpStatus.TOO_MANY_REQUESTS) {
+        if (response.status == HttpStatusCode.TooManyRequests) {
             logger.warn('failed to request password reset. too many requests');
 
             return { error: 'Already requested a password reset', ok: false };
         }
 
-        if (response.status != HttpStatus.OK) {
+        if (response.status != HttpStatusCode.Ok) {
             logger.warn('failed to request password reset. bad response code');
 
             return { error: 'Failed to request password reset', ok: false };
@@ -65,7 +65,7 @@ export const resetPassword = async (passwordReset: PasswordReset): Promise<ApiRe
         logger.info(`requesting ${API_USERS_RESET_PASSWORD}`);
         const response = await api.post(`${API_USERS_RESET_PASSWORD}`, passwordReset);
 
-        if (response.status != HttpStatus.OK) {
+        if (response.status != HttpStatusCode.Ok) {
             logger.warn('failed to reset password. bad response code');
 
             return { error: 'Failed to reset password', ok: false };
@@ -86,13 +86,13 @@ export const requestCancellation = async (user: User): Promise<ApiResponse<strin
         logger.info(`requesting ${API_USERS_REQUEST_CANCELLATION}`);
         const response = await api.post(`${API_USERS_REQUEST_CANCELLATION}/${user.id}`);
 
-        if (response.status == HttpStatus.TOO_MANY_REQUESTS) {
+        if (response.status == HttpStatusCode.TooManyRequests) {
             logger.warn('failed to cancel account. too many requests');
 
             return { error: 'Already requested a cancellation', ok: false };
         }
 
-        if (response.status != HttpStatus.OK) {
+        if (response.status != HttpStatusCode.Ok) {
             logger.warn('failed to cancel account. bad response code');
 
             return { error: 'Failed to cancel account', ok: false };

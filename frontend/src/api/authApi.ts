@@ -1,11 +1,11 @@
 import api from '@api/axiosInstance';
 import { API_AUTH_AUTHENTICATE, API_AUTH_LOGOUT, API_AUTH_REFRESH, API_AUTH_REGISTER } from '@api/constants';
 import { ApiResponse, handleApiError } from '@api/handleApiError';
-import HttpStatus from '@api/httpStatus';
 import Authentication from '@models/authentication';
 import { getBearerHeader } from '@utils/authUtil';
 import logger from '@utils/loggerUtil';
 import { clearStoredUser, clearTokens, getRefreshToken, setAccessToken, setRefreshToken } from '@utils/storageUtil';
+import { HttpStatusCode } from 'axios';
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
 
@@ -19,7 +19,7 @@ export const signUpApi = async (email: string, password: string): Promise<ApiRes
         );
 
         const { data, status } = response;
-        if (status != HttpStatus.OK || !data) {
+        if (status != HttpStatusCode.Ok || !data) {
             logger.warn('failed to sign up. bad response code');
 
             return { error: 'Failed to sign up', ok: false };
@@ -47,7 +47,7 @@ export const signInApi = async (email: string, password: string): Promise<ApiRes
         );
 
         const { data, status } = response;
-        if (status != HttpStatus.OK || !data) {
+        if (status != HttpStatusCode.Ok || !data) {
             logger.warn('failed to sign in. bad response code');
 
             return { error: 'Failed to sign in', ok: false };
@@ -132,7 +132,7 @@ export const logoutApi = async (): Promise<void> => {
             },
         });
 
-        if (response.status != HttpStatus.OK) {
+        if (response.status != HttpStatusCode.Ok) {
             logger.warn('failed to logout. bad response code');
         }
 

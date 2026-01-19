@@ -1,10 +1,9 @@
 import { refreshApi } from '@api/authApi';
 import { isBasicAuthRoute, isNoAuthRoute, isUserAuthRoute } from '@api/constants';
-import HttpStatus from '@api/httpStatus';
 import { getBasicAuthHeader, getBearerHeader } from '@utils/authUtil';
 import logger from '@utils/loggerUtil';
 import { getRefreshToken } from '@utils/storageUtil';
-import axios from 'axios';
+import axios, { HttpStatusCode } from 'axios';
 import camelcaseKeys from 'camelcase-keys';
 import decamelizeKeys from 'decamelize-keys';
 
@@ -68,7 +67,7 @@ api.interceptors.response.use(
 
         const { response } = error;
         if (
-            response?.status === HttpStatus.FORBIDDEN &&
+            response?.status === HttpStatusCode.Forbidden &&
             !isNoAuthRoute(original.url) &&
             !isUserAuthRoute(original.url)
         ) {
