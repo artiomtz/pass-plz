@@ -1,8 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0" />
         <title th:text="${head_title}">Email From Pass Plz</title>
         <style>
             .email-container {
@@ -10,7 +14,7 @@
                 margin: 0 auto;
                 background-color: #e6e6e6;
                 padding: 20px;
-                border: 20px solid #d4d4d4;
+                border: 20px solid #a0a0a0;
             }
 
             .email-banner {
@@ -64,7 +68,10 @@
     </head>
     <body>
         <div class="email-container">
-            <img th:src="${banner}" alt="Email Banner" class="email-banner" />
+            <img
+                th:src="${banner}"
+                alt="Email Banner"
+                class="email-banner" />
             <h2>Administrator Notification</h2>
 
             <p>

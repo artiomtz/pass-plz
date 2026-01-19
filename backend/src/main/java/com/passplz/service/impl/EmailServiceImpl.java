@@ -12,7 +12,6 @@ import com.passplz.entity.User;
 import com.passplz.exception.EmailException;
 import com.passplz.service.EmailService;
 import com.passplz.service.TokenService;
-import com.postmarkapp.postmark.Postmark;
 import com.postmarkapp.postmark.client.ApiClient;
 import com.postmarkapp.postmark.client.data.model.message.Message;
 import com.postmarkapp.postmark.client.data.model.message.MessageResponse;
@@ -44,6 +43,10 @@ public class EmailServiceImpl implements EmailService {
     @Value("${application.admin.email}")
     private String adminEmail;
 
+    @Value("${spring.profile}")
+    private String profile;
+
+    private final ApiClient postmarkClient;
     private final TokenService tokenService;
     private final TemplateEngine templateEngine;
 
@@ -52,12 +55,14 @@ public class EmailServiceImpl implements EmailService {
             emailType.toString().toLowerCase(),
             user.getId());
 
+        final String htmlBody;
+        final String emailLink = getEmailLink(user, emailType);
+
         Context context = new Context();
         context.setVariable("banner", emailBanner);
         context.setVariable("username", StringUtils.substringBefore(user.getEmail(), "@"));
-        context.setVariable("link", getEmailLink(user, emailType));
+        context.setVariable("link", emailLink);
 
-        final String htmlBody;
         try {
             htmlBody = templateEngine.process(getEmailTemplate(emailType), context);
         } catch (Exception exception) {
@@ -80,9 +85,16 @@ public class EmailServiceImpl implements EmailService {
         message.setHtmlBody(htmlBody);
         message.setTextBody("The email failed to render. Please get in contact with support.");
 
+        if (profile.equalsIgnoreCase("local")) {
+            log.info("local development: simulating {} email to {} with link: {}",
+                emailType.toString().toLowerCase(),
+                user.getEmail(),
+                emailLink);
+            return;
+        }
+
         try {
-            final ApiClient client = Postmark.getApiClient(emailApiKey);
-            final MessageResponse response = client.deliverMessage(message);
+            final MessageResponse response = postmarkClient.deliverMessage(message);
             log.info("successfully sent {} email to {}",
                 emailType.toString().toLowerCase(),
                 response.getTo());
@@ -101,12 +113,13 @@ public class EmailServiceImpl implements EmailService {
     public void sendAdminEmail(String messageText) {
         log.info("sending admin email notification to {}", adminEmail);
 
+        final String htmlBody;
         Context context = new Context();
+
         context.setVariable("banner", emailBanner);
         context.setVariable("username", StringUtils.substringBefore(adminEmail, "@"));
         context.setVariable("message", messageText);
 
-        final String htmlBody;
         try {
             htmlBody = templateEngine.process(getEmailTemplate(EmailType.ADMIN), context);
         } catch (Exception exception) {
@@ -123,9 +136,15 @@ public class EmailServiceImpl implements EmailService {
         message.setHtmlBody(htmlBody);
         message.setTextBody("The admin email failed to render.");
 
+        if (profile.equalsIgnoreCase("local")) {
+            log.info("local development: simulating admin notification to {} with message: {}",
+                adminEmail,
+                messageText);
+            return;
+        }
+
         try {
-            final ApiClient client = Postmark.getApiClient(emailApiKey);
-            final MessageResponse response = client.deliverMessage(message);
+            final MessageResponse response = postmarkClient.deliverMessage(message);
             log.info("successfully sent admin email notification to {}", response.getTo());
         } catch (Exception exception) {
             log.error("failed to send admin email notification to {}: {}",

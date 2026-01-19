@@ -1,8 +1,12 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!doctype html>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0" />
         <title th:text="${head_title}">Email From Pass Plz</title>
         <style>
             .email-container {
@@ -10,7 +14,7 @@
                 margin: 0 auto;
                 background-color: #e6e6e6;
                 padding: 20px;
-                border: 20px solid #d4d4d4;
+                border: 20px solid #a0a0a0;
             }
 
             .email-banner {
@@ -75,7 +79,10 @@
     </head>
     <body>
         <div class="email-container">
-            <img th:src="${banner}" alt="Email Banner" class="email-banner" />
+            <img
+                th:src="${banner}"
+                alt="Email Banner"
+                class="email-banner" />
             <h2>Welcome!</h2>
 
             <p>
@@ -83,7 +90,7 @@
                 <span th:text="${username}">User</span>
             </p>
 
-            <p>Thank you for signing up. We’re excited to have you with us.</p>
+            <p>Thank you for signing up. We're excited to have you with us.</p>
             <p>Please click on the link below to verify your email.</p>
 
             <div class="link">
