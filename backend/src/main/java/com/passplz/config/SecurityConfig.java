@@ -74,6 +74,7 @@ public class SecurityConfig {
                         "/api/email/**",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
+                        "/api/health/ping",
                         "/api/users/reset-password",
                         "/api/users/request-reset-password/**")
                     .permitAll()

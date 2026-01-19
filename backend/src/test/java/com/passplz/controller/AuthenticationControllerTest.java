@@ -46,8 +46,8 @@ class AuthenticationControllerTest {
         mockAuthenticationDto = new AuthenticationDto(
             ACCESS_TOKEN,
             REFRESH_TOKEN,
-            LocalDateTime.now(),
-            1L);
+            1L,
+            LocalDateTime.now());
     }
 
     @Test

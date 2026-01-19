@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
     public User createAdmin(User user) {
         try {
             if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-                log.warn("admin user with the email {} already exists", user.getEmail());
+                log.info("admin user with the email {} already exists", user.getEmail());
                 return null;
             }
 

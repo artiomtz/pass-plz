@@ -66,8 +66,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return new AuthenticationDto(
             accessToken,
             refreshToken,
-            createdUser.getLastVisited(),
-            createdUser.getId());
+            createdUser.getId(),
+            createdUser.getLastVisited());
     }
 
     @Override
@@ -108,8 +108,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return new AuthenticationDto(
             accessToken,
             refreshToken,
-            user.getLastVisited(),
-            user.getId());
+            user.getId(),
+            user.getLastVisited());
     }
 
     @Override
@@ -130,7 +130,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         final String accessToken = jwtService.generateToken(user);
         log.info("successfully refreshed token for user user with id {}", user.getId());
-        return new AuthenticationDto(accessToken, null, user.getLastVisited(), user.getId());
+        return new AuthenticationDto(accessToken, null, user.getId(), user.getLastVisited());
     }
 
     @Override
