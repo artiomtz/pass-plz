@@ -84,6 +84,7 @@ class TokenServiceImplTest {
 
         assertDoesNotThrow(() -> tokenService
             .saveToken(mockUser, TokenType.RESET, TOKEN_EXPIRY_MINUTES, RAW_TOKEN_VALUE));
+
         verify(tokenRepository).save(any(Token.class));
     }
 
@@ -96,12 +97,14 @@ class TokenServiceImplTest {
         final ApplicationException exception = assertThrows(ApplicationException.class,
             () -> tokenService
                 .saveToken(mockUser, TokenType.RESET, TOKEN_EXPIRY_MINUTES, RAW_TOKEN_VALUE));
+
         assertEquals("error creating reset token", exception.getMessage());
     }
 
     @Test
     void testFindUser_Success() {
-        when(tokenRepository.findAllByType(TokenType.RESET)).thenReturn(List.of(mockToken));
+        when(tokenRepository.findAllByTypeFetchUser(TokenType.RESET))
+            .thenReturn(List.of(mockToken));
         when(passwordEncoder.matches(RAW_TOKEN_VALUE, mockToken.getValue())).thenReturn(true);
 
         final User foundUser = tokenService.findUser(RAW_TOKEN_VALUE, TokenType.RESET);
@@ -112,7 +115,7 @@ class TokenServiceImplTest {
 
     @Test
     void testFindUser_UserNotFound() {
-        when(tokenRepository.findAllByType(TokenType.RESET)).thenReturn(List.of());
+        when(tokenRepository.findAllByTypeFetchUser(TokenType.RESET)).thenReturn(List.of());
 
         final User foundUser = tokenService.findUser(RAW_TOKEN_VALUE, TokenType.RESET);
 
@@ -121,11 +124,12 @@ class TokenServiceImplTest {
 
     @Test
     void testFindUser_Error() {
-        when(tokenRepository.findAllByType(TokenType.RESET))
+        when(tokenRepository.findAllByTypeFetchUser(TokenType.RESET))
             .thenThrow(new RuntimeException("Database error"));
 
         final ApplicationException exception = assertThrows(ApplicationException.class,
             () -> tokenService.findUser(RAW_TOKEN_VALUE, TokenType.RESET));
+
         assertEquals("error finding user by token", exception.getMessage());
     }
 
@@ -154,6 +158,7 @@ class TokenServiceImplTest {
 
         final ApplicationException exception = assertThrows(ApplicationException.class,
             () -> tokenService.doesUserHaveValidToken(mockUser, TokenType.RESET));
+
         assertEquals("error checking valid reset token for user with id 1", exception.getMessage());
     }
 
@@ -183,6 +188,7 @@ class TokenServiceImplTest {
 
         final ApplicationException exception = assertThrows(ApplicationException.class,
             () -> tokenService.isTokenValid(RAW_TOKEN_VALUE, TokenType.RESET));
+
         assertEquals("error validating reset token", exception.getMessage());
     }
 
@@ -210,6 +216,7 @@ class TokenServiceImplTest {
 
         final ApplicationException exception = assertThrows(ApplicationException.class,
             () -> tokenService.invalidateToken(RAW_TOKEN_VALUE, TokenType.RESET));
+
         assertEquals("error invalidating reset token", exception.getMessage());
     }
 

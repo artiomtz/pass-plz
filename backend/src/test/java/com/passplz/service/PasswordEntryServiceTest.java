@@ -136,6 +136,7 @@ class PasswordEntryServiceTest {
     void testCreateEntry_Success() {
         when(userService.getUserById(mockUser.getId())).thenReturn(mockUser);
         when(encryptionUtil.encrypt("plainPass")).thenReturn("encryptedPass");
+        when(encryptionUtil.decrypt("encryptedPass")).thenReturn("decryptedPass");
         when(passwordEntryRepository.save(any(PasswordEntry.class))).thenReturn(mockEntry);
 
         final PasswordEntry newEntry = PasswordEntry.builder()
@@ -146,13 +147,14 @@ class PasswordEntryServiceTest {
         final PasswordEntry result = passwordEntryService.createEntry(newEntry);
 
         assertNotNull(result);
-        assertEquals("encryptedPass", result.getPassword());
+        assertEquals("decryptedPass", result.getPassword());
         verify(passwordEntryRepository, times(1)).save(any(PasswordEntry.class));
     }
 
     @Test
     void testUpdateEntry_Success() {
         when(encryptionUtil.encrypt("newPass")).thenReturn("encryptedNewPass");
+        when(encryptionUtil.decrypt("encryptedNewPass")).thenReturn("decryptedPass");
         when(passwordEntryRepository.findById(mockEntry.getId()))
             .thenReturn(Optional.of(mockEntry));
         when(passwordEntryRepository.save(any(PasswordEntry.class))).thenReturn(mockEntry);
@@ -166,7 +168,7 @@ class PasswordEntryServiceTest {
 
         assertNotNull(result);
         assertEquals("Updated Name", result.getName());
-        assertEquals("encryptedNewPass", result.getPassword());
+        assertEquals("decryptedPass", result.getPassword());
     }
 
     @Test

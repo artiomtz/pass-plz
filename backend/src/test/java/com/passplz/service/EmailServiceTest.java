@@ -42,6 +42,7 @@ class EmailServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        ReflectionTestUtils.setField(emailService, "profile", "local");
         ReflectionTestUtils.setField(emailService, "tokenExpiryMinutes", "60");
 
         mockUser = new User();

@@ -46,8 +46,7 @@ class EmailControllerTest {
     private static final String VALID_TOKEN = "valid-token";
     private static final String INVALID_TOKEN = "invalid-token";
     private static final String ERROR_PATH = "/error";
-    private static final String WELCOME_PATH = "/welcome";
-    private static final String RESET_PASSWORD_PATH = "/reset-password";
+    private static final String RESET_PASSWORD_PATH = "/password-reset";
     private static final String GOODBYE_PATH = "/goodbye";
     private static final String FRONTEND_URL = "http://localhost:3000";
 
@@ -65,7 +64,7 @@ class EmailControllerTest {
         ResponseEntity<Void> response = emailController.verifyUser(EMAIL, VALID_TOKEN);
 
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
-        assertEquals(URI.create(FRONTEND_URL + WELCOME_PATH), response.getHeaders().getLocation());
+        assertEquals(URI.create(FRONTEND_URL), response.getHeaders().getLocation());
 
         verify(tokenService, times(1)).deleteExpiredTokens();
         verify(userService, times(1)).getUserByEmail(EMAIL);

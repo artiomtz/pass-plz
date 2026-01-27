@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.web.SecurityFilterChain;
+import org.thymeleaf.TemplateEngine;
 
 import com.passplz.config.Role;
 import com.passplz.entity.PasswordEntry;
@@ -36,6 +37,9 @@ class PasswordEntryRepositoryTest {
 
     @MockBean
     private EmailService emailService;
+
+    @MockBean
+    private TemplateEngine templateEngine;
 
     private User mockUser;
     private PasswordEntry mockEntry1;
