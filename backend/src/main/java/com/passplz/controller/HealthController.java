@@ -26,15 +26,15 @@ public class HealthController {
     public ResponseEntity<Map<String, String>> health() {
         log.info("received health check request");
 
-        Duration uptime = Duration.between(startTime, Instant.now());
-        long days = uptime.toDays();
-        long hours = uptime.toHoursPart();
-        long minutes = uptime.toMinutesPart();
-        long seconds = uptime.toSecondsPart();
+        final Duration uptime = Duration.between(startTime, Instant.now());
+        final long days = uptime.toDays();
+        final long hours = uptime.toHoursPart();
+        final long minutes = uptime.toMinutesPart();
+        final long seconds = uptime.toSecondsPart();
 
         String formattedUptime = String
             .format("%d days %02d:%02d:%02d", days, hours, minutes, seconds);
-        Map<String, String> response = Map.of("status", "ok", "uptime", formattedUptime);
+        final Map<String, String> response = Map.of("status", "ok", "uptime", formattedUptime);
 
         return ResponseEntity.ok(response);
     }

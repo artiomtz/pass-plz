@@ -25,7 +25,7 @@ public class ErrorPageController implements ErrorController {
         final String accept = request.getHeader("Accept");
 
         if (accept != null && accept.contains("text/html")) {
-            Context context = new Context();
+            final Context context = new Context();
             final String htmlBody = templateEngine.process("error-page.html", context);
 
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
