@@ -10,8 +10,9 @@ ENTRYPOINT [ \
     "mvn", \
     "spring-boot:run", \
     "-DskipTests=true", \
-    "-Dspring.profiles.active=local", \
-    "-Dspring.datasource.url=${DB_URL}", \
-    "-Dspring.datasource.username=${DB_USERNAME}", \
-    "-Dspring.datasource.password=${DB_PASSWORD}" \
+    "-Dspring-boot.run.jvmArguments= \
+     -Dspring.profiles.active=local \
+     -Dspring.datasource.url=${DB_URL} \
+     -Dspring.datasource.username=${DB_USERNAME} \
+     -Dspring.datasource.password=${DB_PASSWORD}" \
     ]

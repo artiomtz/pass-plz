@@ -9,7 +9,7 @@ services:
     build:
       dockerfile: Dockerfile.dev
     environment:
-      VITE_ADMIN_EMAIL: ${VITE_ADMIN_EMAIL}
+      VITE_BACKEND_URL: ${VITE_BACKEND_URL}
     volumes:
       - ./frontend:/opt/app
       - /opt/app/node_modules
