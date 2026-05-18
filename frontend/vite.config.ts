@@ -1,9 +1,10 @@
+import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
-import { alias } from './pathAliases';
+import alias from './pathAliases';
 
 export default defineConfig({
-    plugins: [react()],
+    plugins: [react(), tailwindcss()],
     resolve: {
         alias,
     },
@@ -18,7 +19,4 @@ export default defineConfig({
             usePolling: true,
         },
     },
-    // define: {
-    //     BACKEND_URL: `'${process.env.BACKEND_URL}'`,
-    // },
 });

@@ -2,11 +2,11 @@ import tsParser from '@typescript-eslint/parser';
 import prettierPlugin from 'eslint-plugin-prettier';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
-import fs from 'fs';
 import globals from 'globals';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import tseslint from 'typescript-eslint';
-import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const prettierOptions = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../.prettierrc'), 'utf8'));
@@ -18,7 +18,7 @@ const perfectionist = (await import('eslint-plugin-perfectionist')).default;
 export default tseslint.config(
     { ignores: ['dist'] },
     {
-        files: ['**/*.{ts,tsx}'],
+        files: ['**/*.{ts,tsx}, pathAliases.ts'],
         languageOptions: {
             ecmaVersion: 2020,
             parser: tsParser,
@@ -43,6 +43,7 @@ export default tseslint.config(
             'class-methods-use-this': ['error'],
             'arrow-parens': ['error', 'always'],
             'block-spacing': ['error', 'always'],
+            'arrow-body-style': ['error', 'as-needed'],
             'prettier/prettier': ['error', prettierOptions],
             'react/jsx-first-prop-new-line': ['error', 'multiline'],
             'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
@@ -68,6 +69,7 @@ export default tseslint.config(
                 {
                     order: 'asc',
                     type: 'natural',
+                    newlinesBetween: 'never',
                     groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
                 },
             ],
@@ -83,13 +85,6 @@ export default tseslint.config(
                 {
                     order: 'asc',
                     type: 'natural',
-                },
-            ],
-            'import/order': [
-                'error',
-                {
-                    'newlines-between': 'always',
-                    groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
                 },
             ],
         },
