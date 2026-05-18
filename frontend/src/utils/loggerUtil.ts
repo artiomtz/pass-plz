@@ -21,7 +21,7 @@ const getTimestamp = (): string => {
 const logger = {
     error: (message: string, ...optional: unknown[]): void => {
         if (isDev) {
-            console.error(`${getTimestamp()}  ${padding('[ERROR]')} ${message}`, ...optional);
+            console.error(`${getTimestamp()} ${padding('[ERROR]')} ${message}`, ...optional);
         } else {
             console.error(`${message}`);
         }
@@ -29,16 +29,15 @@ const logger = {
 
     info: (message: string, ...optional: unknown[]): void => {
         if (isDev) {
-            console.info(`${getTimestamp()}  ${padding('[INFO]')} ${message}`, ...optional);
+            console.info(`${getTimestamp()} ${padding('[INFO]')} ${message}`, ...optional);
         } else {
             console.info(`${message}`);
-            console.info(`${env}`);
         }
     },
 
     warn: (message: string, ...optional: unknown[]): void => {
         if (isDev) {
-            console.warn(`${getTimestamp()}  ${padding('[WARN]')} ${message}`, ...optional);
+            console.warn(`${getTimestamp()} ${padding('[WARN]')} ${message}`, ...optional);
         } else {
             console.warn(`${message}`);
         }

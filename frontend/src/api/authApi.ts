@@ -6,6 +6,7 @@ import { getBearerHeader } from '@utils/authUtil';
 import logger from '@utils/loggerUtil';
 import { clearStoredUser, clearTokens, getRefreshToken, setAccessToken, setRefreshToken } from '@utils/storageUtil';
 import { HttpStatusCode } from 'axios';
+
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
 

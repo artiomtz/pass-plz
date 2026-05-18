@@ -8,6 +8,7 @@ import useTheme from '@hooks/useTheme';
 import ROUTES from '@routes/constants';
 import logger from '@utils/loggerUtil';
 import { fadeMotionProps, slideMotionProps } from '@utils/motionUtil';
+import { draftStorage } from '@utils/storageUtil';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CircleX, Menu, Moon, Sun, Trash2, UserX } from 'lucide-react';
 import React, { useState } from 'react';
@@ -45,12 +46,13 @@ const Navbar: React.FC = () => {
         const response = await requestCancellation(user);
         setLoadingDelete(false);
 
-        if (!response.ok) {
-            toast.error(response.error);
-        } else {
+        if (response.ok) {
             toast.success(response.data);
+            draftStorage.clearAll();
             logout();
             navigate(ROUTES.WELCOME, { replace: true });
+        } else {
+            toast.error(response.error);
         }
 
         setShowConfirm(false);

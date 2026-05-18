@@ -21,10 +21,10 @@ const RequestResetPage = () => {
         const response = await requestResetPassword(email);
         setLoading(false);
 
-        if (!response.ok) {
-            toast.error(response.error);
-        } else {
+        if (response.ok) {
             toast.success(response.data);
+        } else {
+            toast.error(response.error);
         }
         navigate(ROUTES.SIGN_IN, { replace: true });
     };

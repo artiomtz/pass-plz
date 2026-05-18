@@ -15,7 +15,9 @@ const WelcomePage = () => {
             const id = toast.loading('Connecting to server');
             const response = await pingApi();
 
-            if (!response.ok) {
+            if (response.ok) {
+                toast.success(response.data, { id });
+            } else {
                 toast.error(
                     <span>
                         {response.error}
@@ -24,8 +26,6 @@ const WelcomePage = () => {
                     </span>,
                     { id }
                 );
-            } else {
-                toast.success(response.data, { id });
             }
         };
 
