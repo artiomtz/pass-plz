@@ -77,21 +77,22 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public boolean doesUserHaveValidToken(User user, TokenType type) {
+        final Long userId = user.getId();
         try {
             List<Token> tokens = tokenRepository.findAllByType(type);
             return tokens.stream()
                 .filter(Token::getIsValid)
                 .filter(token -> token.getExpiryDate().isAfter(LocalDateTime.now()))
-                .anyMatch(token -> token.getUser().equals(user));
+                .anyMatch(token -> token.getUser().getId().equals(userId));
         } catch (Exception exception) {
             log.error("error checking valid {} token for user with id {}: {}",
                 type.toString().toLowerCase(),
-                user.getId(),
+                userId,
                 exception.getMessage());
             throw new ApplicationException(
                 String.format("error checking valid %s token for user with id %s",
                     type.toString().toLowerCase(),
-                    user.getId()));
+                    userId));
         }
     }
 
