@@ -44,7 +44,7 @@ public class EmailController {
         final boolean isValid = tokenService.isTokenValid(token, TokenType.VERIFICATION);
         if (!isValid) {
             log.error("verification token validation failed for {}", email);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
                 .location(URI.create(frontendUrl + URL_ERROR_PATH))
                 .build();
         }
@@ -53,7 +53,7 @@ public class EmailController {
         final User user = userService.getUserByEmail(email);
         if (user == null) {
             log.error("verification token validation couldn't find {}", email);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
                 .location(URI.create(frontendUrl + URL_ERROR_PATH))
                 .build();
         }
@@ -74,7 +74,7 @@ public class EmailController {
         final boolean isValid = tokenService.isTokenValid(token, TokenType.RESET);
         if (!isValid) {
             log.error("password reset token validation failed for {}", email);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
                 .location(URI.create(frontendUrl + URL_ERROR_PATH))
                 .build();
         }
@@ -95,7 +95,7 @@ public class EmailController {
         final boolean isValid = tokenService.isTokenValid(token, TokenType.CANCELLATION);
         if (!isValid) {
             log.error("cancellation token validation failed for {}", email);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
                 .location(URI.create(frontendUrl + URL_ERROR_PATH))
                 .build();
         }
@@ -104,7 +104,7 @@ public class EmailController {
         final User user = userService.getUserByEmail(email);
         if (user == null) {
             log.error("account cancellation token validation couldn't find {}", email);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
                 .location(URI.create(frontendUrl + URL_ERROR_PATH))
                 .build();
         }

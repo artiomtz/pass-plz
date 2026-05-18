@@ -59,6 +59,7 @@ public class EmailServiceImpl implements EmailService {
         final String emailLink = getEmailLink(user, emailType);
 
         Context context = new Context();
+        context.setVariable("head_title", "User Notification");
         context.setVariable("banner", emailBanner);
         context.setVariable("username", StringUtils.substringBefore(user.getEmail(), "@"));
         context.setVariable("link", emailLink);
@@ -82,7 +83,6 @@ public class EmailServiceImpl implements EmailService {
             getEmailSubject(emailType),
             htmlBody);
         message.setMessageStream("outbound");
-        message.setHtmlBody(htmlBody);
         message.setTextBody("The email failed to render. Please get in contact with support.");
 
         if (profile.equalsIgnoreCase("local")) {
@@ -116,6 +116,7 @@ public class EmailServiceImpl implements EmailService {
         final String htmlBody;
         Context context = new Context();
 
+        context.setVariable("head_title", "Admin Notification");
         context.setVariable("banner", emailBanner);
         context.setVariable("username", StringUtils.substringBefore(adminEmail, "@"));
         context.setVariable("message", messageText);
@@ -133,7 +134,6 @@ public class EmailServiceImpl implements EmailService {
             getEmailSubject(EmailType.ADMIN),
             htmlBody);
         message.setMessageStream("outbound");
-        message.setHtmlBody(htmlBody);
         message.setTextBody("The admin email failed to render.");
 
         if (profile.equalsIgnoreCase("local")) {

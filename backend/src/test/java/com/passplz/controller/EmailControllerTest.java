@@ -77,7 +77,7 @@ class EmailControllerTest {
 
         ResponseEntity<Void> response = emailController.verifyUser(EMAIL, INVALID_TOKEN);
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.MOVED_PERMANENTLY, response.getStatusCode());
         assertEquals(URI.create(FRONTEND_URL + ERROR_PATH), response.getHeaders().getLocation());
 
         verify(tokenService, times(1)).deleteExpiredTokens();
@@ -91,7 +91,7 @@ class EmailControllerTest {
 
         ResponseEntity<Void> response = emailController.verifyUser(EMAIL, VALID_TOKEN);
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.MOVED_PERMANENTLY, response.getStatusCode());
         assertEquals(URI.create(FRONTEND_URL + ERROR_PATH), response.getHeaders().getLocation());
 
         verify(tokenService, times(1)).deleteExpiredTokens();
@@ -117,7 +117,7 @@ class EmailControllerTest {
 
         ResponseEntity<Void> response = emailController.verifyResetPassword(EMAIL, INVALID_TOKEN);
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.MOVED_PERMANENTLY, response.getStatusCode());
         assertEquals(URI.create(FRONTEND_URL + ERROR_PATH), response.getHeaders().getLocation());
 
         verify(tokenService, times(1)).deleteExpiredTokens();
@@ -145,7 +145,7 @@ class EmailControllerTest {
 
         ResponseEntity<Void> response = emailController.cancelUser(EMAIL, INVALID_TOKEN);
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.MOVED_PERMANENTLY, response.getStatusCode());
         assertEquals(URI.create(FRONTEND_URL + ERROR_PATH), response.getHeaders().getLocation());
 
         verify(tokenService, times(1)).deleteExpiredTokens();
@@ -159,7 +159,7 @@ class EmailControllerTest {
 
         ResponseEntity<Void> response = emailController.cancelUser(EMAIL, VALID_TOKEN);
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.MOVED_PERMANENTLY, response.getStatusCode());
         assertEquals(URI.create(FRONTEND_URL + ERROR_PATH), response.getHeaders().getLocation());
 
         verify(tokenService, times(1)).deleteExpiredTokens();
