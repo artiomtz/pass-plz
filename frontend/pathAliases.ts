@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 
 const pathSrc = (dir: string) => resolve(__dirname, 'src', dir);
 
