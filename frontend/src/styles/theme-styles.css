@@ -39,7 +39,7 @@
 
     --footer: oklch(0% 0 0);
 
-    --background-path: url('src/assets/backgroundDark.svg');
+    --background-path: url('/backgroundDark.svg');
 }
 
 [data-theme='light'] {
@@ -83,5 +83,5 @@
 
     --footer: oklch(0% 0 0);
 
-    --background-path: url('src/assets/backgroundLight.svg');
+    --background-path: url('/backgroundLight.svg');
 }

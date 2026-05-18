@@ -1,14 +1,14 @@
 .toast-style-success {
-    color: var(--toast-success);
-    background-color: var(--toast-success-background);
+    color: var(--toast-success) !important;
+    background-color: var(--toast-success-background) !important;
 }
 
 .toast-style-loading {
-    color: var(--toast-loading);
-    background-color: var(--toast-loading-background);
+    color: var(--toast-loading) !important;
+    background-color: var(--toast-loading-background) !important;
 }
 
 .toast-style-error {
-    color: var(--toast-error);
-    background-color: var(--toast-error-background);
+    color: var(--toast-error) !important;
+    background-color: var(--toast-error-background) !important;
 }
