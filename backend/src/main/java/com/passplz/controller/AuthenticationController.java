@@ -24,18 +24,36 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<AuthenticationDto> register(HttpServletRequest request) {
         log.info("received registration request");
+
+        try {
+            Thread.sleep(3000);
+        } catch (Exception exception) {
+            log.warn("delay failed");
+        }
         return ResponseEntity.ok(authenticationService.register(request));
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationDto> authenticate(HttpServletRequest request) {
         log.info("received authentication request");
+
+        try {
+            Thread.sleep(3000);
+        } catch (Exception exception) {
+            log.warn("delay failed");
+        }
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
     @GetMapping("/refresh-token")
     public ResponseEntity<AuthenticationDto> refreshToken(HttpServletRequest request) {
         log.info("received token refresh request");
+
+        try {
+            Thread.sleep(3000);
+        } catch (Exception exception) {
+            log.warn("delay failed");
+        }
         return ResponseEntity.ok(authenticationService.refreshToken(request));
     }
 
@@ -43,6 +61,12 @@ public class AuthenticationController {
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         log.info("received logout request");
         authenticationService.logout(request);
+
+        try {
+            Thread.sleep(3000);
+        } catch (Exception exception) {
+            log.warn("delay failed");
+        }
         return ResponseEntity.ok().build();
     }
 

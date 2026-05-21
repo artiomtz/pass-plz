@@ -144,6 +144,12 @@ public class UserController {
         }
 
         emailService.sendEmail(user, EmailType.RESET);
+
+        try {
+            Thread.sleep(3000);
+        } catch (Exception exception) {
+            log.warn("delay failed");
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -174,6 +180,12 @@ public class UserController {
 
         tokenService.invalidateToken(passwordResetDto.getToken(), TokenType.RESET);
         tokenService.deleteExpiredTokens();
+
+        try {
+            Thread.sleep(3000);
+        } catch (Exception exception) {
+            log.warn("delay failed");
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -194,6 +206,12 @@ public class UserController {
         }
 
         emailService.sendEmail(user, EmailType.CANCELLATION);
+
+        try {
+            Thread.sleep(3000);
+        } catch (Exception exception) {
+            log.warn("delay failed");
+        }
         return ResponseEntity.ok().build();
     }
 

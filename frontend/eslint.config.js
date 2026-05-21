@@ -11,6 +11,7 @@ import tseslint from 'typescript-eslint';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const prettierOptions = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../.prettierrc'), 'utf8'));
 
+// export default async function config() {
 const react = (await import('eslint-plugin-react')).default;
 const importPlugin = (await import('eslint-plugin-import')).default;
 const perfectionist = (await import('eslint-plugin-perfectionist')).default;
@@ -44,10 +45,16 @@ export default tseslint.config(
             'arrow-parens': ['error', 'always'],
             'block-spacing': ['error', 'always'],
             'arrow-body-style': ['error', 'as-needed'],
+            // 'jsx-one-expression-per-line': ['error'],
+            // 'react/jsx-one-expression-per-line': ['error'],
             'prettier/prettier': ['error', prettierOptions],
+            // 'function-paren-newline': ['error', 'multiline'],
             'react/jsx-first-prop-new-line': ['error', 'multiline'],
             'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+            // 'react/jsx-closing-bracket-location': ['error', 'after-props'],
+            // 'react/jsx-max-props-per-line': ['error', { maximum: 1 }],
             'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
+            // 'newline-per-chained-call': ['error', { ignoreChainWithDepth: 2 }],
             'object-curly-newline': ['error', { multiline: true, consistent: true }],
             'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
             'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
@@ -56,6 +63,10 @@ export default tseslint.config(
                 { blankLine: 'any', prev: '*', next: 'break' },
                 { blankLine: 'always', prev: 'block', next: '*' },
                 { blankLine: 'always', prev: '*', next: 'return' },
+                // { blankLine: 'always', prev: 'import', next: '*' },
+                // { blankLine: 'always', prev: ['const', 'let', 'var'], next: '*' },
+                // { blankLine: 'always', prev: 'block-like', next: '*' },
+                // { blankLine: 'always', prev: 'expression', next: 'expression' },
             ],
             'perfectionist/sort-objects': [
                 'error',
@@ -87,6 +98,13 @@ export default tseslint.config(
                     type: 'natural',
                 },
             ],
+            // 'import/order': [
+            //     'error',
+            //     {
+            //         'newlines-between': 'always',
+            //         groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+            //     },
+            // ],
         },
         settings: {},
     }

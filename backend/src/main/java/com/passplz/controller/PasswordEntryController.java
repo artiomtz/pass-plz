@@ -76,6 +76,12 @@ public class PasswordEntryController {
             .map(PasswordEntryDto::toDto)
             .toList();
         log.info("successfully fetched password entries for user with id {}", userId);
+
+        try {
+            Thread.sleep(3000);
+        } catch (Exception exception) {
+            log.warn("delay failed");
+        }
         return ResponseEntity.ok(entryDtos);
     }
 
@@ -89,6 +95,12 @@ public class PasswordEntryController {
 
         final PasswordEntry newEntry = passwordEntryService.createEntry(entryEntity);
         log.info("successfully created password entry with id {}", newEntry.getId());
+
+        try {
+            Thread.sleep(3000);
+        } catch (Exception exception) {
+            log.warn("delay failed");
+        }
         return ResponseEntity.ok(PasswordEntryDto.toDto(newEntry));
     }
 
@@ -107,6 +119,12 @@ public class PasswordEntryController {
         }
 
         log.info("successfully updated password entry with id {}", id);
+
+        try {
+            Thread.sleep(3000);
+        } catch (Exception exception) {
+            log.warn("delay failed");
+        }
         return ResponseEntity.ok(PasswordEntryDto.toDto(updatedEntry));
     }
 
@@ -117,6 +135,12 @@ public class PasswordEntryController {
         final boolean isDeleted = passwordEntryService.deleteEntry(id);
 
         log.info("successfully deleted password entry with id {}", id);
+
+        try {
+            Thread.sleep(3000);
+        } catch (Exception exception) {
+            log.warn("delay failed");
+        }
         return isDeleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
