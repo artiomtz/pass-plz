@@ -13,3 +13,16 @@ services:
     volumes:
       - ./frontend:/opt/app
       - /opt/app/node_modules
+
+  pgweb:
+    image: sosedoff/pgweb
+    container_name: pgweb-passplz
+    restart: always
+    ports:
+      - '8081:8081'
+    environment:
+      PGWEB_DATABASE_URL: postgres://postgres:123@postgres-passplz:5432/passplz?sslmode=disable
+    networks:
+      - passplz-net
+    depends_on:
+      - database

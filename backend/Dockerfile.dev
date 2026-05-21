@@ -1,4 +1,4 @@
-FROM maven:3.9.6-eclipse-temurin-17-alpine
+FROM maven:3.9.16-eclipse-temurin-17
 
 WORKDIR /opt/app
 
@@ -6,13 +6,8 @@ COPY pom.xml .
 
 EXPOSE 8080
 
-ENTRYPOINT [ \
-    "mvn", \
-    "spring-boot:run", \
-    "-DskipTests=true", \
-    "-Dspring-boot.run.jvmArguments= \
-     -Dspring.profiles.active=local \
-     -Dspring.datasource.url=${DB_URL} \
-     -Dspring.datasource.username=${DB_USERNAME} \
-     -Dspring.datasource.password=${DB_PASSWORD}" \
-    ]
+ENV SPRING_PROFILES_ACTIVE=local
+
+ENTRYPOINT ["mvn", "spring-boot:run"]
+
+CMD ["-DskipTests=true"]

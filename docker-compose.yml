@@ -1,20 +1,21 @@
 services:
   database:
-    image: mysql:8.0
-    container_name: mysql-passplz
+    image: postgres:18.4-alpine
+    container_name: postgres-passplz
     restart: on-failure
     ports:
-      - '3306:3306'
+      - '5432:5432'
     networks:
       - passplz-net
     environment:
-      MYSQL_DATABASE: passplz
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: passplz
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - ${DB_DATA_PATH}:/var/lib/mysql
+      - ${DB_DATA_PATH}:/var/lib/postgresql
 
   backend:
-    image: backend-passplz:latest
+    image: artiomtz/backend-passplz:latest
     container_name: backend-passplz
     restart: on-failure
     ports:
@@ -49,7 +50,7 @@ services:
       - database
 
   frontend:
-    image: frontend-passplz:latest
+    image: artiomtz/frontend-passplz:latest
     container_name: frontend-passplz
     restart: on-failure
     ports:

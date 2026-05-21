@@ -1,5 +1,5 @@
 # build stage
-FROM maven:3.9.6-eclipse-temurin-17-alpine AS build
+FROM maven:3.9.16-eclipse-temurin-17 AS build
 
 WORKDIR /opt/app
 
@@ -10,7 +10,7 @@ RUN mvn clean package -DskipTests=true
 
 
 # run stage
-FROM eclipse-temurin:17-jdk-alpine AS run
+FROM eclipse-temurin:17-jre-alpine AS run
 
 WORKDIR /opt/app
 
