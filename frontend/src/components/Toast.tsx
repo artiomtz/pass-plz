@@ -11,7 +11,7 @@ const Toast: React.FC = () => (
             },
             loading: {
                 className: 'toast-style-loading',
-                duration: 10000,
+                duration: 300000,
             },
             style: {
                 borderRadius: '10px',
