@@ -6,17 +6,19 @@ const ROUTES = {
     REQUEST_RESET: '/request-reset',
     SIGN_IN: '/sign-in',
     SIGN_UP: '/sign-up',
+    VERIFY: '/verify',
     WELCOME: '/',
 };
 
 export const UNPROTECTED_ROUTES = [
-    ROUTES.WELCOME,
+    ROUTES.ERROR,
+    ROUTES.GOODBYE,
+    ROUTES.PASSWORD_RESET,
+    ROUTES.REQUEST_RESET,
     ROUTES.SIGN_IN,
     ROUTES.SIGN_UP,
-    ROUTES.REQUEST_RESET,
-    ROUTES.PASSWORD_RESET,
-    ROUTES.GOODBYE,
-    ROUTES.ERROR,
+    ROUTES.VERIFY,
+    ROUTES.WELCOME,
 ];
 
 export default ROUTES;

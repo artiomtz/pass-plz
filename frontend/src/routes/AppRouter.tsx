@@ -7,6 +7,7 @@ import DashboardPage from '@pages/DashboardPage';
 import CancellationPage from '@pages/message/CancellationPage';
 import ErrorPage from '@pages/message/ErrorPage';
 import NotFoundPage from '@pages/message/NotFoundPage';
+import VerifyPage from '@pages/message/VerifyPage';
 import WelcomePage from '@pages/WelcomePage';
 import ROUTES from '@routes/constants';
 import ProtectedRoute from '@routes/ProtectedRoute';
@@ -44,6 +45,14 @@ export const AppRoutes = () => {
                     </motion.div>
                 }
                 path={ROUTES.SIGN_UP}
+            />
+            <Route
+                element={
+                    <motion.div {...fadeMotionProps}>
+                        <VerifyPage />
+                    </motion.div>
+                }
+                path={ROUTES.VERIFY}
             />
             <Route
                 element={

@@ -34,8 +34,8 @@ public class EmailServiceImpl implements EmailService {
     @Value("${email.api.key}")
     private String emailApiKey;
 
-    @Value("${application.servers.backend}")
-    private String backendUrl;
+    @Value("${application.servers.frontend}")
+    private String frontendUrl;
 
     @Value("${email.api.tokenExpiryMinutes}")
     private String tokenExpiryMinutes;
@@ -49,6 +49,11 @@ public class EmailServiceImpl implements EmailService {
     private final ApiClient postmarkClient;
     private final TokenService tokenService;
     private final TemplateEngine templateEngine;
+
+    private static final String VERIFY_USER = "verify-user";
+    private static final String VERIFY_RESET = "verify-reset-password";
+    private static final String VERIFY_CANCELLATION = "cancel-user";
+    private static final String FRONTEND_VERIFY_PATH = "/verify";
 
     public void sendEmail(User user, EmailType emailType) {
         log.info("sending {} email to user with id {}",
@@ -160,9 +165,10 @@ public class EmailServiceImpl implements EmailService {
     }
 
     private String getEmailLink(User user, EmailType emailType) {
-        String link = String.format("%s/api/email/%s?email=%s&token=",
-            backendUrl,
-            getEmailEndpoint(emailType),
+        String link = String.format("%s%s?type=%s&email=%s&token=",
+            frontendUrl,
+            FRONTEND_VERIFY_PATH,
+            getVerificationType(emailType),
             user.getEmail());
         try {
             final String token = tokenService
@@ -181,11 +187,11 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    private String getEmailEndpoint(EmailType emailType) {
+    private String getVerificationType(EmailType emailType) {
         return switch (emailType) {
-            case VERIFICATION -> "verify-user";
-            case RESET -> "verify-reset-password";
-            case CANCELLATION -> "cancel-user";
+            case VERIFICATION -> VERIFY_USER;
+            case RESET -> VERIFY_RESET;
+            case CANCELLATION -> VERIFY_CANCELLATION;
             default -> null;
         };
     }

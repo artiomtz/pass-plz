@@ -31,8 +31,7 @@ public class EnvVarValidator implements BeanFactoryPostProcessor {
 
     private final String[] essentialVars = { "ADMIN_EMAIL", "ADMIN_PASSWORD", "DB_USERNAME",
             "DB_PASSWORD", "DB_URL", "AES_ENCRYPTION_KEY", "JWT_ENCRYPTION_KEY", "LOGS_PATH",
-            "LOGS_NUM_KEEP", "LOGS_FILE_SIZE_LIMIT", "LOGS_ALL_SIZE_LIMIT", "FRONTEND_URL",
-            "BACKEND_URL" };
+            "LOGS_NUM_KEEP", "LOGS_FILE_SIZE_LIMIT", "LOGS_ALL_SIZE_LIMIT", "FRONTEND_URL" };
 
     @Override
     public void postProcessBeanFactory(@NonNull ConfigurableListableBeanFactory beanFactory) {

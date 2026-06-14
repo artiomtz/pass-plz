@@ -150,29 +150,31 @@ public class UserController {
     @PostMapping("/reset-password")
     public ResponseEntity<Void> resetPassword(
         @Valid @RequestBody PasswordResetDto passwordResetDto) {
-        log.info("received a request to reset password");
         passwordResetDto.sanitizeFields();
+        final String token = passwordResetDto.getToken();
+        final String newPassword = passwordResetDto.getNewPassword();
+
+        log.info("received a request to reset password");
 
         tokenService.deleteExpiredTokens();
-        final boolean isValid = tokenService.isTokenValid(passwordResetDto.getToken(),
-            TokenType.RESET);
+        final boolean isValid = tokenService.isTokenValid(token, TokenType.RESET);
         if (!isValid) {
             log.error("reset token validation failed for token starting with {}",
-                StringUtils.substring(passwordResetDto.getToken(), 0, 5));
+                StringUtils.substring(token, 0, 5));
             return ResponseEntity.notFound().build();
         }
 
-        User user = tokenService.findUser(passwordResetDto.getToken(), TokenType.RESET);
+        User user = tokenService.findUser(token, TokenType.RESET);
         if (user == null) {
             log.error("reset password couldn't find user");
             return ResponseEntity.notFound().build();
         }
 
-        user.setMasterPassword(passwordResetDto.getNewPassword());
+        user.setMasterPassword(newPassword);
         userService.updateUser(user.getId(), user);
         log.info("successfully changed password for user with id {}", user.getId());
 
-        tokenService.invalidateToken(passwordResetDto.getToken(), TokenType.RESET);
+        tokenService.invalidateToken(token, TokenType.RESET);
         tokenService.deleteExpiredTokens();
         return ResponseEntity.ok().build();
     }
