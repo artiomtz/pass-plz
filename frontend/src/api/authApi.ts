@@ -4,7 +4,14 @@ import { ApiResponse, handleApiError } from '@api/handleApiError';
 import Authentication from '@models/authentication';
 import { getBearerHeader } from '@utils/authUtil';
 import logger from '@utils/loggerUtil';
-import { clearStoredUser, clearTokens, getRefreshToken, setAccessToken, setRefreshToken } from '@utils/storageUtil';
+import {
+    ACCESS_TOKEN_KEY,
+    clearStoredUser,
+    clearTokens,
+    getToken,
+    REFRESH_TOKEN_KEY,
+    setToken,
+} from '@utils/storageUtil';
 import { HttpStatusCode } from 'axios';
 
 let isRefreshing = false;
@@ -26,8 +33,8 @@ export const signUpApi = async (email: string, password: string): Promise<ApiRes
             return { error: 'Failed to sign up', ok: false };
         }
 
-        setAccessToken(data.accessToken);
-        setRefreshToken(data.refreshToken);
+        setToken(ACCESS_TOKEN_KEY, data.accessToken);
+        setToken(REFRESH_TOKEN_KEY, data.refreshToken);
         logger.info(`successfully signed up ${email}`);
 
         return { data: data, ok: true };
@@ -54,8 +61,8 @@ export const signInApi = async (email: string, password: string): Promise<ApiRes
             return { error: 'Failed to sign in', ok: false };
         }
 
-        setAccessToken(data.accessToken);
-        setRefreshToken(data.refreshToken);
+        setToken(ACCESS_TOKEN_KEY, data.accessToken);
+        setToken(REFRESH_TOKEN_KEY, data.refreshToken);
         logger.info(`successfully signed in ${email}`);
 
         return { data: data, ok: true };
@@ -77,7 +84,7 @@ export const refreshApi = async (): Promise<string | null> => {
     isRefreshing = true;
     refreshPromise = (async () => {
         try {
-            const refreshToken = getRefreshToken();
+            const refreshToken = getToken(REFRESH_TOKEN_KEY);
             if (!refreshToken) {
                 logger.warn('failed to refresh access token. no refresh token found in storage');
 
@@ -98,7 +105,7 @@ export const refreshApi = async (): Promise<string | null> => {
                 return null;
             }
 
-            setAccessToken(accessToken);
+            setToken(ACCESS_TOKEN_KEY, accessToken);
             logger.info('successfully refreshed access token');
 
             return accessToken;
@@ -119,7 +126,7 @@ export const refreshApi = async (): Promise<string | null> => {
 
 export const logoutApi = async (): Promise<void> => {
     try {
-        const refreshToken = getRefreshToken();
+        const refreshToken = getToken(REFRESH_TOKEN_KEY);
         if (!refreshToken) {
             logger.warn('failed to logout. no refresh token found in storage');
 

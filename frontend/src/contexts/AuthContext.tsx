@@ -3,11 +3,12 @@ import User from '@models/user';
 import ROUTES, { UNPROTECTED_ROUTES } from '@routes/constants';
 import logger from '@utils/loggerUtil';
 import {
+    ACCESS_TOKEN_KEY,
     clearStoredUser,
     clearTheme,
     clearTokens,
-    getAccessToken,
     getStoredUser,
+    getToken,
     setStoredUser,
 } from '@utils/storageUtil';
 import { isTokenExpired } from '@utils/tokenUtil';
@@ -44,7 +45,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             }
 
             const storedUser = getStoredUser();
-            const storedToken = getAccessToken();
+            const storedToken = getToken(ACCESS_TOKEN_KEY);
             if (!storedUser || !storedToken) {
                 logger.warn('failed to authenticate. no user or access token found in storage');
                 logout();

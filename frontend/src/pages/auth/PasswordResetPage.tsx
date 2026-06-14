@@ -8,7 +8,7 @@ import PasswordReset from '@models/passwordReset';
 import ROUTES from '@routes/constants';
 import logger from '@utils/loggerUtil';
 import { sanitizeBadCharacters, validatePassword } from '@utils/passwordUtil';
-import { getResetToken, setResetToken } from '@utils/storageUtil';
+import { clearToken, getToken, RESET_TOKEN_KEY, setToken } from '@utils/storageUtil';
 import { LockKeyhole } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -32,7 +32,7 @@ const ResetPasswordPage = () => {
             return;
         }
 
-        const token = getResetToken();
+        const token = getToken(RESET_TOKEN_KEY);
         if (!token) {
             logger.error('failed to reset password. no reset token found in storage');
             toast.error('Failed to fetch reset token');
@@ -56,6 +56,7 @@ const ResetPasswordPage = () => {
                 toast.error(response.error);
             }
 
+            clearToken(RESET_TOKEN_KEY);
             navigate(ROUTES.SIGN_IN, { replace: true });
         } catch (error) {
             logger.error('failed to reset password', error);
@@ -67,7 +68,7 @@ const ResetPasswordPage = () => {
         const token = searchParams.get('token');
 
         if (token) {
-            setResetToken(token);
+            setToken(RESET_TOKEN_KEY, token);
         } else {
             logger.warn('failed to fetch token from search parameters');
             toast.error('Failed to fetch reset token');
